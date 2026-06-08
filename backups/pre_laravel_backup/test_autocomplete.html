@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Autocomplete APIs</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .result {
+            background: white;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        h2 {
+            color: #333;
+        }
+        .ui-autocomplete {
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Autocomplete API Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Medicine Search API</h2>
+        <label>Type medicine name (at least 2 characters):</label>
+        <input type="text" id="medicineTest" placeholder="e.g., Panadol, Aspirin">
+        <div id="medicineResult" class="result">Type something to test...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Customer Search API</h2>
+        <label>Type customer name or phone (at least 2 characters):</label>
+        <input type="text" id="customerTest" placeholder="e.g., John, 0300">
+        <div id="customerResult" class="result">Type something to test...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Direct API Calls</h2>
+        <button onclick="testMedicineAPI()">Test Medicine API</button>
+        <button onclick="testCustomerAPI()">Test Customer API</button>
+        <div id="directTestResult" class="result">Click buttons to test...</div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script>
+        // Test Medicine Autocomplete
+        $('#medicineTest').autocomplete({
+            minLength: 2,
+            source: function(request, response) {
+                $('#medicineResult').text('Loading...');
+                $.ajax({
+                    url: 'api/medicine_suggestions.php',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { search: request.term, limit: 10 },
+                    success: function(data) {
+                        $('#medicineResult').text(JSON.stringify(data, null, 2));
+                        if (data.success && data.medicines) {
+                            response(data.medicines.map(med => ({
+                                label: med.name + ' - Rs. ' + med.price + ' (Stock: ' + med.quantity + ')',
+                                value: med.name
+                            })));
+                        } else {
+                            response([]);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#medicineResult').text('ERROR: ' + error + '\n\nResponse: ' + xhr.responseText);
+                        response([]);
+                    }
+                });
+            }
+        });
+
+        // Test Customer Autocomplete
+        $('#customerTest').autocomplete({
+            minLength: 2,
+            source: function(request, response) {
+                $('#customerResult').text('Loading...');
+                $.ajax({
+                    url: 'api/customers.php',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { search: request.term, limit: 10 },
+                    success: function(data) {
+                        $('#customerResult').text(JSON.stringify(data, null, 2));
+                        if (data.success && data.customers) {
+                            response(data.customers.map(cust => ({
+                                label: cust.name + ' - ' + (cust.phone || 'No phone'),
+                                value: cust.name
+                            })));
+                        } else {
+                            response([]);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#customerResult').text('ERROR: ' + error + '\n\nResponse: ' + xhr.responseText);
+                        response([]);
+                    }
+                });
+            }
+        });
+
+        // Direct API Test
+        function testMedicineAPI() {
+            $('#directTestResult').text('Testing Medicine API...');
+            $.ajax({
+                url: 'api/medicine_suggestions.php?search=pa&limit=5',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#directTestResult').text('✅ Medicine API Working!\n\n' + JSON.stringify(data, null, 2));
+                },
+                error: function(xhr, status, error) {
+                    $('#directTestResult').text('❌ Medicine API Error!\n\n' + error + '\n\nResponse: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function testCustomerAPI() {
+            $('#directTestResult').text('Testing Customer API...');
+            $.ajax({
+                url: 'api/customers.php?search=a&limit=5',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#directTestResult').text('✅ Customer API Working!\n\n' + JSON.stringify(data, null, 2));
+                },
+                error: function(xhr, status, error) {
+                    $('#directTestResult').text('❌ Customer API Error!\n\n' + error + '\n\nResponse: ' + xhr.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

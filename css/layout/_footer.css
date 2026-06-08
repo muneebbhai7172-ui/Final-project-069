@@ -1,0 +1,207 @@
+/* Enhanced Footer Styles */
+footer {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 50%, #f0fdfa 100%) !important;
+    color: #134e4a !important;
+    margin-top: auto;
+    padding: 3rem 0 1rem 0;
+    position: relative;
+    border: none !important;
+    box-shadow: 0 -2px 10px rgba(13, 148, 136, 0.1);
+}
+
+/* Dark mode footer */
+[data-theme="dark"] footer {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 50%, #2a2a2a 100%) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+footer .container {
+    background: transparent !important;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+footer h5 {
+    color: #0d9488 !important;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* Dark mode footer headings */
+[data-theme="dark"] footer h5 {
+    color: var(--primary-color) !important;
+}
+
+footer p {
+    color: #115e59 !important;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* Dark mode footer text */
+[data-theme="dark"] footer p {
+    color: var(--text-secondary) !important;
+}
+
+footer a {
+    color: #134e4a !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* Dark mode footer links */
+[data-theme="dark"] footer a {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] footer a:hover {
+    color: var(--primary-color) !important;
+}
+
+footer a:hover {
+    color: #0d9488 !important;
+    text-decoration: none;
+    transform: translateX(3px);
+}
+
+footer ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+footer ul li {
+    margin-bottom: 0.6rem;
+    color: #495057 !important;
+    font-size: 0.95rem;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+footer .text-center {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+    color: #6c757d !important;
+    font-size: 0.9rem;
+}
+
+footer span {
+    color: #6c757d !important;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* Clean all elements */
+footer *,
+footer div,
+footer .row,
+footer [class*="col-"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* FORCE LIGHT FOOTER - OVERRIDE EVERYTHING */
+footer,
+footer.mt-auto,
+footer .container,
+footer .container .p-4,
+footer .p-4 {
+    background-color: #f8f9fa !important;
+    background-image: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%) !important;
+    background: #f8f9fa !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%) !important;
+    color: #495057 !important;
+}
+
+/* Force all Bootstrap and other overrides */
+.mt-auto {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%) !important;
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+}
+
+body footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%) !important;
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+}
+
+html footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%) !important;
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+}
+
+/* Clear any possible Bootstrap bg classes */
+footer .bg-light,
+footer .bg-white,
+footer .bg-secondary,
+footer .container.bg-light,
+footer .container.bg-white {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+/* Target the specific container class that might be causing white background */
+footer .container.p-4,
+footer div.container.p-4,
+.container.p-4 {
+    background-color: transparent !important;
+    background: transparent !important;
+    background-image: none !important;
+}
+
+/* Nuclear option - override every possible background */
+footer > *,
+footer .container > *,
+footer .container .row > *,
+footer .row,
+footer .col-lg-6,
+footer .col-lg-3,
+footer .col-md-12,
+footer .col-md-6 {
+    background-color: transparent !important;
+    background: transparent !important;
+    background-image: none !important;
+}
+
+/* FORCE ALL TEXT TO BE VISIBLE WITH DARK COLORS */
+footer,
+footer *,
+footer h1, footer h2, footer h3, footer h4, footer h5, footer h6,
+footer p, footer span, footer div, footer a,
+footer ul, footer li {
+    color: #333333 !important;
+}
+
+footer h5 {
+    color: #007bff !important;
+}
+
+footer a:hover {
+    color: #0056b3 !important;
+}

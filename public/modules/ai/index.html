@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>AI Medicine Intelligence - Admin | Muneeb Drug House</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- Advanced Sidebar CSS -->
+    <link rel="stylesheet" href="../../shared/css/advanced-sidebar.css?v=clean-light-v2">
+
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #00b4d8;
+            --primary-dark: #023e8a;
+            --secondary: #48cae4;
+            --accent: #90e0ef;
+            --success: #2a9d8f;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --dark: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            min-height: 100vh;
+        }
+
+        /* ============ HEADER ============ */
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-brand-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-brand-logo i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .header-brand-text h1 {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .header-brand-text p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .header-btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .header-btn-outline:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* ============ MAIN LAYOUT ============ */
+        .main-content {
+            padding: 20px;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        /* ============ SIDEBAR PANEL ============ */
+        .side-panel {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 25px;
+            color: white;
+        }
+
+        .panel-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 5px;
+        }
+
+        .panel-header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .panel-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
+        }
+
+        .prompt-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .prompt-chip {
+            padding: 8px 14px;
+            background: var(--gray-100);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .prompt-chip:hover, .prompt-chip.active {
+            background: rgba(0, 119, 182, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-primary-custom {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 119, 182, 0.3);
+        }
+
+        .btn-primary-custom:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Compare Section */
+        .compare-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid var(--gray-100);
+        }
+
+        .compare-section h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compare-section h4 i {
+            color: var(--primary);
+        }
+
+        .btn-secondary-custom {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            color: var(--primary);
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ============ CHAT AREA ============ */
+        .chat-panel {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh;
+        }
+
+        .chat-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-info h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0 0 5px;
+        }
+
+        .chat-header-info p {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 18px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            color: var(--gray-700);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-messages-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--gray-50);
+            max-height: 600px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages-area::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 10px;
+        }
+
+        .chat-messages-area::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .chat-messages-area::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .chat-message {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message-avatar.ai {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .message-avatar.admin {
+            background: var(--success);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 85%;
+        }
+
+        .message-sender {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-bottom: 6px;
+        }
+
+        .chat-message.user .message-sender {
+            text-align: right;
+        }
+
+        .message-bubble {
+            padding: 20px 24px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .chat-message.ai .message-bubble {
+            background: white;
+            color: var(--dark);
+            border-radius: 20px 20px 20px 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-message.user .message-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-radius: 20px 20px 4px 20px;
+        }
+
+        .message-meta {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .source-badge {
+            padding: 5px 12px;
+            background: var(--gray-100);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .source-badge i {
+            font-size: 0.65rem;
+        }
+
+        .model-badge {
+            padding: 5px 12px;
+            background: rgba(0, 119, 182, 0.1);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        .message-disclaimer {
+            margin-top: 15px;
+            padding: 14px 18px;
+            background: #fef3c7;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #92400e;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .raw-data-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--gray-100);
+            border-radius: 14px;
+        }
+
+        .raw-data-toggle {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .raw-data-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            max-height: 300px;
+            overflow: auto;
+        }
+
+        .raw-data-content.show {
+            display: block;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 20px 24px;
+            background: white;
+            border-radius: 20px;
+            width: fit-content;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .typing-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--gray-400);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-state-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .empty-state-icon i {
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: var(--gray-500);
+            font-size: 1rem;
+            max-width: 400px;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                order: 2;
+            }
+
+            .chat-panel {
+                order: 1;
+                min-height: 60vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .chat-messages-area {
+                padding: 20px;
+            }
+        }
+
+        /* ============ AUTOCOMPLETE SUGGESTIONS ============ */
+        .autocomplete-wrapper {
+            position: relative;
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--primary);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1050;
+            display: none;
+        }
+
+        .autocomplete-suggestions.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s;
+        }
+
+        .autocomplete-item:hover {
+            background: #f0f7ff;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .autocomplete-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 14px;
+        }
+
+        .autocomplete-details {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        .autocomplete-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: white;
+            margin-right: 8px;
+        }
+
+        .autocomplete-highlight {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            font-weight: 700;
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
+
+        .autocomplete-no-results {
+            padding: 15px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* Quick Questions Buttons */
+        .quick-question-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .quick-question-btn:hover {
+            background: rgba(0, 119, 182, 0.08);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .quick-question-btn i {
+            width: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="modern-sidebar" id="modernSidebar">
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-clinic-medical"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <h4>Muneeb Drug House</h4>
+            <p>Pharmacy Management</p>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&size=100" alt="User" id="sidebarUserAvatar">
+            <span class="user-status online"></span>
+        </div>
+        <div class="user-info">
+            <p class="user-name" id="sidebarUserName">Admin User</p>
+            <p class="user-role" id="sidebarUserRole">Administrator</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <p class="nav-section-title">Main Menu</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../dashboard/index.html" class="nav-link" data-tooltip="Dashboard"><span class="nav-icon"><i class="fas fa-home"></i></span><span class="nav-text">Dashboard</span></a></li>
+            <li class="nav-item"><a href="../medicines/index.html" class="nav-link" data-tooltip="Medicines"><span class="nav-icon"><i class="fas fa-pills"></i></span><span class="nav-text">Medicines</span></a></li>
+            <li class="nav-item"><a href="../customers/index.html" class="nav-link" data-tooltip="Customers"><span class="nav-icon"><i class="fas fa-users"></i></span><span class="nav-text">Customers</span></a></li>
+            <li class="nav-item"><a href="../orders/index.html" class="nav-link" data-tooltip="Orders"><span class="nav-icon"><i class="fas fa-shopping-cart"></i></span><span class="nav-text">Orders</span></a></li>
+            <li class="nav-item"><a href="../billing/index.html" class="nav-link" data-tooltip="Billing"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span><span class="nav-text">Billing</span></a></li>
+        </ul>
+        <p class="nav-section-title">Inventory</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../stock/index.html" class="nav-link" data-tooltip="Stock"><span class="nav-icon"><i class="fas fa-boxes-stacked"></i></span><span class="nav-text">Stock Management</span></a></li>
+            <li class="nav-item"><a href="../reports/index.html" class="nav-link" data-tooltip="Reports"><span class="nav-icon"><i class="fas fa-chart-line"></i></span><span class="nav-text">Reports</span></a></li>
+        </ul>
+        <p class="nav-section-title">AI Tools</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../ai/index.html" class="nav-link active" data-tooltip="AI Intelligence"><span class="nav-icon"><i class="fas fa-robot"></i></span><span class="nav-text">AI Intelligence</span><span class="badge info">AI</span></a></li>
+        </ul>
+        <p class="nav-section-title">Settings</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../settings/index.html" class="nav-link" data-tooltip="Settings"><span class="nav-icon"><i class="fas fa-cog"></i></span><span class="nav-text">Settings</span></a></li>
+            <li class="nav-item"><a href="../backup/index.html" class="nav-link" data-tooltip="Backup"><span class="nav-icon"><i class="fas fa-database"></i></span><span class="nav-text">Backup</span></a></li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" class="nav-link logout-link" id="sidebarLogout" data-tooltip="Logout"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span><span class="nav-text">Logout</span></a>
+    </div>
+</aside>
+
+<button class="mobile-sidebar-toggle" id="mobileSidebarToggle"><i class="fas fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Top Header -->
+    <div class="top-header" style="background: white; padding: 20px 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-radius: 12px;">
+        <div class="page-title-section">
+            <h1 style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 0;">AI Medicine Intelligence</h1>
+            <p style="color: #64748b; font-size: 14px; margin-top: 5px;">Advanced Medical Information Analysis powered by AI</p>
+        </div>
+        <div class="header-actions" style="display: flex; gap: 10px;">
+            <button class="header-btn" style="padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white;" onclick="clearChat()">
+                <i class="fas fa-plus"></i> New Analysis
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Content Grid -->
+    <div class="ai-content-grid" style="display: grid; grid-template-columns: 380px 1fr; gap: 24px;">
+    <!-- Side Panel - Query Builder -->
+    <aside class="side-panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-search"></i> Query Builder</h3>
+            <p>Configure your AI analysis request</p>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="form-label">Medicine Name *</label>
+                <div class="autocomplete-wrapper">
+                    <input type="text" class="form-control" id="medicineName"
+                           placeholder="e.g., Paracetamol, Amoxicillin, Metformin" autocomplete="off">
+                    <div class="autocomplete-suggestions" id="medicineNameSuggestions"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Your Question *</label>
+                <textarea class="form-control" id="queryText" rows="4"
+                          placeholder="Ask anything about this medicine..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Analysis Type (Optional)</label>
+                <div class="prompt-chips" id="promptChips">
+                    <button class="prompt-chip" data-type="mechanism">Mechanism</button>
+                    <button class="prompt-chip" data-type="contraindications">Contraindications</button>
+                    <button class="prompt-chip" data-type="interactions">Interactions</button>
+                    <button class="prompt-chip" data-type="pediatric">Pediatric</button>
+                    <button class="prompt-chip" data-type="geriatric">Geriatric</button>
+                    <button class="prompt-chip" data-type="pharmacokinetics">Pharmacokinetics</button>
+                    <button class="prompt-chip" data-type="overdose">Overdose</button>
+                </div>
+            </div>
+
+            <button class="btn-primary-custom" id="submitQuery" onclick="submitQuery()">
+                <i class="fas fa-bolt"></i>
+                Analyze Medicine
+            </button>
+
+            <!-- Compare Section -->
+            <div class="compare-section">
+                <h4><i class="fas fa-balance-scale"></i> Compare Medicines</h4>
+                <div class="form-group">
+                    <label class="form-label">Medicine 1</label>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" class="form-control" id="compareMed1" placeholder="e.g., Ibuprofen" autocomplete="off">
+                        <div class="autocomplete-suggestions" id="compareMed1Suggestions"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Medicine 2</label>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" class="form-control" id="compareMed2" placeholder="e.g., Naproxen" autocomplete="off">
+                        <div class="autocomplete-suggestions" id="compareMed2Suggestions"></div>
+                    </div>
+                </div>
+                <button class="btn-secondary-custom" onclick="compareMedicines()">
+                    <i class="fas fa-code-compare"></i>
+                    Compare
+                </button>
+            </div>
+
+            <!-- Quick Questions Section -->
+            <div class="compare-section">
+                <h4><i class="fas fa-lightbulb"></i> Quick Questions</h4>
+                <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 15px;">Click to auto-fill common queries</p>
+                <div class="quick-questions-list" style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="quick-question-btn" onclick="fillQuestion('What are the common side effects?')">
+                        <i class="fas fa-exclamation-triangle"></i> Common side effects
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('What is the recommended dosage for adults?')">
+                        <i class="fas fa-prescription-bottle"></i> Recommended dosage
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('What are the drug interactions I should be aware of?')">
+                        <i class="fas fa-pills"></i> Drug interactions
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('Is this medicine safe during pregnancy?')">
+                        <i class="fas fa-baby"></i> Pregnancy safety
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('Can this medicine be taken with food or on empty stomach?')">
+                        <i class="fas fa-utensils"></i> Food interactions
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('What conditions or diseases does this medicine treat?')">
+                        <i class="fas fa-stethoscope"></i> Uses & indications
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('How long does it take for this medicine to work?')">
+                        <i class="fas fa-clock"></i> Onset of action
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('What should I do if I miss a dose?')">
+                        <i class="fas fa-calendar-times"></i> Missed dose
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('Are there any allergic reactions associated with this medicine?')">
+                        <i class="fas fa-allergies"></i> Allergic reactions
+                    </button>
+                    <button class="quick-question-btn" onclick="fillQuestion('What is the storage requirement for this medicine?')">
+                        <i class="fas fa-box"></i> Storage instructions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Chat Panel -->
+    <section class="chat-panel">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h2><i class="fas fa-comments"></i> Analysis Results</h2>
+                <p>AI-powered medical information from trusted sources</p>
+            </div>
+            <div class="chat-header-actions">
+                <button class="action-btn" onclick="exportResults()">
+                    <i class="fas fa-download"></i>
+                    Export
+                </button>
+                <button class="action-btn" onclick="clearChat()">
+                    <i class="fas fa-trash"></i>
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-messages-area" id="chatMessages">
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Medicine Analyzer</h3>
+                <p>Enter a medicine name and your question in the left panel to get comprehensive AI-powered analysis from trusted medical databases.</p>
+            </div>
+        </div>
+    </section>
+    </div><!-- End ai-content-grid -->
+</main>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let selectedPromptType = null;
+let conversationHistory = [];
+
+// Fill question from quick questions
+function fillQuestion(question) {
+    document.getElementById('queryText').value = question;
+    document.getElementById('queryText').focus();
+    // Scroll to the query text area
+    document.getElementById('queryText').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Initialize prompt chips
+document.querySelectorAll('.prompt-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+        document.querySelectorAll('.prompt-chip').forEach(c => c.classList.remove('active'));
+        if (selectedPromptType === this.dataset.type) {
+            selectedPromptType = null;
+        } else {
+            this.classList.add('active');
+            selectedPromptType = this.dataset.type;
+        }
+    });
+});
+
+async function submitQuery() {
+    const medicineName = document.getElementById('medicineName').value.trim();
+    const query = document.getElementById('queryText').value.trim();
+
+    if (!medicineName || !query) {
+        alert('Please enter both medicine name and your question');
+        return;
+    }
+
+    // Hide empty state
+    document.getElementById('emptyState').style.display = 'none';
+
+    // Add user message
+    addMessage('user', `<strong>${medicineName}</strong><br>${query}${selectedPromptType ? `<br><em>(Analysis: ${selectedPromptType})</em>` : ''}`);
+
+    // Show loading
+    showLoading();
+
+    const submitBtn = document.getElementById('submitQuery');
+    submitBtn.disabled = true;
+
+    try {
+        const response = await fetch('/api/admin/medicine-ai/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify({
+                medicine: medicineName,
+                query: query,
+                prompt_type: selectedPromptType
+            })
+        });
+
+        const data = await response.json();
+        hideLoading();
+
+        if (data.success) {
+            addAIResponse(data);
+            conversationHistory.push({
+                query: { medicine: medicineName, query: query, type: selectedPromptType },
+                response: data
+            });
+        } else {
+            addMessage('ai', `<strong>Error:</strong> ${data.error || 'Unable to process query'}`);
+        }
+
+    } catch (error) {
+        console.error('Query error:', error);
+        hideLoading();
+        addMessage('ai', '<strong>Error:</strong> Failed to connect to AI service. Please try again.');
+    }
+
+    submitBtn.disabled = false;
+}
+
+async function compareMedicines() {
+    const med1 = document.getElementById('compareMed1').value.trim();
+    const med2 = document.getElementById('compareMed2').value.trim();
+
+    if (!med1 || !med2) {
+        alert('Please enter both medicine names to compare');
+        return;
+    }
+
+    document.getElementById('emptyState').style.display = 'none';
+    addMessage('user', `<strong>Compare:</strong> ${med1} vs ${med2}`);
+    showLoading();
+
+    try {
+        const response = await fetch('/api/admin/medicine-ai/compare', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                medicine1: med1,
+                medicine2: med2
+            })
+        });
+
+        const data = await response.json();
+        hideLoading();
+
+        if (data.success) {
+            const compHtml = `
+                <div class="message-bubble">
+                    <strong>Comparison: ${data.comparison.medicine1} vs ${data.comparison.medicine2}</strong>
+                    <p style="margin-top: 15px; white-space: pre-wrap;">${data.comparison.analysis}</p>
+                </div>
+                <div class="message-meta">
+                    ${data.comparison.sources.map(s => `<span class="source-badge"><i class="fas fa-link"></i> ${s}</span>`).join('')}
+                    <span class="model-badge">${data.comparison.model}</span>
+                </div>
+                <div class="message-disclaimer">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>${data.disclaimer}</span>
+                </div>
+            `;
+            addMessageRaw('ai', compHtml);
+        } else {
+            addMessage('ai', `<strong>Error:</strong> ${data.error}`);
+        }
+
+    } catch (error) {
+        hideLoading();
+        addMessage('ai', '<strong>Error:</strong> Failed to compare medicines.');
+    }
+}
+
+function addMessage(type, content) {
+    const container = document.getElementById('chatMessages');
+    const isUser = type === 'user';
+
+    const html = `
+        <div class="chat-message ${type}">
+            <div class="message-avatar ${isUser ? 'admin' : 'ai'}">
+                <i class="fas ${isUser ? 'fa-user-shield' : 'fa-robot'}"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-sender">${isUser ? 'You' : 'AI Assistant'}</div>
+                <div class="message-bubble">${content}</div>
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+function addMessageRaw(type, innerHtml) {
+    const container = document.getElementById('chatMessages');
+
+    const html = `
+        <div class="chat-message ${type}">
+            <div class="message-avatar ai">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-sender">AI Assistant</div>
+                ${innerHtml}
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+function addAIResponse(data) {
+    const container = document.getElementById('chatMessages');
+
+    const sourcesHtml = data.sources ?
+        data.sources.map(s => `<span class="source-badge"><i class="fas fa-link"></i> ${s}</span>`).join('') : '';
+
+    const rawDataId = 'rawData_' + Date.now();
+    const rawDataHtml = data.rawData ? `
+        <div class="raw-data-section">
+            <button class="raw-data-toggle" onclick="toggleRawData('${rawDataId}')">
+                <i class="fas fa-code"></i>
+                View Raw API Data
+            </button>
+            <pre class="raw-data-content" id="${rawDataId}">${JSON.stringify(data.rawData, null, 2)}</pre>
+        </div>
+    ` : '';
+
+    const html = `
+        <div class="chat-message ai">
+            <div class="message-avatar ai">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-sender">AI Assistant</div>
+                <div class="message-bubble">
+                    <strong>Analysis for: ${data.medicine}</strong>
+                    <p style="margin-top: 15px; white-space: pre-wrap;">${data.answer}</p>
+                </div>
+                <div class="message-meta">
+                    ${sourcesHtml}
+                    <span class="model-badge">${data.model || 'AI'}</span>
+                </div>
+                <div class="message-disclaimer">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>${data.disclaimer}</span>
+                </div>
+                ${rawDataHtml}
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+function toggleRawData(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+function showLoading() {
+    const container = document.getElementById('chatMessages');
+    const html = `
+        <div class="chat-message ai" id="loadingIndicator">
+            <div class="message-avatar ai">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+function hideLoading() {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) indicator.remove();
+}
+
+function clearChat() {
+    document.getElementById('chatMessages').innerHTML = `
+        <div class="empty-state" id="emptyState">
+            <div class="empty-state-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h3>AI Medicine Analyzer</h3>
+            <p>Enter a medicine name and your question to get comprehensive AI-powered analysis.</p>
+        </div>
+    `;
+    conversationHistory = [];
+}
+
+async function exportResults() {
+    if (conversationHistory.length === 0) {
+        alert('No results to export');
+        return;
+    }
+
+    const medicineName = document.getElementById('medicineName').value.trim() || 'medicine';
+
+    try {
+        const response = await fetch('/api/admin/medicine-ai/export', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                medicine: medicineName,
+                format: 'markdown'
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Create download
+            const blob = new Blob([data.content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${medicineName.replace(/\s+/g, '_')}_analysis.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    } catch (error) {
+        console.error('Export error:', error);
+
+        // Fallback: export conversation history
+        const markdown = conversationHistory.map((item, i) => {
+            return `## Query ${i + 1}\n**Medicine:** ${item.query.medicine}\n**Question:** ${item.query.query}\n\n### Response\n${item.response.answer}\n\n---\n`;
+        }).join('\n');
+
+        const blob = new Blob([markdown], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'medicine_analysis.md';
+        a.click();
+    }
+}
+
+// Check auth
+document.addEventListener('DOMContentLoaded', function() {
+    const user = localStorage.getItem('user');
+    if (!user) {
+        // Redirect to login for non-authenticated users
+        // window.location.href = '../auth/login.html';
+    }
+
+    // Initialize autocomplete for all medicine inputs
+    initAutocomplete('medicineName', 'medicineNameSuggestions');
+    initAutocomplete('compareMed1', 'compareMed1Suggestions');
+    initAutocomplete('compareMed2', 'compareMed2Suggestions');
+});
+
+// ============ MEDICINE AUTOCOMPLETE ============
+function initAutocomplete(inputId, suggestionsId) {
+    const input = document.getElementById(inputId);
+    const suggestionsBox = document.getElementById(suggestionsId);
+    let searchTimeout;
+
+    input.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+
+        if (query.length >= 2) {
+            searchTimeout = setTimeout(() => {
+                searchMedicinesForAutocomplete(query, suggestionsBox, input);
+            }, 300);
+        } else {
+            hideSuggestions(suggestionsBox);
+        }
+    });
+
+    input.addEventListener('blur', function() {
+        setTimeout(() => hideSuggestions(suggestionsBox), 200);
+    });
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideSuggestions(suggestionsBox);
+        }
+    });
+}
+
+async function searchMedicinesForAutocomplete(query, suggestionsBox, inputElement) {
+    try {
+        // Try API first - use 'q' param as expected by the suggestions endpoint
+        const response = await fetch(`/api/medicines/suggestions/search?q=${encodeURIComponent(query)}&limit=8`);
+        const data = await response.json();
+
+        // API returns 'suggestions' array
+        if (data.success && data.suggestions && data.suggestions.length > 0) {
+            showAutocompleteSuggestions(data.suggestions, query, suggestionsBox, inputElement);
+        } else if (data.medicines && data.medicines.length > 0) {
+            showAutocompleteSuggestions(data.medicines, query, suggestionsBox, inputElement);
+        } else if (data.data && data.data.length > 0) {
+            showAutocompleteSuggestions(data.data, query, suggestionsBox, inputElement);
+        } else {
+            // Try alternative endpoint - main medicines list
+            const altResponse = await fetch(`/api/medicines?search=${encodeURIComponent(query)}&limit=8`);
+            const altData = await altResponse.json();
+
+            if (altData.data && altData.data.length > 0) {
+                showAutocompleteSuggestions(altData.data, query, suggestionsBox, inputElement);
+            } else {
+                showNoResults(suggestionsBox);
+            }
+        }
+    } catch (error) {
+        console.error('Autocomplete search error:', error);
+        showNoResults(suggestionsBox);
+    }
+}
+
+function showAutocompleteSuggestions(medicines, query, suggestionsBox, inputElement) {
+    if (!medicines || medicines.length === 0) {
+        showNoResults(suggestionsBox);
+        return;
+    }
+
+    // Highlight matching text
+    function highlightMatch(text, q) {
+        if (!q || !text) return text;
+        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<span class="autocomplete-highlight">$1</span>');
+    }
+
+    let html = '';
+    medicines.forEach(med => {
+        const name = med.name || '';
+        const category = med.category || '';
+        const manufacturer = med.manufacturer || '';
+        const price = parseFloat(med.price || 0).toFixed(2);
+        const stock = med.quantity || 0;
+
+        const highlightedName = highlightMatch(name, query);
+        const highlightedManufacturer = manufacturer ? highlightMatch(manufacturer, query) : '';
+
+        html += `
+            <div class="autocomplete-item" onclick="selectMedicineAutocomplete('${inputElement.id}', '${name.replace(/'/g, "\\'")}')">
+                <div class="autocomplete-name">${highlightedName}</div>
+                <div class="autocomplete-details">
+                    ${category ? `<span class="autocomplete-badge">${category}</span>` : ''}
+                    ${highlightedManufacturer ? `<span>${highlightedManufacturer}</span>` : ''}
+                    <span style="margin-left: auto; color: #22c55e; font-weight: 600;">Rs. ${price}</span>
+                    <span style="margin-left: 10px; color: ${stock > 10 ? '#22c55e' : stock > 0 ? '#f59e0b' : '#ef4444'};">
+                        Stock: ${stock}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+
+    suggestionsBox.innerHTML = html;
+    suggestionsBox.classList.add('show');
+}
+
+function showNoResults(suggestionsBox) {
+    suggestionsBox.innerHTML = '<div class="autocomplete-no-results"><i class="fas fa-search"></i> No medicines found. You can still type any medicine name.</div>';
+    suggestionsBox.classList.add('show');
+}
+
+function hideSuggestions(suggestionsBox) {
+    suggestionsBox.classList.remove('show');
+}
+
+window.selectMedicineAutocomplete = function(inputId, medicineName) {
+    const input = document.getElementById(inputId);
+    input.value = medicineName;
+    const suggestionsBox = input.parentElement.querySelector('.autocomplete-suggestions');
+    if (suggestionsBox) {
+        hideSuggestions(suggestionsBox);
+    }
+}
+</script>
+
+<!-- Advanced Sidebar JS -->
+<script src="../../shared/js/advanced-sidebar.js?v=20260104"></script>
+
+</body>
+</html>

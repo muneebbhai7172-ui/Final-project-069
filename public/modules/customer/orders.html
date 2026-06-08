@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>My Orders - Muneeb Drug House</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #00b4d8;
+            --primary-dark: #023e8a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .customer-navbar {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 6px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Main Container */
+        .orders-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: translate(50%, -50%);
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Filters */
+        .filters-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 18px 12px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        /* Orders List */
+        .orders-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .order-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .order-date {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .order-status.pending { background: #fef3c7; color: #d97706; }
+        .order-status.processing { background: #dbeafe; color: #2563eb; }
+        .order-status.shipped { background: #e0e7ff; color: #4f46e5; }
+        .order-status.delivered { background: #d1fae5; color: #059669; }
+        .order-status.completed { background: #d1fae5; color: #059669; }
+        .order-status.cancelled { background: #fee2e2; color: #dc2626; }
+
+        .order-items-preview {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .item-badge {
+            background: #f1f5f9;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .more-items {
+            background: var(--primary);
+            color: white;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-total {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-track, .btn-details, .btn-reorder {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-track {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+        }
+
+        .btn-track:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 182, 0.3);
+            color: white;
+        }
+
+        .btn-details {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-details:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-reorder {
+            background: white;
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        .btn-reorder:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: #cbd5e1;
+            margin-bottom: 25px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .btn-shop {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 14px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-shop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.3);
+            color: white;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-header h3 {
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* Timeline */
+        .order-timeline {
+            margin: 25px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 35px;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .timeline-dot.current {
+            background: var(--primary);
+            color: white;
+        }
+
+        .timeline-content h5 {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .timeline-content p {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Item List in Modal */
+        .modal-items {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .modal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-item:last-child {
+            border-bottom: none;
+        }
+
+        .modal-item-name {
+            font-weight: 600;
+        }
+
+        .modal-item-qty {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .modal-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            margin-top: 15px;
+            border-top: 2px solid #e2e8f0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .page-header { padding: 25px; }
+            .page-header h1 { font-size: 1.5rem; }
+            .filters-bar { flex-direction: column; }
+            .filter-btn { width: 100%; text-align: center; }
+            .order-footer { flex-direction: column; gap: 15px; }
+            .order-actions { width: 100%; justify-content: center; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Customer Navbar -->
+<nav class="customer-navbar">
+    <a href="../frontend/index.html" class="nav-brand">
+        <i class="fas fa-plus-circle"></i> Muneeb Drug House
+    </a>
+    <div class="nav-links">
+        <a href="../frontend/index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="../shop/medicines.html" class="nav-link"><i class="fas fa-pills"></i> Shop</a>
+        <a href="orders.html" class="nav-link active"><i class="fas fa-box"></i> My Orders</a>
+        <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+        <a href="#" class="nav-link logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</nav>
+
+<div class="orders-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-box"></i> My Orders</h1>
+        <p>Track and manage all your orders in one place</p>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="filters-bar">
+        <button class="filter-btn active" data-filter="all">All Orders</button>
+        <button class="filter-btn" data-filter="pending">Pending</button>
+        <button class="filter-btn" data-filter="processing">Processing</button>
+        <button class="filter-btn" data-filter="delivered">Delivered</button>
+        <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchOrders" placeholder="Search orders by ID or medicine name...">
+        </div>
+    </div>
+
+    <!-- Orders Grid -->
+    <div class="orders-grid" id="ordersGrid">
+        <div class="empty-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h3>Loading Orders...</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal-overlay" id="orderModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalOrderId">Order #12345</h3>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modalContent">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Check if user is logged in
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if (!user) {
+    window.location.href = '../auth/login.html';
+}
+
+let allOrders = [];
+let currentFilter = 'all';
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentFilter = this.dataset.filter;
+        renderOrders();
+    });
+});
+
+// Search
+document.getElementById('searchOrders').addEventListener('input', function() {
+    renderOrders();
+});
+
+// Load orders
+async function loadOrders() {
+    try {
+        const response = await fetch(`/api/orders/customer/${user.email}`);
+        const data = await response.json();
+
+        if (data.success && data.orders) {
+            allOrders = data.orders;
+            renderOrders();
+        } else {
+            showEmptyState();
+        }
+    } catch (error) {
+        console.error('Failed to load orders:', error);
+        showEmptyState('Failed to load orders. Please try again.');
+    }
+}
+
+function renderOrders() {
+    const searchTerm = document.getElementById('searchOrders').value.toLowerCase();
+
+    let filtered = allOrders.filter(order => {
+        // Filter by status
+        if (currentFilter !== 'all' && order.status.toLowerCase() !== currentFilter) {
+            return false;
+        }
+        // Filter by search
+        if (searchTerm) {
+            const orderNum = (order.order_number || order.order_id || '').toLowerCase();
+            const items = (order.items || []).map(i => (i.medicine_name || '').toLowerCase()).join(' ');
+            if (!orderNum.includes(searchTerm) && !items.includes(searchTerm)) {
+                return false;
+            }
+        }
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        showEmptyState(searchTerm ? 'No orders match your search' : 'No orders in this category');
+        return;
+    }
+
+    const grid = document.getElementById('ordersGrid');
+    grid.innerHTML = filtered.map(order => {
+        const items = order.items || [];
+        const displayItems = items.slice(0, 3);
+        const moreCount = items.length - 3;
+
+        return `
+            <div class="order-card" data-order-id="${order.id}">
+                <div class="order-header">
+                    <div class="order-info">
+                        <h3>${order.order_number || `ORD-${order.id}`}</h3>
+                        <span class="order-date">
+                            <i class="fas fa-calendar"></i> ${new Date(order.created_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </span>
+                    </div>
+                    <span class="order-status ${order.status.toLowerCase()}">${order.status}</span>
+                </div>
+                <div class="order-items-preview">
+                    ${displayItems.map(item => `
+                        <span class="item-badge">${item.medicine_name || 'Medicine'} x${item.quantity}</span>
+                    `).join('')}
+                    ${moreCount > 0 ? `<span class="item-badge more-items">+${moreCount} more</span>` : ''}
+                </div>
+                <div class="order-footer">
+                    <span class="order-total">Rs. ${parseFloat(order.total_amount).toLocaleString()}</span>
+                    <div class="order-actions">
+                        <a href="../shop/track-order.html?tracking=${order.tracking_number || order.order_number}" class="btn-track">
+                            <i class="fas fa-truck"></i> Track
+                        </a>
+                        <button class="btn-details" onclick="viewDetails(${order.id})">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                        ${order.status.toLowerCase() === 'delivered' || order.status.toLowerCase() === 'completed' ? `
+                            <button class="btn-reorder" onclick="reorder(${order.id})">
+                                <i class="fas fa-redo"></i> Reorder
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function showEmptyState(message = null) {
+    document.getElementById('ordersGrid').innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <h3>${message || "You haven't placed any orders yet"}</h3>
+            <p>Start shopping and your orders will appear here</p>
+            <a href="../shop/medicines.html" class="btn-shop">
+                <i class="fas fa-pills"></i> Browse Medicines
+            </a>
+        </div>
+    `;
+}
+
+async function viewDetails(orderId) {
+    try {
+        const response = await fetch(`/api/orders/${orderId}`);
+        const data = await response.json();
+
+        if (data.success && data.order) {
+            const order = data.order;
+            document.getElementById('modalOrderId').textContent = order.order_number || `ORD-${order.id}`;
+
+            // Create timeline based on status
+            const statuses = ['Order Placed', 'Processing', 'Shipped', 'Delivered'];
+            const currentStatus = order.status.toLowerCase();
+            const statusIndex = {
+                'pending': 0,
+                'processing': 1,
+                'shipped': 2,
+                'delivered': 3,
+                'completed': 3
+            };
+            const currentIndex = statusIndex[currentStatus] || 0;
+
+            document.getElementById('modalContent').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                    <p><strong>Delivery Address:</strong> ${order.address || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${order.phone || 'N/A'}</p>
+                </div>
+
+                <h5 style="font-weight: 700; margin-bottom: 15px;">Order Status</h5>
+                <div class="order-timeline">
+                    ${statuses.map((status, index) => `
+                        <div class="timeline-item">
+                            <div class="timeline-dot ${index < currentIndex ? 'completed' : index === currentIndex ? 'current' : ''}">
+                                <i class="fas fa-${index < currentIndex ? 'check' : index === currentIndex ? 'clock' : 'circle'}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h5>${status}</h5>
+                                <p>${index <= currentIndex ? 'Completed' : 'Pending'}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <h5 style="font-weight: 700; margin: 20px 0 15px;">Order Items</h5>
+                <div class="modal-items">
+                    ${(order.items || []).map(item => `
+                        <div class="modal-item">
+                            <div>
+                                <span class="modal-item-name">${item.medicine_name || item.medicine?.name || 'Medicine'}</span>
+                                <span class="modal-item-qty"> × ${item.quantity}</span>
+                            </div>
+                            <span>Rs. ${parseFloat(item.subtotal || item.price * item.quantity).toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                    <div class="modal-total">
+                        <span>Total</span>
+                        <span>Rs. ${parseFloat(order.total_amount).toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('orderModal').classList.add('active');
+        }
+    } catch (error) {
+        console.error('Failed to load order details:', error);
+        alert('Failed to load order details');
+    }
+}
+
+function closeModal() {
+    document.getElementById('orderModal').classList.remove('active');
+}
+
+async function reorder(orderId) {
+    try {
+        const response = await fetch(`/api/orders/${orderId}`);
+        const data = await response.json();
+
+        if (data.success && data.order && data.order.items) {
+            // Add items to cart
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            data.order.items.forEach(item => {
+                const existingIndex = cart.findIndex(c => c.medicine_id === item.medicine_id);
+                if (existingIndex > -1) {
+                    cart[existingIndex].quantity += item.quantity;
+                } else {
+                    cart.push({
+                        medicine_id: item.medicine_id,
+                        name: item.medicine_name || item.medicine?.name,
+                        price: parseFloat(item.price),
+                        quantity: item.quantity
+                    });
+                }
+            });
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Items added to cart!');
+            window.location.href = '../shop/cart.html';
+        }
+    } catch (error) {
+        console.error('Failed to reorder:', error);
+        alert('Failed to add items to cart');
+    }
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    window.location.href = '../auth/login.html';
+}
+
+// Close modal on outside click
+document.getElementById('orderModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// Initial load
+loadOrders();
+</script>
+
+</body>
+</html>

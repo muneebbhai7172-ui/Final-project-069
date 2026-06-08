@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Medicines - Waqar Drug House</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Enhanced Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light" id="mainNavbar">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold" href="index.html">
+            <img src="images/logo.png" alt="Waqar Drug House" class="logo-img me-2">
+            Waqar Drug House
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-home me-1"></i>Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="search.html">
+                        <i class="fas fa-pills me-1"></i>Medicines
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">
+                        <i class="fas fa-info-circle me-1"></i>About
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <button class="btn btn-sm btn-theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                </li>
+                <li class="nav-item ms-2">
+                    <a class="btn btn-cart position-relative" href="cart.html">
+                        <i class="fas fa-shopping-cart me-1"></i>Cart
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="cart-count">
+                            0
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item ms-2">
+                    <a class="btn btn-login" href="login.html">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Search Header Section -->
+<section class="py-5" style="margin-top: 76px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));">
+    <div class="container">
+        <div class="row text-center mb-4">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-5 fw-bold mb-3 text-gradient">Find Your Medicines</h1>
+                <p class="lead text-muted">Search from over 5,000+ medicines in our comprehensive database</p>
+            </div>
+        </div>
+        
+        <!-- Enhanced Search Bar -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-custom">
+                    <div class="card-body p-4">
+                        <div class="position-relative">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text border-0">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="medicine-search-input" class="form-control border-0" 
+                                       placeholder="Search medicines by name, generic name, or condition..." autocomplete="off">
+                                <button class="btn btn-primary border-0" type="button" id="search-btn">
+                                    <i class="fas fa-arrow-right me-1"></i>Search
+                                </button>
+                            </div>
+                            <div id="main-search-suggestions" class="suggestions-dropdown" style="display: none;">
+                                <!-- Suggestions will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Filter Tags -->
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <small class="text-muted me-2">Quick filters:</small>
+                            <span class="badge bg-light text-dark filter-tag" data-filter="painkiller">
+                                <i class="fas fa-pills me-1"></i>Painkillers
+                            </span>
+                            <span class="badge bg-light text-dark filter-tag" data-filter="antibiotic">
+                                <i class="fas fa-capsules me-1"></i>Antibiotics
+                            </span>
+                            <span class="badge bg-light text-dark filter-tag" data-filter="vitamin">
+                                <i class="fas fa-leaf me-1"></i>Vitamins
+                            </span>
+                            <span class="badge bg-light text-dark filter-tag" data-filter="heart">
+                                <i class="fas fa-heart me-1"></i>Heart Care
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Results Section -->
+<section class="py-5">
+    <div class="container">
+        <!-- Search Results Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-1">Search Results</h3>
+                <p class="text-muted mb-0" id="results-count">Showing medicines matching your search</p>
+            </div>
+            
+            <!-- Sort and Filter Options -->
+            <div class="d-flex gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-sort me-1"></i>Sort by
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" data-sort="name">Name A-Z</a></li>
+                        <li><a class="dropdown-item" href="#" data-sort="price">Price Low to High</a></li>
+                        <li><a class="dropdown-item" href="#" data-sort="popularity">Most Popular</a></li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-outline-secondary" id="view-toggle" title="Toggle view">
+                    <i class="fas fa-th-large"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loading-state" class="text-center py-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Searching medicines...</p>
+        </div>
+        
+        <!-- Medicine Grid -->
+        <div id="medicine-list" class="row g-4">
+            <!-- Medicine cards will be inserted here by JavaScript -->
+        </div>
+        
+        <!-- No Results State -->
+        <div id="no-results" class="text-center py-5" style="display: none;">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No medicines found</h4>
+            <p class="text-muted">Try adjusting your search terms or browse our categories</p>
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home me-1"></i>Back to Home
+            </a>
+        </div>
+        
+        <!-- Pagination -->
+        <nav aria-label="Search results pagination" class="mt-5">
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- Pagination will be inserted here -->
+            </ul>
+        </nav>
+    </div>
+</section>
+            <ul class="pagination justify-content-center">
+                <!-- Pagination will be handled by JavaScript -->
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<!-- Floating Go to Cart Button -->
+<div id="floating-cart-btn" class="floating-cart-button" style="display: none;">
+    <button class="btn btn-success btn-lg shadow-lg" onclick="goToCart()">
+        <i class="fas fa-shopping-cart me-2"></i>
+        Go to Cart (<span id="float-cart-count">0</span>)
+        <div class="cart-pulse"></div>
+    </button>
+</div>
+
+<!-- Enhanced Footer -->
+<footer class="mt-auto">
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">
+                    Waqar Drug House
+                </h5>
+                <p class="mb-0">
+                    Your trusted partner in health and wellness. Providing quality medicines with care and reliability.
+                </p>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Quick Links</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <a href="about.html">
+                            About Us
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="search.html">
+                            Medicines
+                        </a>
+                    </li>
+                    <li>
+                        <a href="index.html">
+                            Home
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Contact Info</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="tel:03211532010">03211532010</a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="mailto:info@waqardrughouse.com">info@waqardrughouse.com</a>
+                    </li>
+                    <li>
+                        <span>24/7 Service</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-center p-3">
+        © 2025 Waqar Drug House. All rights reserved. | Made with love for better health
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Custom JavaScript -->
+<script src="js/script.js"></script>
+
+<script>
+<!-- Enhanced Search Functionality -->
+let currentView = 'grid';
+let currentSort = 'name';
+
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Filter tag functionality
+document.querySelectorAll('.filter-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+        // Remove active class from all tags
+        document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+        
+        // Add active class to clicked tag
+        this.classList.add('active');
+        
+        const filter = this.dataset.filter;
+        document.getElementById('medicine-search-input').value = filter;
+        performSearch(filter);
+    });
+});
+
+// Search button functionality
+document.getElementById('search-btn').addEventListener('click', function() {
+    const searchTerm = document.getElementById('medicine-search-input').value;
+    performSearch(searchTerm);
+});
+
+// Search on Enter key
+document.getElementById('medicine-search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch(this.value);
+    }
+});
+
+// Clear search filters
+function clearFilters() {
+    document.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+    document.getElementById('medicine-search-input').value = '';
+    performSearch('');
+}
+
+// Perform search function
+function performSearch(searchTerm = '', category = '') {
+    const medicineList = document.getElementById('medicine-list');
+    const loadingState = document.getElementById('loading-state');
+    const noResults = document.getElementById('no-results');
+    const resultsCount = document.getElementById('results-count');
+    
+    // Get search term from input if not provided
+    if (!searchTerm && !category) {
+        searchTerm = document.getElementById('medicine-search-input').value.trim();
+    }
+    
+    // Hide suggestions dropdown
+    const suggestions = document.getElementById('main-search-suggestions');
+    if (suggestions) {
+        suggestions.style.display = 'none';
+    }
+    
+    // Show loading
+    loadingState.style.display = 'block';
+    medicineList.style.display = 'none';
+    noResults.style.display = 'none';
+    
+    // Build search parameters
+    const params = new URLSearchParams();
+    if (searchTerm) params.append('search', searchTerm);
+    if (category) params.append('category', category);
+    params.append('limit', '50');
+    
+    // Make API call
+    fetch(`api/medicines.php?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            loadingState.style.display = 'none';
+            
+            if (data.success && data.medicines && data.medicines.length > 0) {
+                displayMedicineResults(data.medicines);
+                medicineList.style.display = 'flex';
+                
+                // Update results count
+                let resultText = '';
+                if (searchTerm && category) {
+                    resultText = `Found ${data.medicines.length} results for "${searchTerm}" in ${category}`;
+                } else if (searchTerm) {
+                    resultText = `Found ${data.medicines.length} results for "${searchTerm}"`;
+                } else if (category) {
+                    resultText = `Found ${data.medicines.length} medicines in ${category}`;
+                } else {
+                    resultText = `Showing ${data.medicines.length} medicines`;
+                }
+                resultsCount.textContent = resultText;
+            } else {
+                noResults.style.display = 'block';
+                medicineList.style.display = 'none';
+                resultsCount.textContent = 'No results found';
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            loadingState.style.display = 'none';
+            noResults.style.display = 'block';
+            medicineList.style.display = 'none';
+            resultsCount.textContent = 'Search error occurred';
+        });
+}
+
+// Display medicine results
+function displayMedicineResults(medicines) {
+    const medicineList = document.getElementById('medicine-list');
+    
+    let html = '';
+    medicines.forEach(medicine => {
+        const imageUrl = medicine.image ? `images/${medicine.image}` : 'images/default-medicine.jpg';
+        const stockStatus = medicine.quantity > 0 ? 'In Stock' : 'Out of Stock';
+        const stockClass = medicine.quantity > 0 ? 'success' : 'danger';
+        const addButtonDisabled = medicine.quantity <= 0 ? 'disabled' : '';
+        
+        html += `
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <div class="card medicine-card h-100 shadow-sm">
+                    <div class="position-relative">
+                        <img src="${imageUrl}" class="card-img-top" alt="${medicine.name}" style="height: 200px; object-fit: cover;"
+                             onerror="this.src='images/default-medicine.jpg';">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-${stockClass}">${stockStatus}</span>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">${medicine.name}</h6>
+                        <p class="text-muted small mb-2">${medicine.category || 'General'}</p>
+                        <p class="card-text text-muted small flex-grow-1">${medicine.description || 'No description available'}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="h5 mb-0 text-primary">$${parseFloat(medicine.price).toFixed(2)}</span>
+                                <small class="text-muted">Stock: ${medicine.quantity}</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <input type="number" class="form-control form-control-sm" id="qty-${medicine.id}" 
+                                       value="1" min="1" max="${medicine.quantity}" style="width: 70px;" ${addButtonDisabled}>
+                                <button class="btn btn-primary btn-sm flex-grow-1" 
+                                        onclick="addToCartWithQuantity(${medicine.id}, '${medicine.name.replace(/'/g, "\\'")}', ${medicine.price}, '${medicine.image || ''}')" 
+                                        ${addButtonDisabled}>
+                                    <i class="fas fa-cart-plus me-1"></i>
+                                    ${medicine.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    medicineList.innerHTML = html;
+}
+
+// View toggle functionality
+document.getElementById('view-toggle').addEventListener('click', function() {
+    const icon = this.querySelector('i');
+    if (currentView === 'grid') {
+        currentView = 'list';
+        icon.className = 'fas fa-th-list';
+        this.title = 'Grid view';
+    } else {
+        currentView = 'grid';
+        icon.className = 'fas fa-th-large';
+        this.title = 'List view';
+    }
+    renderMedicines();
+});
+
+// Sort functionality
+document.querySelectorAll('[data-sort]').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentSort = this.dataset.sort;
+        performSearch();
+    });
+});
+
+// Search button functionality
+document.getElementById('search-btn').addEventListener('click', function() {
+    performSearch();
+});
+
+// Search input enter key functionality
+document.getElementById('medicine-search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
+
+// Load initial medicines on page load
+document.addEventListener('DOMContentLoaded', function() {
+    performSearch();
+});
+
+// Search functionality
+function performSearch() {
+    const searchTerm = document.getElementById('medicine-search-input').value;
+    const loadingState = document.getElementById('loading-state');
+    const medicineList = document.getElementById('medicine-list');
+    const noResults = document.getElementById('no-results');
+    
+    // Show loading state
+    loadingState.style.display = 'block';
+    medicineList.innerHTML = '';
+    noResults.style.display = 'none';
+    
+    // Make actual API call
+    $.ajax({
+        url: 'api/medicines.php',
+        method: 'GET',
+        data: { search: searchTerm, limit: 50 },
+        dataType: 'json',
+        success: function(data) {
+            loadingState.style.display = 'none';
+            
+            // Handle new API response format
+            let medicines = [];
+            if (data.success && data.medicines) {
+                medicines = data.medicines;
+            } else if (Array.isArray(data)) {
+                medicines = data;
+            }
+            
+            // Only show "No medicines found" if we actually searched and found nothing
+            if (medicines.length === 0) {
+                if (searchTerm && searchTerm.trim().length > 0) {
+                    // Only show no results message when user has searched for something
+                    noResults.style.display = 'block';
+                    document.getElementById('no-results').innerHTML = `
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No medicines found</h4>
+                        <p class="text-muted">Try adjusting your search terms or browse our categories</p>
+                        <a href="search.html" class="btn btn-primary">Browse All Medicines</a>
+                    `;
+                } else {
+                    // If no search term, hide no results and show all medicines
+                    noResults.style.display = 'none';
+                }
+            } else {
+                noResults.style.display = 'none';
+                renderMedicines(medicines);
+                document.getElementById('results-count').textContent = 
+                    `Showing ${medicines.length} medicine(s)${searchTerm ? ` matching "${searchTerm}"` : ''}`;
+            }
+        },
+        error: function(xhr, status, error) {
+            loadingState.style.display = 'none';
+            console.error('Search error:', error);
+            noResults.style.display = 'block';
+            document.getElementById('no-results').innerHTML = `
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h4 class="text-muted">Search Error</h4>
+                <p class="text-muted">Unable to load medicines. Please try again later.</p>
+            `;
+        }
+    });
+}
+
+// Render medicines based on current view
+function renderMedicines(medicines = []) {
+    const medicineList = document.getElementById('medicine-list');
+    
+    if (medicines.length === 0) return;
+    
+    const html = medicines.map(medicine => {
+        if (currentView === 'grid') {
+            return `
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 border-0 shadow-sm medicine-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title fw-bold mb-0">${medicine.name}</h6>
+                                <span class="badge bg-primary">${medicine.category || 'General'}</span>
+                            </div>
+                            <small class="text-muted">${medicine.generic || 'Generic Medicine'}</small>
+                            <p class="card-text mt-2">${medicine.description || 'Quality medicine for your health needs'}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="text-primary mb-0">$${parseFloat(medicine.price).toFixed(2)}</h5>
+                                <small class="text-success">Stock: ${medicine.quantity || 0}</small>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <div class="input-group" style="max-width: 120px;">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQty(${medicine.id})">-</button>
+                                    <input type="number" class="form-control form-control-sm text-center" id="qty-${medicine.id}" value="1" min="1" max="${medicine.quantity || 0}">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty(${medicine.id})">+</button>
+                                </div>
+                                <button class="btn btn-primary btn-sm flex-fill" onclick="addMedicineToCart(${medicine.id}, '${medicine.name.replace(/'/g, "\\'")}', ${medicine.price})">
+                                    <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="col-12 mb-3">
+                    <div class="card border-0 shadow-sm medicine-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-1">${medicine.name}</h6>
+                                    <small class="text-muted">${medicine.generic || 'Generic Medicine'}</small>
+                                    <p class="mb-0 mt-1">${medicine.description || 'Quality medicine for your health needs'}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="badge bg-primary">${medicine.category || 'General'}</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <h5 class="text-primary mb-0">$${parseFloat(medicine.price).toFixed(2)}</h5>
+                                    <small class="${medicine.quantity > 0 ? (medicine.quantity <= 10 ? 'text-warning' : 'text-success') : 'text-danger'}">
+                                        Stock: ${medicine.quantity || 0}
+                                        ${medicine.quantity <= 0 ? ' (Out of Stock)' : medicine.quantity <= 10 ? ' (Low Stock)' : ''}
+                                    </small>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group mb-2" style="max-width: 100px;">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQty(${medicine.id})" ${medicine.quantity <= 0 ? 'disabled' : ''}>-</button>
+                                        <input type="number" class="form-control form-control-sm text-center" id="qty-${medicine.id}" 
+                                               value="1" min="1" max="${medicine.quantity || 0}" ${medicine.quantity <= 0 ? 'disabled' : ''}>
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty(${medicine.id})" ${medicine.quantity <= 0 ? 'disabled' : ''}>+</button>
+                                    </div>
+                                    <button class="btn ${medicine.quantity > 0 ? 'btn-primary' : 'btn-secondary'} btn-sm w-100" 
+                                            onclick="addMedicineToCart(${medicine.id}, '${medicine.name.replace(/'/g, "\\'")}', ${medicine.price})"
+                                            ${medicine.quantity <= 0 ? 'disabled' : ''}>
+                                        <i class="fas fa-cart-plus me-1"></i>${medicine.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }).join('');
+    
+    medicineList.innerHTML = html;
+}
+
+// Add to cart functionality with quantity and stock validation
+function addMedicineToCart(medicineId, medicineName, price) {
+    const qtyInput = document.getElementById('qty-' + medicineId);
+    const quantity = parseInt(qtyInput.value) || 1;
+    const maxStock = parseInt(qtyInput.max) || 0;
+    
+    // Validate quantity against stock
+    if (quantity > maxStock) {
+        showNotification(`Only ${maxStock} units available in stock!`, 'warning');
+        qtyInput.value = maxStock;
+        return;
+    }
+    
+    if (maxStock <= 0) {
+        showNotification('This medicine is out of stock!', 'warning');
+        return;
+    }
+    
+    // Add to cart using the global addToCartWithQuantity function
+    addToCartWithQuantity(medicineId, medicineName, price, 'default-medicine.jpg');
+    
+    // Reset quantity to 1
+    qtyInput.value = 1;
+    
+    // Show success notification
+    const message = quantity > 1 ? 
+        `${quantity} x ${medicineName} added to cart!` : 
+        `${medicineName} added to cart!`;
+    showNotification(message, 'success');
+}
+
+// Quantity control functions with stock validation
+function increaseQty(medicineId) {
+    const qtyInput = document.getElementById('qty-' + medicineId);
+    const currentQty = parseInt(qtyInput.value) || 1;
+    const maxQty = parseInt(qtyInput.max) || 0;
+    
+    if (currentQty < maxQty) {
+        qtyInput.value = currentQty + 1;
+    } else {
+        showNotification(`Maximum stock available: ${maxQty}`, 'warning');
+    }
+}
+
+function decreaseQty(medicineId) {
+    const qtyInput = document.getElementById('qty-' + medicineId);
+    const currentQty = parseInt(qtyInput.value) || 1;
+    
+    if (currentQty > 1) {
+        qtyInput.value = currentQty - 1;
+    }
+}
+
+// Legacy add to cart function (for compatibility)
+function addToCart(medicineId) {
+    // Update cart count
+    const cartCount = document.getElementById('cart-count');
+    const currentCount = parseInt(cartCount.textContent);
+    cartCount.textContent = currentCount + 1;
+    
+    // Show success message
+    showNotification('Medicine added to cart!', 'success');
+}
+
+// Show notification helper
+function showNotification(message = 'Done', type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 p-3';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <div class="toast show" role="alert">
+            <div class="toast-header">
+                <i class="${type === 'success' ? 'fas fa-check-circle text-success' : 'fas fa-exclamation-triangle text-warning'} me-2"></i>
+                <strong class="me-auto">${type === 'success' ? 'Success' : 'Notice'}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Initialize search on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Trigger initial search if there's a search term
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('search');
+    if (searchTerm) {
+        document.getElementById('medicine-search-input').value = searchTerm;
+        performSearch();
+    }
+    
+    // Initialize autocomplete
+    initializeMainSearchAutocomplete();
+});
+
+// Autocomplete functionality for main search
+function initializeMainSearchAutocomplete() {
+    const searchInput = document.getElementById('medicine-search-input');
+    const suggestionsContainer = document.getElementById('main-search-suggestions');
+    let searchTimeout;
+    let currentFocus = -1;
+    
+    if (!searchInput || !suggestionsContainer) return;
+    
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        clearTimeout(searchTimeout);
+        
+        if (query.length < 2) {
+            hideSuggestions();
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            fetchSuggestions(query);
+        }, 300);
+    });
+    
+    searchInput.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            if (currentFocus >= suggestions.length) currentFocus = 0;
+            setActiveItem(suggestions);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = suggestions.length - 1;
+            setActiveItem(suggestions);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (currentFocus >= 0 && suggestions[currentFocus]) {
+                suggestions[currentFocus].click();
+            } else {
+                performSearch();
+            }
+        } else if (e.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+    
+    function fetchSuggestions(query) {
+        showLoadingSuggestions();
+        
+        fetch(`modules/medicines/suggestions-api.php?q=${encodeURIComponent(query)}&type=both&limit=10`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.suggestions.length > 0) {
+                    displaySuggestions(data.suggestions);
+                } else {
+                    showNoResults();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                hideSuggestions();
+            });
+    }
+    
+    function displaySuggestions(suggestions) {
+        let html = '';
+        
+        suggestions.forEach((suggestion, index) => {
+            const iconClass = suggestion.type === 'medicine' ? 'fas fa-pills' : 'fas fa-tags';
+            const rightContent = suggestion.type === 'medicine' 
+                ? `<span class="suggestion-price">$${parseFloat(suggestion.price || 0).toFixed(2)}</span>`
+                : `<span class="suggestion-count">${suggestion.count}</span>`;
+            
+            html += `
+                <div class="suggestion-item" data-type="${suggestion.type}" data-name="${suggestion.name}" data-index="${index}">
+                    <div class="suggestion-main">
+                        <div class="suggestion-icon">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div class="suggestion-text">
+                            <div class="suggestion-name">${suggestion.name}</div>
+                            <div class="suggestion-category">${suggestion.type === 'medicine' ? suggestion.category : 'Category'}</div>
+                        </div>
+                    </div>
+                    ${rightContent}
+                </div>
+            `;
+        });
+        
+        suggestionsContainer.innerHTML = html;
+        suggestionsContainer.style.display = 'block';
+        currentFocus = -1;
+        
+        // Add click handlers
+        const items = suggestionsContainer.querySelectorAll('.suggestion-item');
+        items.forEach(item => {
+            item.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const name = this.dataset.name;
+                
+                searchInput.value = name;
+                hideSuggestions();
+                
+                if (type === 'medicine') {
+                    searchByName(name);
+                } else {
+                    searchByCategory(name);
+                }
+            });
+        });
+    }
+    
+    function showLoadingSuggestions() {
+        suggestionsContainer.innerHTML = `
+            <div class="suggestions-loading">
+                <i class="fas fa-spinner fa-spin me-2"></i>Searching medicines...
+            </div>
+        `;
+        suggestionsContainer.style.display = 'block';
+    }
+    
+    function showNoResults() {
+        suggestionsContainer.innerHTML = `
+            <div class="suggestions-no-results">
+                <i class="fas fa-search me-2"></i>No medicines found
+            </div>
+        `;
+        suggestionsContainer.style.display = 'block';
+    }
+    
+    function hideSuggestions() {
+        suggestionsContainer.style.display = 'none';
+        currentFocus = -1;
+    }
+    
+    function setActiveItem(suggestions) {
+        suggestions.forEach((item, index) => {
+            item.classList.toggle('active', index === currentFocus);
+        });
+    }
+}
+
+// Search by specific medicine name
+function searchByName(medicineName) {
+    performSearch(medicineName);
+}
+
+// Search by category
+function searchByCategory(category) {
+    // Update filters
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+        tag.classList.remove('active');
+    });
+    
+    // Add active class to matching filter tag if exists
+    const matchingTag = document.querySelector(`[data-filter="${category.toLowerCase()}"]`);
+    if (matchingTag) {
+        matchingTag.classList.add('active');
+    }
+    
+    performSearch('', category);
+}
+
+// Search button event listener
+document.getElementById('search-btn').addEventListener('click', performSearch);
+
+// Enter key search
+document.getElementById('medicine-search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
+</script>
+
+<style>
+.filter-tag {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-tag:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+.filter-tag.active {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Autocomplete suggestions dropdown */
+.suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.suggestion-item:hover, .suggestion-item.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+    color: var(--primary-color);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 10px 10px;
+}
+
+.suggestion-main {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.suggestion-icon {
+    width: 30px;
+    height: 30px;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 12px;
+}
+
+.suggestion-text {
+    flex: 1;
+}
+
+.suggestion-name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.suggestion-category {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.suggestion-price {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 14px;
+}
+
+.suggestion-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Loading indicator for suggestions */
+.suggestions-loading {
+    padding: 16px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.suggestions-loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* No results state */
+.suggestions-no-results {
+    padding: 16px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.medicine-card {
+    transition: all 0.3s ease;
+}
+
+.medicine-card {
+    transition: none !important;
+}
+
+.medicine-card:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+}
+
+.toast {
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+</style>
+</body>
+</html>

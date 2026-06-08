@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .endpoint {
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .status.success {
+            background: #4CAF50;
+            color: white;
+        }
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+        .status.loading {
+            background: #FF9800;
+            color: white;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .summary {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Dashboard API Test Suite</h1>
+
+    <div class="summary" id="summary">
+        <strong>Tests Status:</strong> Ready to run
+    </div>
+
+    <button onclick="testAllEndpoints()">🚀 Test All Endpoints</button>
+    <button onclick="clearResults()">🧹 Clear Results</button>
+
+    <div class="test-section" id="test-stats">
+        <h2>1. Dashboard Statistics</h2>
+        <div class="endpoint">GET /api/dashboard/stats</div>
+        <button onclick="testEndpoint('stats')">Test This Endpoint</button>
+        <div class="status loading" id="status-stats">Not tested</div>
+        <pre id="result-stats">Click "Test This Endpoint" to run</pre>
+    </div>
+
+    <div class="test-section" id="test-sales-chart">
+        <h2>2. Sales Chart Data</h2>
+        <div class="endpoint">GET /api/dashboard/sales-chart?days=7</div>
+        <button onclick="testEndpoint('sales-chart')">Test This Endpoint</button>
+        <div class="status loading" id="status-sales-chart">Not tested</div>
+        <pre id="result-sales-chart">Click "Test This Endpoint" to run</pre>
+    </div>
+
+    <div class="test-section" id="test-top-medicines">
+        <h2>3. Top Selling Medicines</h2>
+        <div class="endpoint">GET /api/dashboard/top-medicines?limit=5&period=month</div>
+        <button onclick="testEndpoint('top-medicines')">Test This Endpoint</button>
+        <div class="status loading" id="status-top-medicines">Not tested</div>
+        <pre id="result-top-medicines">Click "Test This Endpoint" to run</pre>
+    </div>
+
+    <div class="test-section" id="test-recent-sales">
+        <h2>4. Recent Sales</h2>
+        <div class="endpoint">GET /api/dashboard/recent-sales?limit=5</div>
+        <button onclick="testEndpoint('recent-sales')">Test This Endpoint</button>
+        <div class="status loading" id="status-recent-sales">Not tested</div>
+        <pre id="result-recent-sales">Click "Test This Endpoint" to run</pre>
+    </div>
+
+    <div class="test-section" id="test-low-stock">
+        <h2>5. Low Stock Items</h2>
+        <div class="endpoint">GET /api/dashboard/low-stock?threshold=20</div>
+        <button onclick="testEndpoint('low-stock')">Test This Endpoint</button>
+        <div class="status loading" id="status-low-stock">Not tested</div>
+        <pre id="result-low-stock">Click "Test This Endpoint" to run</pre>
+    </div>
+
+    <script>
+        const endpoints = {
+            'stats': '/api/dashboard/stats',
+            'sales-chart': '/api/dashboard/sales-chart?days=7',
+            'top-medicines': '/api/dashboard/top-medicines?limit=5&period=month',
+            'recent-sales': '/api/dashboard/recent-sales?limit=5',
+            'low-stock': '/api/dashboard/low-stock?threshold=20'
+        };
+
+        let testResults = {
+            passed: 0,
+            failed: 0,
+            total: 0
+        };
+
+        async function testEndpoint(name) {
+            const statusEl = document.getElementById(`status-${name}`);
+            const resultEl = document.getElementById(`result-${name}`);
+
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status loading';
+            resultEl.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(endpoints[name]);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    statusEl.textContent = '✅ Success';
+                    statusEl.className = 'status success';
+                    resultEl.textContent = JSON.stringify(data, null, 2);
+                    return true;
+                } else {
+                    statusEl.textContent = '❌ Failed';
+                    statusEl.className = 'status error';
+                    resultEl.textContent = `Error: ${JSON.stringify(data, null, 2)}`;
+                    return false;
+                }
+            } catch (error) {
+                statusEl.textContent = '❌ Error';
+                statusEl.className = 'status error';
+                resultEl.textContent = `Exception: ${error.message}\n\nMake sure Laravel server is running:\nphp artisan serve`;
+                return false;
+            }
+        }
+
+        async function testAllEndpoints() {
+            testResults = { passed: 0, failed: 0, total: 5 };
+
+            for (const name of Object.keys(endpoints)) {
+                const success = await testEndpoint(name);
+                if (success) {
+                    testResults.passed++;
+                } else {
+                    testResults.failed++;
+                }
+                // Small delay between tests
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summaryEl = document.getElementById('summary');
+            const percentage = Math.round((testResults.passed / testResults.total) * 100);
+
+            summaryEl.innerHTML = `
+                <strong>Tests Completed:</strong><br>
+                ✅ Passed: ${testResults.passed}<br>
+                ❌ Failed: ${testResults.failed}<br>
+                📊 Success Rate: ${percentage}%
+            `;
+
+            if (testResults.passed === testResults.total) {
+                summaryEl.style.background = '#c8e6c9';
+                summaryEl.innerHTML += '<br><br>🎉 All tests passed! Dashboard is working correctly.';
+            } else if (testResults.failed === testResults.total) {
+                summaryEl.style.background = '#ffcdd2';
+                summaryEl.innerHTML += '<br><br>⚠️ All tests failed. Please check if Laravel server is running.';
+            } else {
+                summaryEl.style.background = '#fff9c4';
+                summaryEl.innerHTML += '<br><br>⚠️ Some tests failed. Check individual results above.';
+            }
+        }
+
+        function clearResults() {
+            Object.keys(endpoints).forEach(name => {
+                const statusEl = document.getElementById(`status-${name}`);
+                const resultEl = document.getElementById(`result-${name}`);
+
+                statusEl.textContent = 'Not tested';
+                statusEl.className = 'status loading';
+                resultEl.textContent = 'Click "Test This Endpoint" to run';
+            });
+
+            testResults = { passed: 0, failed: 0, total: 0 };
+            const summaryEl = document.getElementById('summary');
+            summaryEl.innerHTML = '<strong>Tests Status:</strong> Ready to run';
+            summaryEl.style.background = '#e3f2fd';
+        }
+
+        // Auto-test on page load (optional)
+        // window.addEventListener('DOMContentLoaded', testAllEndpoints);
+    </script>
+</body>
+</html>

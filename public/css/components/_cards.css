@@ -1,0 +1,180 @@
+/* Enhanced Card Styles with Vibrant Gradients */
+.card {
+    background: var(--card-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal) var(--ease-in-out);
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(15px);
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: var(--shadow-2xl);
+    border-color: rgba(13, 148, 136, 0.4);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--primary-gradient);
+    opacity: 0;
+    transition: all var(--transition-normal) ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+    height: 6px;
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 25%, #14b8a6 50%, #2dd4bf 75%, #5eead4 100%);
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.5);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: all 0.8s ease;
+    z-index: 0;
+}
+
+.card:hover::after {
+    left: 100%;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(20, 184, 166, 0.08), rgba(45, 212, 191, 0.08));
+    border-bottom: 1px solid rgba(13, 148, 136, 0.1);
+    padding: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+}
+
+.card-body {
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.card-footer {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    border-top: 1px solid rgba(102, 126, 234, 0.1);
+    padding: 1rem 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced Feature Cards */
+.feature-icon .rounded-circle {
+    transition: all var(--transition-normal) ease;
+    position: relative;
+    overflow: hidden;
+    background-size: 200% 200%;
+    animation: iconGradient 4s ease-in-out infinite;
+}
+
+.feature-icon .rounded-circle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), transparent, rgba(255, 255, 255, 0.1));
+    opacity: 0;
+    transition: all var(--transition-normal) ease;
+}
+
+.card:hover .feature-icon .rounded-circle {
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 0 40px rgba(102, 126, 234, 0.6);
+    animation: none;
+    background-position: 100% 50%;
+}
+
+.card:hover .feature-icon .rounded-circle::before {
+    opacity: 1;
+    animation: shine 0.8s ease-in-out;
+}
+
+/* Category Cards Enhancement */
+.category-card {
+    transition: all var(--transition-normal) ease;
+    background: var(--card-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--card-hover-gradient);
+    transition: all 0.5s ease;
+    z-index: 0;
+}
+
+.category-card:hover::before {
+    left: 0;
+}
+
+.category-card .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+.category-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    background: var(--card-hover-gradient);
+    box-shadow: var(--shadow-xl);
+    border-color: rgba(102, 126, 234, 0.4);
+}
+
+.category-card .category-icon .rounded-circle {
+    transition: all var(--transition-normal) ease;
+    background-size: 200% 200%;
+    animation: categoryIconFloat 4s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card:hover .category-icon .rounded-circle {
+    animation: none;
+    transform: scale(1.2) rotate(15deg);
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.7);
+    background-position: 100% 50%;
+}
+
+.category-card .category-icon .rounded-circle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: all var(--transition-normal) ease;
+}
+
+.category-card:hover .category-icon .rounded-circle::after {
+    opacity: 1;
+    animation: pulse 1s ease-in-out infinite;
+}

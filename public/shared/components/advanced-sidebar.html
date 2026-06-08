@@ -1,0 +1,56 @@
+<!-- Advanced Sidebar Component -->
+<aside class="modern-sidebar" id="modernSidebar">
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-clinic-medical"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <h4>Muneeb Drug House</h4>
+            <p>Pharmacy Management</p>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&size=100" alt="User" id="sidebarUserAvatar">
+            <span class="user-status online"></span>
+        </div>
+        <div class="user-info">
+            <p class="user-name" id="sidebarUserName">Admin User</p>
+            <p class="user-role" id="sidebarUserRole">Administrator</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <p class="nav-section-title">Main Menu</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../dashboard/index.html" class="nav-link" data-tooltip="Dashboard"><span class="nav-icon"><i class="fas fa-home"></i></span><span class="nav-text">Dashboard</span></a></li>
+            <li class="nav-item"><a href="../medicines/index.html" class="nav-link" data-tooltip="Medicines"><span class="nav-icon"><i class="fas fa-pills"></i></span><span class="nav-text">Medicines</span></a></li>
+            <li class="nav-item"><a href="../customers/index.html" class="nav-link" data-tooltip="Customers"><span class="nav-icon"><i class="fas fa-users"></i></span><span class="nav-text">Customers</span></a></li>
+            <li class="nav-item"><a href="../orders/index.html" class="nav-link" data-tooltip="Orders"><span class="nav-icon"><i class="fas fa-shopping-cart"></i></span><span class="nav-text">Orders</span></a></li>
+            <li class="nav-item"><a href="../billing/index.html" class="nav-link" data-tooltip="Billing"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span><span class="nav-text">Billing</span></a></li>
+            <li class="nav-item"><a href="../records/index.html" class="nav-link" data-tooltip="Records"><span class="nav-icon"><i class="fas fa-receipt"></i></span><span class="nav-text">Bill Records</span></a></li>
+        </ul>
+        <p class="nav-section-title">Inventory</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../stock/index.html" class="nav-link" data-tooltip="Stock"><span class="nav-icon"><i class="fas fa-boxes-stacked"></i></span><span class="nav-text">Stock Management</span></a></li>
+            <li class="nav-item"><a href="../reports/index.html" class="nav-link" data-tooltip="Reports"><span class="nav-icon"><i class="fas fa-chart-line"></i></span><span class="nav-text">Reports</span></a></li>
+        </ul>
+        <p class="nav-section-title">AI Tools</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../ai/index.html" class="nav-link" data-tooltip="AI Intelligence"><span class="nav-icon"><i class="fas fa-robot"></i></span><span class="nav-text">AI Intelligence</span><span class="badge info">AI</span></a></li>
+        </ul>
+        <p class="nav-section-title">Settings</p>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../settings/index.html" class="nav-link" data-tooltip="Settings"><span class="nav-icon"><i class="fas fa-cog"></i></span><span class="nav-text">Settings</span></a></li>
+            <li class="nav-item"><a href="../backup/index.html" class="nav-link" data-tooltip="Backup"><span class="nav-icon"><i class="fas fa-database"></i></span><span class="nav-text">Backup</span></a></li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" class="nav-link logout-link" id="sidebarLogout" data-tooltip="Logout"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span><span class="nav-text">Logout</span></a>
+    </div>
+</aside>
+
+<button class="mobile-sidebar-toggle" id="mobileSidebarToggle"><i class="fas fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

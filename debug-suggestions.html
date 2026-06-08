@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Suggestions API</title>
+</head>
+<body>
+    <h1>Debug Suggestions API</h1>
+    <input type="text" id="testInput" placeholder="Type medicine name...">
+    <button onclick="testSuggestions()">Test API</button>
+    <div id="results"></div>
+
+    <script>
+        function testSuggestions() {
+            const query = document.getElementById('testInput').value;
+            const resultsDiv = document.getElementById('results');
+
+            if (!query) {
+                resultsDiv.innerHTML = '<p style="color: red;">Please enter a search term</p>';
+                return;
+            }
+
+            console.log('Testing API with query:', query);
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+
+            fetch(`http://127.0.0.1:8000/modules/medicines/suggestions-api.php?q=${encodeURIComponent(query)}&type=both&limit=10`)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Raw response:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('Parsed response:', data);
+                        resultsDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        resultsDiv.innerHTML = `<p style="color: red;">Invalid JSON response:</p><pre>${text}</pre>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+
+        // Test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, testing API...');
+            document.getElementById('testInput').value = 'para';
+            testSuggestions();
+        });
+    </script>
+</body>
+</html>

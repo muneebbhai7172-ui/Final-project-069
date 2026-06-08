@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Check - Muneeb Drug House</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+        .check-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .check-item:last-child {
+            border-bottom: none;
+        }
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+        }
+        .alert {
+            border-radius: 10px;
+        }
+        .protocol-info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .current-url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    <i class="fas fa-check-circle me-2"></i>
+                    System Status Check
+                </h3>
+                <small>Muneeb Drug House - Pre-flight Diagnostics</small>
+            </div>
+            <div class="card-body">
+                <div class="protocol-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Current Access Method:</h6>
+                    <div class="current-url" id="current-url">Checking...</div>
+                    <div id="protocol-status" class="mt-2"></div>
+                </div>
+
+                <h5 class="mt-4 mb-3">System Checks:</h5>
+
+                <div class="check-item">
+                    <span><i class="fas fa-network-wired me-2"></i>Access Method</span>
+                    <span class="status-badge status-loading" id="check-protocol">Checking...</span>
+                </div>
+
+                <div class="check-item">
+                    <span><i class="fas fa-server me-2"></i>Web Server</span>
+                    <span class="status-badge status-loading" id="check-server">Checking...</span>
+                </div>
+
+                <div class="check-item">
+                    <span><i class="fas fa-code me-2"></i>JavaScript Files</span>
+                    <span class="status-badge status-loading" id="check-js">Checking...</span>
+                </div>
+
+                <div class="check-item">
+                    <span><i class="fas fa-shield-alt me-2"></i>CSRF Token</span>
+                    <span class="status-badge status-loading" id="check-csrf">Checking...</span>
+                </div>
+
+                <div class="check-item">
+                    <span><i class="fas fa-plug me-2"></i>API Client</span>
+                    <span class="status-badge status-loading" id="check-api">Checking...</span>
+                </div>
+
+                <div id="recommendations" class="mt-4"></div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg" onclick="runChecks()">
+                        <i class="fas fa-sync-alt me-2"></i>Run Checks
+                    </button>
+                    <a href="test-api-connection.html" class="btn btn-success btn-lg ms-2">
+                        <i class="fas fa-vial me-2"></i>API Tests
+                    </a>
+                    <a href="modules/auth/login.html" class="btn btn-info btn-lg ms-2">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(elementId, status, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = 'status-badge status-' + status;
+        }
+
+        function showRecommendation(type, message) {
+            const rec = document.getElementById('recommendations');
+            const alertClass = type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'success';
+            rec.innerHTML += `
+                <div class="alert alert-${alertClass}">
+                    <strong>${type === 'error' ? '❌ Error' : type === 'warning' ? '⚠️ Warning' : '✅ Success'}:</strong> ${message}
+                </div>
+            `;
+        }
+
+        function runChecks() {
+            document.getElementById('recommendations').innerHTML = '';
+
+            // Check 1: Protocol
+            const url = window.location.href;
+            const protocol = window.location.protocol;
+            document.getElementById('current-url').textContent = url;
+
+            if (protocol === 'file:') {
+                updateStatus('check-protocol', 'error', '❌ File Protocol');
+                document.getElementById('protocol-status').innerHTML = `
+                    <div class="alert alert-danger mt-2">
+                        <strong>❌ WRONG!</strong> You're opening the file directly. This won't work!
+                    </div>
+                `;
+                showRecommendation('error', 'You MUST use a web server. Open: <code>http://localhost/waqar/system-check.html</code>');
+            } else if (protocol === 'http:' || protocol === 'https:') {
+                updateStatus('check-protocol', 'success', '✅ HTTP/HTTPS');
+                document.getElementById('protocol-status').innerHTML = `
+                    <div class="alert alert-success mt-2">
+                        <strong>✅ CORRECT!</strong> You're using a web server.
+                    </div>
+                `;
+                showRecommendation('success', 'Access method is correct! You can proceed with testing.');
+            }
+
+            // Check 2: Web Server
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                updateStatus('check-server', 'success', '✅ Running');
+            } else if (protocol === 'file:') {
+                updateStatus('check-server', 'error', '❌ Not Running');
+                showRecommendation('error', 'Start XAMPP or run: <code>php artisan serve</code>');
+            } else {
+                updateStatus('check-server', 'success', '✅ Running');
+            }
+
+            // Check 3: JavaScript Files
+            if (typeof window.getCsrfToken !== 'undefined') {
+                updateStatus('check-js', 'success', '✅ Loaded');
+            } else {
+                updateStatus('check-js', 'error', '❌ Not Loaded');
+                showRecommendation('error', 'utils.js is not loaded. Check file paths.');
+            }
+
+            // Check 4: CSRF Token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (csrfToken && csrfToken.content) {
+                updateStatus('check-csrf', 'success', '✅ Present');
+            } else {
+                updateStatus('check-csrf', 'error', '❌ Missing');
+                showRecommendation('warning', 'CSRF token not found. Some API calls may fail.');
+            }
+
+            // Check 5: API Client
+            if (typeof window.api !== 'undefined') {
+                updateStatus('check-api', 'success', '✅ Available');
+                showRecommendation('success', 'All systems ready! Click "API Tests" to test backend connection.');
+            } else {
+                updateStatus('check-api', 'error', '❌ Not Available');
+                showRecommendation('error', 'api-client.js is not loaded. Check file paths and access method.');
+            }
+        }
+
+        // Auto-run on page load
+        window.addEventListener('DOMContentLoaded', runChecks);
+    </script>
+
+    <script src="js/utils.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/crud-helpers.js"></script>
+</body>
+</html>

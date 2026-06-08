@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>Inventory & Stock - Muneeb Drug House</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Admin Theme CSS -->
+    <link rel="stylesheet" href="../css/admin-theme.css">
+    <link rel="stylesheet" href="../shared/css/advanced-sidebar.css?v=2.0">
+
+    <style>
+        /* Page Specific Advanced Styles */
+        .admin-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f4f8 50%, #f5f3ff 100%);
+        }
+
+        .modern-sidebar.collapsed ~ .admin-content {
+            margin-left: 80px;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-content {
+                margin-left: 0 !important;
+                padding: 20px;
+            }
+        }
+
+        .page-header-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 24px;
+            padding: 30px 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.6s ease;
+        }
+
+        .page-header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card-modern {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .stat-card-modern:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+
+        .stat-card-modern::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            opacity: 0.1;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card-modern.success::after { background: #10b981; }
+        .stat-card-modern.warning::after { background: #f59e0b; }
+        .stat-card-modern.danger::after { background: #ef4444; }
+        .stat-card-modern.info::after { background: #3b82f6; }
+
+        .stat-icon-wrapper {
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-icon-wrapper.success {
+            background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
+            color: #10b981;
+        }
+
+        .stat-icon-wrapper.warning {
+            background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05));
+            color: #f59e0b;
+        }
+
+        .stat-icon-wrapper.danger {
+            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05));
+            color: #ef4444;
+        }
+
+        .stat-icon-wrapper.info {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+            color: #3b82f6;
+        }
+
+        .stat-value-large {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .filter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+            animation: fadeInUp 0.5s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modern-input {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+
+        .modern-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+            outline: none;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease 0.3s both;
+        }
+
+        .table-header-modern {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table-modern {
+            margin: 0;
+        }
+
+        .table-modern thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        .table-modern th {
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            padding: 16px 20px;
+            border: none;
+        }
+
+        .table-modern td {
+            padding: 18px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table-modern tbody tr:hover {
+            background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+        }
+
+        .table-modern tbody tr:hover td {
+            color: #1e293b;
+        }
+
+        .btn-modern {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-modern-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+        }
+
+        .btn-modern-primary:hover {
+            box-shadow: 0 8px 25px rgba(59,130,246,0.4);
+            color: white;
+        }
+
+        .btn-modern-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+        }
+
+        .btn-modern-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+        }
+
+        .action-btn-modern {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn-modern:hover {
+            transform: scale(1.1);
+        }
+
+        .action-btn-edit {
+            background: rgba(59,130,246,0.1);
+            color: #3b82f6;
+        }
+
+        .action-btn-delete {
+            background: rgba(239,68,68,0.1);
+            color: #ef4444;
+        }
+
+        .stock-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stock-badge.in-stock {
+            background: rgba(16,185,129,0.1);
+            color: #10b981;
+        }
+
+        .stock-badge.low-stock {
+            background: rgba(245,158,11,0.1);
+            color: #f59e0b;
+        }
+
+        .stock-badge.out-of-stock {
+            background: rgba(239,68,68,0.1);
+            color: #ef4444;
+        }
+
+        /* Animation delays for staggered effect */
+        .stat-card-modern:nth-child(1) { animation: fadeInUp 0.5s ease 0.1s both; }
+        .stat-card-modern:nth-child(2) { animation: fadeInUp 0.5s ease 0.2s both; }
+        .stat-card-modern:nth-child(3) { animation: fadeInUp 0.5s ease 0.3s both; }
+        .stat-card-modern:nth-child(4) { animation: fadeInUp 0.5s ease 0.4s both; }
+
+        /* Modal Enhancements */
+        .modal-content {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Sidebar -->
+<aside class="modern-sidebar">
+    <button class="sidebar-toggle">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-pills"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <h4>Muneeb Drug House</h4>
+            <p>Admin Panel</p>
+        </div>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=Admin+User&background=667eea&color=fff&bold=true" alt="Admin">
+            <span class="user-status"></span>
+        </div>
+        <div class="user-info">
+            <p class="user-name">Admin User</p>
+            <p class="user-role">Administrator</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Main Menu</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard">
+                    <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item nav-dropdown">
+                <a href="#" class="nav-link" data-tooltip="Medicines">
+                    <span class="nav-icon"><i class="fas fa-pills"></i></span>
+                    <span class="nav-text">Medicines</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item">
+                        <a href="modern-medicines.html" class="nav-link" data-tooltip="Search Medicines">
+                            <span class="nav-icon"><i class="fas fa-search"></i></span>
+                            <span class="nav-text">Search Medicines</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="medicine-import.html" class="nav-link" data-tooltip="Import Excel">
+                            <span class="nav-icon"><i class="fas fa-file-excel"></i></span>
+                            <span class="nav-text">Import Excel</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="orders.html" class="nav-link" data-tooltip="Orders">
+                    <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <span class="nav-text">Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-customers.html" class="nav-link" data-tooltip="Customers">
+                    <span class="nav-icon"><i class="fas fa-users"></i></span>
+                    <span class="nav-text">Customers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="stock-check.html" class="nav-link active" data-tooltip="Stock">
+                    <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+                    <span class="nav-text">Stock</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-billing.html" class="nav-link" data-tooltip="Billing">
+                    <span class="nav-icon"><i class="fas fa-receipt"></i></span>
+                    <span class="nav-text">Billing</span>
+                </a>
+            </li>
+        </ul>
+        <div class="nav-section-title">Reports & Settings</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="modern-reports.html" class="nav-link" data-tooltip="Reports">
+                    <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                    <span class="nav-text">Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="backup.html" class="nav-link" data-tooltip="Backup">
+                    <span class="nav-icon"><i class="fas fa-database"></i></span>
+                    <span class="nav-text">Backup</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link" data-tooltip="Settings">
+                    <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout(); return false;" class="nav-link" data-tooltip="Logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; margin: 10px; border-radius: 10px;">
+            <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+            <span class="nav-text">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to logout?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex">
+    <!-- Main Content -->
+    <div class="admin-content flex-grow-1">
+        <!-- Top Header -->
+        <div class="page-header-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon-wrapper info" style="width: 55px; height: 55px; margin-bottom: 0;">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1 fw-bold" style="color: #1e293b;">
+                            Inventory & Stock
+                        </h1>
+                        <p class="text-muted mb-0">Monitor stock levels and manage inventory in real-time</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn-modern" style="background: white; border: 2px solid #e2e8f0; color: #475569;" id="import-excel-btn">
+                        <i class="fas fa-file-excel text-success"></i>Import
+                    </button>
+                    <button class="btn-modern btn-modern-success" id="export-stock-btn">
+                        <i class="fas fa-download"></i>Export
+                    </button>
+                    <button class="btn-modern btn-modern-warning" id="low-stock-alert-btn" data-bs-toggle="modal" data-bs-target="#low-stock-modal">
+                        <i class="fas fa-exclamation-triangle"></i>Low Stock
+                    </button>
+                    <button class="btn-modern btn-modern-primary" id="refresh-stock-btn">
+                        <i class="fas fa-sync-alt"></i>Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Summary Cards -->
+        <div class="row mb-4 g-4">
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card-modern success">
+                    <div class="stat-icon-wrapper success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-value-large" id="total-in-stock">0</div>
+                    <p class="text-muted mb-2 fw-semibold">Items In Stock</p>
+                    <span class="stock-badge in-stock">
+                        <i class="fas fa-arrow-up"></i> Available
+                    </span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card-modern warning">
+                    <div class="stat-icon-wrapper warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-value-large" id="low-stock-count">0</div>
+                    <p class="text-muted mb-2 fw-semibold">Low Stock Items</p>
+                    <span class="stock-badge low-stock">
+                        <i class="fas fa-arrow-down"></i> Need Reorder
+                    </span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card-modern danger">
+                    <div class="stat-icon-wrapper danger">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-value-large" id="out-of-stock-count">0</div>
+                    <p class="text-muted mb-2 fw-semibold">Out of Stock</p>
+                    <span class="stock-badge out-of-stock">
+                        <i class="fas fa-ban"></i> Unavailable
+                    </span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card-modern info">
+                    <div class="stat-icon-wrapper info">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value-large" id="expired-count">0</div>
+                    <p class="text-muted mb-2 fw-semibold">Expiring Soon</p>
+                    <span class="stock-badge" style="background: rgba(59,130,246,0.1); color: #3b82f6;">
+                        <i class="fas fa-calendar"></i> Within 30 days
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="filter-card">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="fas fa-filter text-primary"></i>
+                <h5 class="mb-0 fw-bold">Advanced Search & Filters</h5>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-semibold text-muted small">STOCK STATUS</label>
+                    <select class="form-select modern-input" id="stock-filter">
+                        <option value="all">All Items</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="low-stock">Low Stock (< 10)</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                        <option value="near-expiry">Near Expiry (30 days)</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-semibold text-muted small">CATEGORY</label>
+                    <select class="form-select modern-input" id="category-filter">
+                        <option value="">All Categories</option>
+                        <option value="Painkillers">Painkillers</option>
+                        <option value="Antibiotics">Antibiotics</option>
+                        <option value="Vitamins">Vitamins</option>
+                        <option value="Antihistamines">Antihistamines</option>
+                        <option value="Supplements">Supplements</option>
+                        <option value="First Aid">First Aid</option>
+                    </select>
+                </div>
+                <div class="col-lg-4 col-md-8">
+                    <label class="form-label fw-semibold text-muted small">SEARCH MEDICINE</label>
+                    <div class="position-relative">
+                        <i class="fas fa-search position-absolute" style="left: 18px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="text" class="form-control modern-input" id="stock-search" placeholder="Search by medicine name..." style="padding-left: 50px;">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 d-flex align-items-end gap-2">
+                    <button class="btn-modern btn-modern-primary flex-fill" id="apply-stock-filters-btn">
+                        <i class="fas fa-search"></i>Search
+                    </button>
+                    <button class="btn-modern" style="background: #f1f5f9; color: #64748b;" id="clear-stock-filters-btn" title="Clear filters">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Table -->
+        <div class="table-card">
+            <div class="table-header-modern d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-table text-primary"></i>
+                    <h5 class="mb-0 fw-bold">Stock Inventory</h5>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted small" id="stock-count-badge">Total: 0 items</span>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary active" data-view="table" style="border-radius: 8px 0 0 8px;">
+                            <i class="fas fa-table"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-view="grid" style="border-radius: 0 8px 8px 0;">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-modern mb-0" id="stock-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-pills me-2"></i>Medicine</th>
+                            <th><i class="fas fa-tags me-2"></i>Category</th>
+                            <th><i class="fas fa-industry me-2"></i>Manufacturer</th>
+                            <th><i class="fas fa-barcode me-2"></i>Batch</th>
+                            <th><i class="fas fa-cubes me-2"></i>Stock</th>
+                            <th><i class="fas fa-money-bill me-2"></i>Price</th>
+                            <th><i class="fas fa-calendar me-2"></i>Expiry</th>
+                            <th><i class="fas fa-calculator me-2"></i>Value</th>
+                            <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-table-body">
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-3 text-muted mb-0">Loading inventory data...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-3 border-top" style="background: #f8fafc;">
+                <div id="stock-pagination-container" class="d-flex justify-content-between align-items-center">
+                    <div id="stock-results-info" class="text-muted small">Loading...</div>
+                    <nav id="stock-pagination-nav"></nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Low Stock Alert Modal -->
+        <div class="modal fade" id="low-stock-modal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alert Dashboard
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <div>
+                                <strong>Attention Required!</strong> The following medicines are running low on stock and need immediate reordering.
+                            </div>
+                        </div>
+                        <div id="low-stock-alerts">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-warning" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Loading low stock alerts...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Close
+                        </button>
+                        <button type="button" class="btn btn-warning" onclick="location.href='modern-medicines.html'">
+                            <i class="fas fa-plus me-1"></i>Restock Items
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Stock Modal -->
+        <div class="modal fade" id="update-stock-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-edit me-2"></i>Update Stock Quantity
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Medicine Name</label>
+                            <input type="text" class="form-control" id="update-medicine-name" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Current Stock</label>
+                            <input type="number" class="form-control" id="update-current-stock" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">New Stock Quantity <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="update-new-stock" min="0" placeholder="Enter new stock quantity" required>
+                            <div class="form-text">Enter the updated stock quantity for this medicine</div>
+                        </div>
+                        <input type="hidden" id="update-medicine-id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" id="confirm-update-stock">
+                            <i class="fas fa-check me-1"></i>Update Stock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Excel Modal -->
+        <div class="modal fade" id="import-excel-modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-file-excel me-2"></i>Import Medicines from Excel
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Instructions:</strong> Upload an Excel file (.xlsx) with columns: Name, Category, Description, Price, Quantity, Manufacturer, Batch Number, Expiry Date
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="excel-file-input" class="form-label fw-bold">
+                                Select Excel File <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control" id="excel-file-input" accept=".xlsx,.xls" required>
+                            <div class="form-text">
+                                <i class="fas fa-download me-1"></i>
+                                <a href="#" id="download-template" class="text-decoration-none">Download Excel Template</a>
+                            </div>
+                        </div>
+
+                        <div id="excel-preview-section" style="display: none;">
+                            <hr>
+                            <h6 class="fw-bold">Preview Data (First 5 rows)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" id="excel-preview-table">
+                                    <thead class="table-light">
+                                        <tr id="excel-preview-header"></tr>
+                                    </thead>
+                                    <tbody id="excel-preview-body"></tbody>
+                                </table>
+                            </div>
+                            <div class="alert alert-success" id="excel-record-count"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-success" id="confirm-import-btn" disabled>
+                            <i class="fas fa-upload me-1"></i>Import Medicines
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SheetJS for Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Utility Functions -->
+<script src="../js/utils.js"></script>
+<!-- Custom JavaScript -->
+<script src="../js/stock.js"></script>
+
+<script>
+let excelData = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize stock management
+    if (window.Stock) {
+        Stock.init();
+    }
+
+    // Import Excel Button
+    const importExcelBtn = document.getElementById('import-excel-btn');
+    if (importExcelBtn) {
+        importExcelBtn.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('import-excel-modal'));
+            modal.show();
+        });
+    }
+
+    // Excel File Input Change
+    const excelFileInput = document.getElementById('excel-file-input');
+    if (excelFileInput) {
+        excelFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                readExcelFile(file);
+            }
+        });
+    }
+
+    // Confirm Import Button
+    const confirmImportBtn = document.getElementById('confirm-import-btn');
+    if (confirmImportBtn) {
+        confirmImportBtn.addEventListener('click', function() {
+            if (excelData && excelData.length > 0) {
+                importMedicines(excelData);
+            }
+        });
+    }
+
+    // Download Template
+    const downloadTemplate = document.getElementById('download-template');
+    if (downloadTemplate) {
+        downloadTemplate.addEventListener('click', function(e) {
+            e.preventDefault();
+            downloadExcelTemplate();
+        });
+    }
+});
+
+// Read Excel File
+function readExcelFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+            if (jsonData.length === 0) {
+                showError('The Excel file is empty. Please upload a file with data.');
+                return;
+            }
+
+            excelData = jsonData;
+            previewExcelData(jsonData);
+            document.getElementById('confirm-import-btn').disabled = false;
+
+        } catch (error) {
+            console.error('Error reading Excel file:', error);
+            showError('Error reading Excel file. Please make sure it is a valid Excel file.');
+        }
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
+// Preview Excel Data
+function previewExcelData(data) {
+    const previewSection = document.getElementById('excel-preview-section');
+    const headerRow = document.getElementById('excel-preview-header');
+    const bodyRows = document.getElementById('excel-preview-body');
+    const recordCount = document.getElementById('excel-record-count');
+
+    // Clear previous preview
+    headerRow.innerHTML = '';
+    bodyRows.innerHTML = '';
+
+    if (data.length === 0) return;
+
+    // Get headers from first row
+    const headers = Object.keys(data[0]);
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+
+    // Show first 5 rows
+    const previewData = data.slice(0, 5);
+    previewData.forEach(row => {
+        const tr = document.createElement('tr');
+        headers.forEach(header => {
+            const td = document.createElement('td');
+            td.textContent = row[header] || '';
+            tr.appendChild(td);
+        });
+        bodyRows.appendChild(tr);
+    });
+
+    recordCount.innerHTML = `<i class="fas fa-check-circle me-2"></i><strong>Total Records:</strong> ${data.length} medicines ready to import`;
+    previewSection.style.display = 'block';
+}
+
+// Import Medicines
+async function importMedicines(data) {
+    const confirmBtn = document.getElementById('confirm-import-btn');
+    const originalText = confirmBtn.innerHTML;
+
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Importing...';
+
+    try {
+        const response = await apiFetch('/api/medicines/bulk-import', {
+            method: 'POST',
+            body: JSON.stringify({ medicines: data })
+        });
+
+        if (response.success) {
+            showSuccess(`Successfully imported ${response.imported || data.length} medicines!`);
+
+            // Hide modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('import-excel-modal'));
+            if (modal) modal.hide();
+
+            // Reset form
+            document.getElementById('excel-file-input').value = '';
+            document.getElementById('excel-preview-section').style.display = 'none';
+            excelData = null;
+
+            // Reload stock data
+            if (window.Stock) {
+                Stock.loadStockData();
+            }
+        } else {
+            showError('Error importing medicines: ' + (response.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Import error:', error);
+        showError('Failed to import medicines. Please try again.');
+    } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = originalText;
+    }
+}
+
+// Download Excel Template
+function downloadExcelTemplate() {
+    const template = [
+        {
+            'Name': 'Aspirin 500mg',
+            'Category': 'Painkillers',
+            'Description': 'Pain reliever and fever reducer',
+            'Price': 5.99,
+            'Quantity': 100,
+            'Manufacturer': 'PharmaCorp',
+            'Batch Number': 'BATCH001',
+            'Expiry Date': '2025-12-31'
+        },
+        {
+            'Name': 'Amoxicillin 250mg',
+            'Category': 'Antibiotics',
+            'Description': 'Antibiotic for bacterial infections',
+            'Price': 12.50,
+            'Quantity': 50,
+            'Manufacturer': 'MediPharm',
+            'Batch Number': 'BATCH002',
+            'Expiry Date': '2026-06-30'
+        }
+    ];
+
+    const ws = XLSX.utils.json_to_sheet(template);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Medicines');
+    XLSX.writeFile(wb, 'medicine_import_template.xlsx');
+}
+</script>
+
+<!-- Sidebar JS -->
+<script src="../js/modern-sidebar.js"></script>
+<script src="../shared/js/sidebar-loader.js"></script>
+
+<script>
+// Logout functions
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

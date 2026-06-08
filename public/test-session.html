@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Laravel Session Test</h1>
+
+        <div class="test-section">
+            <h3>1. Test Login</h3>
+            <p>Test credentials: nearoneyt@gmail.com / (your password)</p>
+            <input type="email" id="email" placeholder="Email" value="nearoneyt@gmail.com" style="width: 250px; padding: 8px; margin-right: 10px;">
+            <input type="password" id="password" placeholder="Password" style="width: 250px; padding: 8px; margin-right: 10px;">
+            <button onclick="testLogin()">Login</button>
+            <div id="loginResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Check Authentication</h3>
+            <button onclick="checkAuth()">Check Auth Status</button>
+            <div id="authResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Session Persistence</h3>
+            <button onclick="testSessionPersistence()">Test Session</button>
+            <div id="sessionResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Check Cookies</h3>
+            <button onclick="checkCookies()">Check Cookies</button>
+            <div id="cookieResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Logout</h3>
+            <button onclick="testLogout()">Logout</button>
+            <div id="logoutResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Full Test Log</h3>
+            <pre id="fullLog"></pre>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        let logMessages = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            logMessages.push(logEntry);
+            document.getElementById('fullLog').textContent = logMessages.join('\n');
+            console.log(logEntry);
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('loginResult');
+
+            log('Testing login...', 'info');
+
+            try {
+                const response = await fetch(API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                // Log response headers
+                log('Response Headers:', 'info');
+                response.headers.forEach((value, key) => {
+                    log(`  ${key}: ${value}`, 'info');
+                });
+
+                resultDiv.style.display = 'block';
+
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `<strong>✓ Login Successful!</strong><br>
+                        User: ${data.user.username} (${data.user.email})<br>
+                        Role: ${data.user.role}<br>
+                        Session ID: ${data.debug?.session_id || 'N/A'}<br>
+                        Cookie Name: ${data.debug?.cookie_name || 'N/A'}`;
+                    log('Login successful: ' + data.user.username, 'success');
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<strong>✗ Login Failed</strong><br>${data.message}`;
+                    log('Login failed: ' + data.message, 'error');
+                }
+
+                log('Response: ' + JSON.stringify(data, null, 2), 'info');
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>✗ Error</strong><br>${error.message}`;
+                log('Login error: ' + error.message, 'error');
+            }
+        }
+
+        async function checkAuth() {
+            const resultDiv = document.getElementById('authResult');
+
+            log('Checking authentication...', 'info');
+
+            try {
+                const response = await fetch(API_BASE + '/api/auth/check', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                resultDiv.style.display = 'block';
+
+                if (data.authenticated) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `<strong>✓ Authenticated!</strong><br>
+                        User: ${data.user.username} (${data.user.email})<br>
+                        Role: ${data.user.role}`;
+                    log('User authenticated: ' + data.user.username, 'success');
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<strong>✗ Not Authenticated</strong><br>
+                        ${data.message}<br>
+                        Debug: ${JSON.stringify(data.debug || {})}`;
+                    log('Not authenticated: ' + data.message, 'error');
+                }
+
+                log('Response: ' + JSON.stringify(data, null, 2), 'info');
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>✗ Error</strong><br>${error.message}`;
+                log('Auth check error: ' + error.message, 'error');
+            }
+        }
+
+        async function testSessionPersistence() {
+            const resultDiv = document.getElementById('sessionResult');
+
+            log('Testing session persistence...', 'info');
+
+            try {
+                // First check
+                const check1 = await fetch(API_BASE + '/api/auth/check', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data1 = await check1.json();
+
+                // Wait 1 second
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Second check
+                const check2 = await fetch(API_BASE + '/api/auth/check', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data2 = await check2.json();
+
+                resultDiv.style.display = 'block';
+
+                if (data1.authenticated && data2.authenticated) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `<strong>✓ Session Persistent!</strong><br>
+                        First check: ${data1.user.username}<br>
+                        Second check: ${data2.user.username}<br>
+                        Session is working correctly!`;
+                    log('Session persistence test passed', 'success');
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<strong>✗ Session Not Persistent</strong><br>
+                        First: ${data1.authenticated ? 'Auth' : 'Not Auth'}<br>
+                        Second: ${data2.authenticated ? 'Auth' : 'Not Auth'}`;
+                    log('Session persistence test failed', 'error');
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>✗ Error</strong><br>${error.message}`;
+                log('Session test error: ' + error.message, 'error');
+            }
+        }
+
+        function checkCookies() {
+            const resultDiv = document.getElementById('cookieResult');
+            const cookies = document.cookie;
+
+            log('Checking cookies...', 'info');
+
+            resultDiv.style.display = 'block';
+
+            if (cookies) {
+                const cookieArray = cookies.split(';').map(c => c.trim());
+                const sessionCookie = cookieArray.find(c => c.startsWith('laravel_session') || c.includes('session'));
+
+                resultDiv.className = 'result ' + (sessionCookie ? 'success' : 'info');
+                resultDiv.innerHTML = `<strong>Cookies Found:</strong><br>
+                    ${cookieArray.map(c => '• ' + c).join('<br>')}<br><br>
+                    ${sessionCookie ? '✓ Laravel session cookie present!' : '⚠ No session cookie found'}`;
+                log('Cookies: ' + cookies, 'info');
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<strong>✗ No cookies found!</strong><br>This could indicate a problem with cookie storage.';
+                log('No cookies found', 'error');
+            }
+        }
+
+        async function testLogout() {
+            const resultDiv = document.getElementById('logoutResult');
+
+            log('Testing logout...', 'info');
+
+            try {
+                const response = await fetch(API_BASE + '/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                resultDiv.style.display = 'block';
+
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `<strong>✓ Logged Out Successfully!</strong><br>${data.message}`;
+                    log('Logout successful', 'success');
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<strong>✗ Logout Failed</strong><br>${data.message}`;
+                    log('Logout failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>✗ Error</strong><br>${error.message}`;
+                log('Logout error: ' + error.message, 'error');
+            }
+        }
+
+        // Initial log
+        log('Session test page loaded', 'info');
+        log('Protocol: ' + window.location.protocol, 'info');
+        log('Host: ' + window.location.host, 'info');
+
+        if (window.location.protocol === 'file:') {
+            log('WARNING: Using file:// protocol - sessions will NOT work!', 'error');
+            alert('⚠️ WARNING: You are accessing via file:// protocol.\n\nPlease access via: http://127.0.0.1:8000/test-session.html');
+        }
+    </script>
+</body>
+</html>

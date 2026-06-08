@@ -1,0 +1,16 @@
+{
+    "name": "pharmacy-system/pharmacy",
+    "description": "Pharmacy POS and Online Store",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Developer",
+            "email": "dev@example.com"
+        }
+    ],
+    "config": {
+        "disable-tls": true,
+        "secure-http": false
+    },
+    "require": {}
+}

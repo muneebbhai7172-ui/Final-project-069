@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="test-token-123">
+    <title>Simple API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f4f4f4;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Simple API Connection Test</h1>
+
+    <div class="test-section">
+        <h3>1. Check if API client is loaded</h3>
+        <button onclick="checkAPI()">Check API</button>
+        <div id="api-check" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Test Auth Check</h3>
+        <button onclick="testAuthCheck()">Test Auth Check</button>
+        <div id="auth-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Test Get Medicines</h3>
+        <button onclick="testGetMedicines()">Get Medicines</button>
+        <div id="medicines-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Test Get Customers</h3>
+        <button onclick="testGetCustomers()">Get Customers</button>
+        <div id="customers-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>5. Test Get Dashboard Stats</h3>
+        <button onclick="testDashboard()">Get Dashboard Stats</button>
+        <div id="dashboard-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>6. Test Get Stock</h3>
+        <button onclick="testStock()">Get Stock Status</button>
+        <div id="stock-result" class="result"></div>
+    </div>
+
+    <!-- Include Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/crud-helpers.js"></script>
+
+    <script>
+        function checkAPI() {
+            const result = document.getElementById('api-check');
+            if (typeof api !== 'undefined') {
+                result.className = 'result success';
+                result.textContent = '✅ API Client is loaded!\n' +
+                    'Available methods: ' + Object.getOwnPropertyNames(Object.getPrototypeOf(api)).filter(m => m !== 'constructor').length;
+            } else {
+                result.className = 'result error';
+                result.textContent = '❌ API Client is NOT loaded!';
+            }
+        }
+
+        async function testAuthCheck() {
+            const result = document.getElementById('auth-result');
+            result.textContent = 'Testing...';
+
+            try {
+                const response = await api.checkAuth();
+                result.className = 'result success';
+                result.textContent = '✅ Success!\n' + JSON.stringify(response, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ Error!\n' + error.message + '\n\nFull error: ' + JSON.stringify(error, null, 2);
+            }
+        }
+
+        async function testGetMedicines() {
+            const result = document.getElementById('medicines-result');
+            result.textContent = 'Testing...';
+
+            try {
+                const response = await api.getMedicines();
+                result.className = 'result success';
+                result.textContent = '✅ Success!\n' + JSON.stringify(response, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ Error!\n' + error.message + '\n\nFull error: ' + JSON.stringify(error, null, 2);
+            }
+        }
+
+        async function testGetCustomers() {
+            const result = document.getElementById('customers-result');
+            result.textContent = 'Testing...';
+
+            try {
+                const response = await api.getCustomers();
+                result.className = 'result success';
+                result.textContent = '✅ Success!\n' + JSON.stringify(response, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ Error!\n' + error.message + '\n\nFull error: ' + JSON.stringify(error, null, 2);
+            }
+        }
+
+        async function testDashboard() {
+            const result = document.getElementById('dashboard-result');
+            result.textContent = 'Testing...';
+
+            try {
+                const response = await api.getDashboardStats();
+                result.className = 'result success';
+                result.textContent = '✅ Success!\n' + JSON.stringify(response, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ Error!\n' + error.message + '\n\nFull error: ' + JSON.stringify(error, null, 2);
+            }
+        }
+
+        async function testStock() {
+            const result = document.getElementById('stock-result');
+            result.textContent = 'Testing...';
+
+            try {
+                const response = await api.getStockStatus();
+                result.className = 'result success';
+                result.textContent = '✅ Success!\n' + JSON.stringify(response, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ Error!\n' + error.message + '\n\nFull error: ' + JSON.stringify(error, null, 2);
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAPI();
+        });
+    </script>
+</body>
+</html>

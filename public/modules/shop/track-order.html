@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>Track Your Order - Muneeb Drug House</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/medical-theme.css">
+
+    <style>
+        /* Track Order Specific Styles */
+        .track-hero {
+            background: var(--gradient-hero);
+            min-height: 45vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 100px;
+            overflow: hidden;
+        }
+
+        .track-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(144, 224, 239, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(72, 202, 228, 0.2) 0%, transparent 50%);
+            animation: heroMesh 15s ease-in-out infinite;
+        }
+
+        @keyframes heroMesh {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .track-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .track-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .track-hero h1 span {
+            color: var(--medical-accent);
+        }
+
+        .track-hero p {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Floating Elements */
+        .hero-floats {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .float-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: floatAnim 6s ease-in-out infinite;
+        }
+
+        .float-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .float-icon:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .float-icon:nth-child(2) { top: 30%; right: 15%; animation-delay: 2s; }
+        .float-icon:nth-child(3) { bottom: 25%; left: 15%; animation-delay: 4s; }
+        .float-icon:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 1s; }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 4rem 0;
+            background: var(--medical-white);
+            margin-top: -80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 119, 182, 0.15);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .search-tab {
+            flex: 1;
+            padding: 16px 20px;
+            border: 2px solid var(--medical-gray-200);
+            background: white;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--medical-gray-500);
+        }
+
+        .search-tab i {
+            font-size: 1.1rem;
+        }
+
+        .search-tab.active {
+            border-color: var(--medical-primary);
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .search-tab:hover:not(.active) {
+            border-color: var(--medical-primary-light);
+            color: var(--medical-primary);
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-input-group {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input-group i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medical-gray-500);
+            font-size: 1.1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 58px;
+            padding: 0 20px 0 55px;
+            border: 2px solid var(--medical-gray-200);
+            border-radius: 14px;
+            font-size: 1rem;
+            color: var(--medical-dark);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--medical-primary);
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
+        }
+
+        .search-btn {
+            height: 58px;
+            padding: 0 35px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 119, 182, 0.3);
+        }
+
+        .search-hint {
+            color: var(--medical-gray-500);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-hint i {
+            color: var(--medical-primary);
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 3rem 0 5rem;
+            background: var(--medical-gray-100);
+        }
+
+        .order-result {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--medical-gray-100);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .order-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 5px;
+        }
+
+        .order-info span {
+            color: var(--medical-gray-500);
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-processing { background: #dbeafe; color: #1d4ed8; }
+        .status-shipped { background: #e0e7ff; color: #4338ca; }
+        .status-delivered { background: #dcfce7; color: #16a34a; }
+        .status-cancelled { background: #fecaca; color: #dc2626; }
+
+        /* Timeline */
+        .order-timeline {
+            margin-bottom: 35px;
+        }
+
+        .timeline-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timeline-header i {
+            color: var(--medical-primary);
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 80px;
+            right: 80px;
+            height: 4px;
+            background: var(--medical-gray-200);
+            border-radius: 2px;
+        }
+
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .timeline-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--medical-gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            border: 3px solid var(--medical-gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-icon i {
+            font-size: 1.2rem;
+            color: var(--medical-gray-500);
+        }
+
+        .timeline-step.completed .timeline-icon {
+            background: var(--gradient-success);
+            border-color: var(--medical-success);
+        }
+
+        .timeline-step.completed .timeline-icon i {
+            color: white;
+        }
+
+        .timeline-step.active .timeline-icon {
+            background: var(--gradient-primary);
+            border-color: var(--medical-primary);
+            animation: pulse 2s infinite;
+        }
+
+        .timeline-step.active .timeline-icon i {
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 119, 182, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(0, 119, 182, 0); }
+        }
+
+        .timeline-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--medical-dark);
+            text-align: center;
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--medical-gray-500);
+            margin-top: 5px;
+        }
+
+        /* Order Items */
+        .order-items {
+            background: var(--medical-gray-100);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .items-header {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .items-header i {
+            color: var(--medical-primary);
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .order-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .item-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--medical-dark);
+            margin-bottom: 3px;
+        }
+
+        .item-qty {
+            font-size: 0.85rem;
+            color: var(--medical-gray-500);
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--medical-primary);
+            font-size: 1.1rem;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-card {
+            background: var(--medical-gray-100);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .summary-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .summary-content h4 {
+            font-size: 0.85rem;
+            color: var(--medical-gray-500);
+            margin-bottom: 3px;
+            font-weight: 500;
+        }
+
+        .summary-content p {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin: 0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--medical-gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .empty-icon i {
+            font-size: 3rem;
+            color: var(--medical-gray-500);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--medical-gray-500);
+            margin-bottom: 25px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-input-wrapper {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .search-tabs {
+                flex-direction: column;
+            }
+
+            .timeline {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .timeline::before {
+                top: 0;
+                left: 25px;
+                right: auto;
+                width: 4px;
+                height: 100%;
+            }
+
+            .timeline-step {
+                flex-direction: row;
+                gap: 20px;
+            }
+
+            .order-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .item-details {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg" id="mainNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="../frontend/index.html">
+            <div class="brand-logo"><i class="fas fa-plus-circle"></i></div>
+            <div class="brand-text">
+                <span class="brand-name">Muneeb Drug House</span>
+                <span class="brand-tagline">Your Health Partner</span>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="../frontend/index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="search.html"><i class="fas fa-capsules"></i><span>Medicines</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="../frontend/about.html"><i class="fas fa-info-circle"></i><span>About Us</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="track-order.html"><i class="fas fa-truck-medical"></i><span>Track Order</span></a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a class="btn btn-cart" href="cart.html">
+                    <i class="fas fa-shopping-cart"></i><span class="cart-text">Cart</span>
+                    <span class="cart-badge" id="nav-cart-count">0</span>
+                </a>
+                <!-- Guest Actions (shown when not logged in) -->
+                <div class="guest-actions" id="guestActions" style="display: flex;">
+                    <a class="btn btn-login" href="../auth/login.html"><i class="fas fa-user-md"></i><span>Login</span></a>
+                </div>
+                <!-- User Actions (shown when logged in) -->
+                <div class="user-actions" id="userActions" style="display: none;">
+                    <div class="dropdown">
+                        <button class="btn btn-user dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="navUserName">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="../customer/profile.html"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="../customer/orders.html"><i class="fas fa-box me-2"></i>My Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(event)"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="track-hero">
+    <div class="hero-floats">
+        <div class="float-icon"><i class="fas fa-truck"></i></div>
+        <div class="float-icon"><i class="fas fa-box"></i></div>
+        <div class="float-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="float-icon"><i class="fas fa-check-circle"></i></div>
+    </div>
+
+    <div class="container">
+        <div class="track-hero-content" data-aos="fade-up">
+            <h1>Track Your <span>Order</span></h1>
+            <p>Enter your order ID or phone number to check the real-time status of your delivery</p>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-card" data-aos="fade-up">
+            <div class="search-tabs">
+                <button class="search-tab active" data-tab="order-id">
+                    <i class="fas fa-receipt"></i>
+                    <span>Order ID</span>
+                </button>
+                <button class="search-tab" data-tab="phone">
+                    <i class="fas fa-phone"></i>
+                    <span>Phone Number</span>
+                </button>
+            </div>
+
+            <div class="search-input-wrapper">
+                <div class="search-input-group">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="searchInput"
+                           placeholder="Enter your Order ID (e.g., ORD-12345)">
+                </div>
+                <button class="search-btn" onclick="trackOrder()">
+                    <i class="fas fa-location-arrow"></i>
+                    <span>Track Order</span>
+                </button>
+            </div>
+
+            <p class="search-hint">
+                <i class="fas fa-info-circle"></i>
+                You can find your Order ID in the confirmation email or SMS
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="results-section">
+    <div class="container">
+        <!-- Order Result -->
+        <div class="order-result" id="orderResult">
+            <div class="order-header">
+                <div class="order-info">
+                    <h3 id="orderId">Order #ORD-12345</h3>
+                    <span id="orderDate">Placed on January 3, 2026</span>
+                </div>
+                <div class="order-status status-processing" id="orderStatus">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Processing</span>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="order-timeline">
+                <h4 class="timeline-header">
+                    <i class="fas fa-route"></i>
+                    Order Progress
+                </h4>
+
+                <div class="timeline">
+                    <div class="timeline-step completed">
+                        <div class="timeline-icon"><i class="fas fa-check"></i></div>
+                        <span class="timeline-label">Order Placed</span>
+                        <span class="timeline-date">Jan 3, 10:30 AM</span>
+                    </div>
+                    <div class="timeline-step completed">
+                        <div class="timeline-icon"><i class="fas fa-check"></i></div>
+                        <span class="timeline-label">Confirmed</span>
+                        <span class="timeline-date">Jan 3, 10:35 AM</span>
+                    </div>
+                    <div class="timeline-step active">
+                        <div class="timeline-icon"><i class="fas fa-box"></i></div>
+                        <span class="timeline-label">Processing</span>
+                        <span class="timeline-date">In Progress</span>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-icon"><i class="fas fa-truck"></i></div>
+                        <span class="timeline-label">Shipped</span>
+                        <span class="timeline-date">Pending</span>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-icon"><i class="fas fa-home"></i></div>
+                        <span class="timeline-label">Delivered</span>
+                        <span class="timeline-date">Pending</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="order-items">
+                <h4 class="items-header">
+                    <i class="fas fa-pills"></i>
+                    Order Items
+                </h4>
+
+                <div id="orderItems">
+                    <!-- Items will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="order-summary">
+                <div class="summary-card">
+                    <div class="summary-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="summary-content">
+                        <h4>Delivery Address</h4>
+                        <p id="deliveryAddress">123 Main Street, Lahore</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon"><i class="fas fa-clock"></i></div>
+                    <div class="summary-content">
+                        <h4>Expected Delivery</h4>
+                        <p id="expectedDelivery">Today, 6:00 PM</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon"><i class="fas fa-receipt"></i></div>
+                    <div class="summary-content">
+                        <h4>Total Amount</h4>
+                        <p id="totalAmount">Rs. 1,250</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="order-result" id="emptyState" style="display: none;">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No Order Found</h3>
+                <p>We couldn't find any order with that ID. Please check and try again.</p>
+                <a href="search.html" class="btn btn-hero-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    Start Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand">
+                    <div class="footer-logo"><i class="fas fa-plus-circle"></i></div>
+                    <span class="footer-name">Muneeb Drug House</span>
+                </div>
+                <p class="footer-description">Your trusted partner in health and wellness since 2010.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-heading">Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="../frontend/index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="search.html"><i class="fas fa-chevron-right"></i> Medicines</a></li>
+                    <li><a href="../frontend/about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="track-order.html"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Contact Info</h5>
+                <ul class="footer-links footer-contact">
+                    <li><i class="fas fa-phone-alt"></i><a href="tel:03211532010">0321-1532010</a></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:info@waqardrughouse.com">info@waqardrughouse.com</a></li>
+                    <li><i class="fas fa-clock"></i><span>24/7 Emergency Service</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Muneeb Drug House. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- Laravel API Client & Utilities -->
+<script src="../../js/api-client.js"></script>
+<script src="../../js/script.js"></script>
+
+<script>
+// Check login status and update navbar
+function updateNavbarAuth() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const guestActions = document.getElementById('guestActions');
+    const userActions = document.getElementById('userActions');
+    const navUserName = document.getElementById('navUserName');
+
+    if (!guestActions || !userActions) return;
+
+    if (user) {
+        guestActions.style.display = 'none';
+        userActions.style.display = 'flex';
+        if (navUserName) {
+            navUserName.textContent = user.first_name || user.username || 'Account';
+        }
+    } else {
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+    }
+}
+
+// Logout function
+function logout(e) {
+    if (e) e.preventDefault();
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    window.location.href = '../frontend/index.html';
+}
+
+// Initialize navbar auth on load
+document.addEventListener('DOMContentLoaded', updateNavbarAuth);
+if (document.readyState !== 'loading') updateNavbarAuth();
+
+AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 50 });
+
+// Tab Switching
+document.querySelectorAll('.search-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+
+        const tabType = this.dataset.tab;
+        const input = document.getElementById('searchInput');
+
+        if (tabType === 'phone') {
+            input.placeholder = 'Enter your phone number (e.g., 0321-1532010)';
+        } else {
+            input.placeholder = 'Enter your Order ID (e.g., ORD-12345)';
+        }
+    });
+});
+
+// Track Order
+async function trackOrder() {
+    const searchValue = document.getElementById('searchInput').value.trim();
+    const orderResult = document.getElementById('orderResult');
+    const emptyState = document.getElementById('emptyState');
+
+    if (!searchValue) {
+        alert('Please enter an Order ID or Phone Number');
+        return;
+    }
+
+    try {
+        // Try to fetch from API
+        const response = await fetch(`/api/orders/track/${encodeURIComponent(searchValue)}`);
+        const data = await response.json();
+
+        if (data.success && data.order) {
+            displayOrder(data.order);
+            orderResult.style.display = 'block';
+            emptyState.style.display = 'none';
+        } else {
+            orderResult.style.display = 'none';
+            emptyState.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Tracking error:', error);
+        // Demo mode - show sample order
+        if (searchValue.toLowerCase().includes('ord') || searchValue.match(/^\d{3}/)) {
+            displayDemoOrder(searchValue);
+            orderResult.style.display = 'block';
+            emptyState.style.display = 'none';
+        } else {
+            orderResult.style.display = 'none';
+            emptyState.style.display = 'block';
+        }
+    }
+
+    // Scroll to results
+    document.querySelector('.results-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function displayDemoOrder(orderId) {
+    document.getElementById('orderId').textContent = `Order #${orderId.toUpperCase()}`;
+    document.getElementById('orderDate').textContent = 'Placed on January 4, 2026';
+    document.getElementById('deliveryAddress').textContent = 'Main Market, Lahore, Pakistan';
+    document.getElementById('expectedDelivery').textContent = 'Today, 6:00 PM';
+    document.getElementById('totalAmount').textContent = 'Rs. 1,450';
+
+    // Add demo items
+    document.getElementById('orderItems').innerHTML = `
+        <div class="order-item">
+            <div class="item-icon"><i class="fas fa-pills"></i></div>
+            <div class="item-details">
+                <div class="item-name">Paracetamol 500mg</div>
+                <div class="item-qty">Qty: 2 strips</div>
+            </div>
+            <div class="item-price">Rs. 90</div>
+        </div>
+        <div class="order-item">
+            <div class="item-icon"><i class="fas fa-capsules"></i></div>
+            <div class="item-details">
+                <div class="item-name">Vitamin C Complex</div>
+                <div class="item-qty">Qty: 1 bottle</div>
+            </div>
+            <div class="item-price">Rs. 350</div>
+        </div>
+        <div class="order-item">
+            <div class="item-icon"><i class="fas fa-prescription-bottle"></i></div>
+            <div class="item-details">
+                <div class="item-name">Cough Syrup</div>
+                <div class="item-qty">Qty: 1</div>
+            </div>
+            <div class="item-price">Rs. 120</div>
+        </div>
+    `;
+}
+
+function displayOrder(order) {
+    document.getElementById('orderId').textContent = `Order #${order.order_number || order.id}`;
+
+    // Format the date nicely
+    const orderDate = order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    }) : 'N/A';
+    document.getElementById('orderDate').textContent = `Placed on ${orderDate}`;
+    document.getElementById('deliveryAddress').textContent = order.address || 'N/A';
+
+    // Use delivery_date from database
+    const deliveryDate = order.delivery_date ? new Date(order.delivery_date).toLocaleDateString('en-US', {
+        weekday: 'long', month: 'long', day: 'numeric'
+    }) : 'TBD';
+    document.getElementById('expectedDelivery').textContent = deliveryDate;
+    document.getElementById('totalAmount').textContent = `Rs. ${order.total_amount || 0}`;
+
+    // Update status
+    const statusEl = document.getElementById('orderStatus');
+    const status = order.status || 'pending';
+    statusEl.className = `order-status status-${status.toLowerCase()}`;
+    statusEl.innerHTML = `<i class="fas fa-${getStatusIcon(status)}"></i><span>${status}</span>`;
+
+    // Render items
+    let itemsHtml = '';
+    if (order.items && order.items.length) {
+        order.items.forEach(item => {
+            itemsHtml += `
+                <div class="order-item">
+                    <div class="item-icon"><i class="fas fa-pills"></i></div>
+                    <div class="item-details">
+                        <div class="item-name">${item.medicine_name || (item.medicine ? item.medicine.name : 'Medicine')}</div>
+                        <div class="item-qty">Qty: ${item.quantity}</div>
+                    </div>
+                    <div class="item-price">Rs. ${item.subtotal || (item.price * item.quantity)}</div>
+                </div>
+            `;
+        });
+    }
+    document.getElementById('orderItems').innerHTML = itemsHtml;
+}
+
+function getStatusIcon(status) {
+    const icons = {
+        'pending': 'clock',
+        'processing': 'sync-alt',
+        'shipped': 'truck',
+        'delivered': 'check-circle',
+        'cancelled': 'times-circle'
+    };
+    return icons[status.toLowerCase()] || 'info-circle';
+}
+
+// Navbar Scroll
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Update Cart Count
+function updateCartCount() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        const badge = document.getElementById('nav-cart-count');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+    } catch (e) {}
+}
+
+updateCartCount();
+</script>
+
+</body>
+</html>

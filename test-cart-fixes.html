@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Functionality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        #console-log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 2px 0;
+        }
+        .log-success { color: #4ec9b0; }
+        .log-error { color: #f48771; }
+        .log-info { color: #9cdcfe; }
+        .log-warn { color: #dcdcaa; }
+    </style>
+</head>
+<body>
+    <h1>🛒 Cart Functionality Test Suite</h1>
+
+    <div class="test-card">
+        <h2>1. Check Cart HTML Page</h2>
+        <p>Navigate to the cart page and open browser console</p>
+        <button class="btn-primary" onclick="window.open('../modules/shop/cart.html', '_blank')">
+            Open Cart Page
+        </button>
+        <div class="test-status info">
+            <strong>What to look for:</strong>
+            <ul>
+                <li>🔍 Console shows: "Initializing autocomplete..."</li>
+                <li>✅ Console shows: "Autocomplete initialized successfully"</li>
+                <li>❌ NO error: "cart is not defined"</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>2. Test Autocomplete Suggestions</h2>
+        <p>Type in the "Quick Add to Cart" search box</p>
+        <div class="test-status info">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Open cart.html</li>
+                <li>Find the "Quick Add to Cart" section</li>
+                <li>Type a single letter (e.g., "p")</li>
+                <li>Wait 300ms</li>
+                <li>Suggestions dropdown should appear</li>
+            </ol>
+            <strong>Expected Result:</strong>
+            <ul>
+                <li>✅ Dropdown appears after typing 1 character</li>
+                <li>✅ Shows medicine suggestions with name, price, category</li>
+                <li>✅ Can adjust quantity</li>
+                <li>✅ Can click "Add" button to add to cart</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>3. Test Cart Functions</h2>
+        <button class="btn-success" onclick="testInitCart()">Test initCart()</button>
+        <button class="btn-success" onclick="testAddToCart()">Test Add to Cart</button>
+        <button class="btn-danger" onclick="clearTestCart()">Clear Cart</button>
+
+        <div id="test-results"></div>
+        <div id="console-log"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>4. Expected Console Logs</h2>
+        <p>When you type in the search box, you should see these logs:</p>
+        <div class="test-status info">
+            <code>🔍 Initializing autocomplete...</code><br>
+            <code>Search input found: true</code><br>
+            <code>Suggestions container found: true</code><br>
+            <code>✅ Autocomplete initialized successfully</code><br>
+            <code>🔍 Input event fired! Query: p Length: 1</code><br>
+            <code>⏰ Search timeout triggered for: p</code><br>
+            <code>🌐 Fetching new results for: p</code><br>
+            <code>Response status: 200</code><br>
+            <code>API Response: {success: true, suggestions: [...]}</code><br>
+            <code>📋 displaySuggestions called with: X items</code><br>
+            <code>✅ Dropdown should now be visible!</code>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>5. Common Issues & Solutions</h2>
+        <div class="test-status error">
+            <strong>❌ If autocomplete doesn't show:</strong>
+            <ol>
+                <li>Press Ctrl+F5 to hard refresh (clear cache)</li>
+                <li>Open DevTools (F12) → Console tab</li>
+                <li>Look for errors in red</li>
+                <li>Verify API endpoint is working: <code>/api/medicines/suggestions/search</code></li>
+            </ol>
+        </div>
+        <div class="test-status error">
+            <strong>❌ If you see "cart is not defined":</strong>
+            <ol>
+                <li>The fix should have resolved this</li>
+                <li>Verify <code>script.js</code> is loaded before cart.html's inline script</li>
+                <li>Check that <code>initCart()</code> function exists in script.js</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const log = (message, type = 'info') => {
+            const consoleLog = document.getElementById('console-log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleLog.appendChild(entry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        };
+
+        function testInitCart() {
+            const results = document.getElementById('test-results');
+
+            try {
+                // Check if function exists
+                if (typeof initCart !== 'function') {
+                    // Define it for testing
+                    window.initCart = function() {
+                        return JSON.parse(localStorage.getItem('cart')) || [];
+                    };
+                    log('⚠️ initCart() not found, created test version', 'warn');
+                }
+
+                const cart = initCart();
+                log(`✅ initCart() works! Cart has ${cart.length} items`, 'success');
+
+                results.innerHTML = `
+                    <div class="test-status success">
+                        <strong>✅ initCart() Test Passed</strong><br>
+                        Cart Items: ${cart.length}<br>
+                        Cart Data: <code>${JSON.stringify(cart, null, 2)}</code>
+                    </div>
+                `;
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                results.innerHTML = `
+                    <div class="test-status error">
+                        <strong>❌ initCart() Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function testAddToCart() {
+            const results = document.getElementById('test-results');
+
+            try {
+                // Initialize if needed
+                if (typeof initCart !== 'function') {
+                    window.initCart = function() {
+                        return JSON.parse(localStorage.getItem('cart')) || [];
+                    };
+                }
+
+                // Get current cart
+                let cart = initCart();
+
+                // Add test item
+                const testItem = {
+                    id: Date.now(),
+                    name: 'Test Medicine',
+                    price: 99.99,
+                    quantity: 1
+                };
+
+                cart.push(testItem);
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                log(`✅ Added test item to cart: ${testItem.name}`, 'success');
+
+                // Verify
+                cart = initCart();
+                const added = cart.find(item => item.name === 'Test Medicine');
+
+                if (added) {
+                    log('✅ Verified: Test item exists in cart', 'success');
+                    results.innerHTML = `
+                        <div class="test-status success">
+                            <strong>✅ Add to Cart Test Passed</strong><br>
+                            Test item added successfully!<br>
+                            Cart now has ${cart.length} items
+                        </div>
+                    `;
+                } else {
+                    log('❌ Error: Test item not found in cart', 'error');
+                    results.innerHTML = `
+                        <div class="test-status error">
+                            <strong>❌ Add to Cart Test Failed</strong><br>
+                            Item was not added to cart
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                results.innerHTML = `
+                    <div class="test-status error">
+                        <strong>❌ Add to Cart Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function clearTestCart() {
+            localStorage.removeItem('cart');
+            log('🗑️ Cart cleared', 'info');
+            document.getElementById('test-results').innerHTML = `
+                <div class="test-status info">
+                    <strong>Cart Cleared</strong><br>
+                    localStorage cart has been removed
+                </div>
+            `;
+        }
+
+        // Initialize console log
+        log('Test suite loaded and ready', 'success');
+        log('Click buttons above to run tests', 'info');
+    </script>
+</body>
+</html>

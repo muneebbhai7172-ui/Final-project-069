@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about Muneeb Drug House - Your trusted pharmacy partner since 2010. Discover our mission, vision, and commitment to healthcare excellence.">
+    <title>About Us - Muneeb Drug House | Your Trusted Pharmacy</title>
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom Medical Theme CSS -->
+    <link rel="stylesheet" href="../../css/medical-theme.css">
+
+    <style>
+        /* About Page Specific Styles */
+        .about-hero {
+            background: var(--gradient-hero);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 120px;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=1920&h=800&fit=crop') center/cover;
+            opacity: 0.15;
+        }
+
+        .about-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .about-hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .about-breadcrumb {
+            margin-top: 2rem;
+        }
+
+        .about-breadcrumb a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .about-breadcrumb a:hover {
+            color: white;
+        }
+
+        .about-breadcrumb span {
+            color: var(--medical-accent);
+            margin: 0 10px;
+        }
+
+        /* Story Section */
+        .story-section {
+            padding: 6rem 0;
+            background: var(--medical-white);
+        }
+
+        .story-image {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .story-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .story-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--medical-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .story-content p {
+            color: var(--medical-gray-500);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-highlight {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--medical-gray-100);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+        }
+
+        .story-highlight i {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .story-highlight h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+        }
+
+        .story-highlight p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--medical-gray-500);
+        }
+
+        /* Mission Vision Section */
+        .mv-section {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, var(--medical-gray-100) 0%, var(--medical-white) 100%);
+        }
+
+        .mv-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            height: 100%;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-normal);
+        }
+
+        .mv-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .mv-card.mission::before {
+            background: var(--gradient-primary);
+        }
+
+        .mv-card.vision::before {
+            background: var(--gradient-success);
+        }
+
+        .mv-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .mv-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .mv-card.mission .mv-icon {
+            background: var(--gradient-primary);
+        }
+
+        .mv-card.vision .mv-icon {
+            background: var(--gradient-success);
+        }
+
+        .mv-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .mv-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 1rem;
+        }
+
+        .mv-card p {
+            color: var(--medical-gray-500);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        /* Values Section */
+        .values-section {
+            padding: 6rem 0;
+            background: var(--medical-white);
+        }
+
+        .value-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-card);
+            border: 1px solid var(--medical-gray-200);
+            height: 100%;
+            transition: var(--transition-normal);
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--medical-primary-light);
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .value-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .value-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .value-card p {
+            font-size: 0.9rem;
+            color: var(--medical-gray-500);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 6rem 0;
+            background: var(--gradient-hero);
+        }
+
+        .team-section .section-title,
+        .team-section .section-subtitle {
+            color: white;
+        }
+
+        .team-section .section-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition-normal);
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .team-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .team-info h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .team-info p {
+            color: var(--medical-primary);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .team-social {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .team-social a {
+            width: 35px;
+            height: 35px;
+            background: var(--medical-gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--medical-gray-500);
+            transition: var(--transition-normal);
+        }
+
+        .team-social a:hover {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            padding: 6rem 0;
+            background: var(--medical-white);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: calc(50% + 30px);
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: calc(50% + 30px);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid var(--medical-primary);
+            border-radius: 50%;
+            top: 0;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            max-width: 400px;
+        }
+
+        .timeline-year {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline-content h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--medical-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: var(--medical-gray-500);
+            font-size: 0.9rem;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                justify-content: flex-start;
+                padding-left: 60px;
+                padding-right: 0;
+            }
+
+            .timeline-item::after {
+                left: 20px;
+            }
+
+            .timeline-content {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================
+     NAVBAR
+     ============================================ -->
+<nav class="navbar navbar-expand-lg" id="mainNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <div class="brand-logo">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Muneeb Drug House</span>
+                <span class="brand-tagline">Your Health Partner</span>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon">
+                <i class="fas fa-bars"></i>
+            </span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../shop/search.html">
+                        <i class="fas fa-capsules"></i>
+                        <span>Medicines</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="about.html">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../shop/track-order.html">
+                        <i class="fas fa-truck-medical"></i>
+                        <span>Track Order</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a class="btn btn-cart" href="../shop/cart.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-text">Cart</span>
+                    <span class="cart-badge" id="nav-cart-count">0</span>
+                </a>
+                <a class="btn btn-login" href="../auth/login.html">
+                    <i class="fas fa-user-md"></i>
+                    <span>Login</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================
+     ABOUT HERO SECTION
+     ============================================ -->
+<section class="about-hero">
+    <div class="container">
+        <div class="about-hero-content" data-aos="fade-up">
+            <h1>About <span style="color: var(--medical-accent);">Muneeb Drug House</span></h1>
+            <p>Your trusted partner in health and wellness since 2010. Committed to providing quality medicines with care and professionalism.</p>
+
+            <nav class="about-breadcrumb">
+                <a href="index.html">Home</a>
+                <span><i class="fas fa-chevron-right"></i></span>
+                <span style="color: white;">About Us</span>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     OUR STORY SECTION
+     ============================================ -->
+<section class="story-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="story-image">
+                    <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600&h=500&fit=crop"
+                         alt="Our Pharmacy Story">
+                </div>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="story-content">
+                    <div class="section-badge mb-3">
+                        <i class="fas fa-book-open"></i>
+                        Our Story
+                    </div>
+                    <h2>A Legacy of <span class="text-gradient">Healthcare Excellence</span></h2>
+                    <p>
+                        Founded in 2010, Muneeb Drug House began with a simple yet powerful vision: to make quality healthcare
+                        accessible to everyone in our community. What started as a small neighborhood pharmacy has grown into
+                        a trusted healthcare destination, serving thousands of families with dedication and care.
+                    </p>
+                    <p>
+                        Over the years, we've expanded our services while staying true to our core values of quality,
+                        integrity, and customer-first approach. Today, we're proud to offer a comprehensive range of
+                        pharmaceutical products and services, backed by a team of experienced professionals who genuinely
+                        care about your well-being.
+                    </p>
+
+                    <div class="story-highlight">
+                        <i class="fas fa-award"></i>
+                        <div>
+                            <h4>15+ Years of Excellence</h4>
+                            <p>Serving our community with dedication since 2010</p>
+                        </div>
+                    </div>
+
+                    <div class="story-highlight">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h4>10,000+ Happy Customers</h4>
+                            <p>Trusted by families across the region</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     MISSION & VISION SECTION
+     ============================================ -->
+<section class="mv-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-bullseye"></i>
+                Our Purpose
+            </div>
+            <h2 class="section-title">
+                Mission & <span class="text-gradient">Vision</span>
+            </h2>
+            <p class="section-subtitle">
+                Guiding principles that drive our commitment to healthcare excellence
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="mv-card mission">
+                    <div class="mv-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Our Mission</h3>
+                    <p>
+                        To provide accessible, affordable, and high-quality pharmaceutical care to every individual in
+                        our community. We are committed to ensuring that everyone has access to the medicines they need,
+                        supported by professional guidance and personalized service. Through innovation, integrity, and
+                        compassion, we strive to be a pillar of health in the communities we serve.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="mv-card vision">
+                    <div class="mv-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Our Vision</h3>
+                    <p>
+                        To become the most trusted and preferred pharmacy partner in the region, recognized for our
+                        exceptional service quality, comprehensive product range, and unwavering commitment to patient
+                        care. We envision a future where healthcare is seamless, accessible, and centered around the
+                        needs of every individual we serve.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     VALUES SECTION
+     ============================================ -->
+<section class="values-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-heart"></i>
+                Core Values
+            </div>
+            <h2 class="section-title">
+                What We <span class="text-gradient">Stand For</span>
+            </h2>
+            <p class="section-subtitle">
+                The principles that guide every aspect of our service
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+                <div class="value-card">
+                    <div class="value-icon" style="background: var(--gradient-primary);">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h4>Quality First</h4>
+                    <p>We source only the highest quality medicines from trusted and authorized manufacturers.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+                <div class="value-card">
+                    <div class="value-icon" style="background: var(--gradient-success);">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4>Integrity</h4>
+                    <p>We maintain the highest ethical standards in all our business practices and interactions.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+                <div class="value-card">
+                    <div class="value-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Customer Care</h4>
+                    <p>Every customer receives personalized attention and professional pharmaceutical guidance.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
+                <div class="value-card">
+                    <div class="value-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p>We continuously adopt new technologies and practices to serve you better.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     TIMELINE SECTION
+     ============================================ -->
+<section class="timeline-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-history"></i>
+                Our Journey
+            </div>
+            <h2 class="section-title">
+                Milestones <span class="text-gradient">Through Years</span>
+            </h2>
+            <p class="section-subtitle">
+                Key moments that shaped our growth and success
+            </p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-content">
+                    <span class="timeline-year">2010</span>
+                    <h4>Foundation</h4>
+                    <p>Muneeb Drug House was established with a vision to provide quality healthcare to the community.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-left">
+                <div class="timeline-content">
+                    <span class="timeline-year">2014</span>
+                    <h4>Expansion</h4>
+                    <p>Expanded our inventory to include over 2000+ medicines and healthcare products.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-content">
+                    <span class="timeline-year">2018</span>
+                    <h4>Digital Transformation</h4>
+                    <p>Launched our online ordering system for convenient medicine ordering and delivery.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-left">
+                <div class="timeline-content">
+                    <span class="timeline-year">2022</span>
+                    <h4>24/7 Service</h4>
+                    <p>Started round-the-clock emergency pharmacy services to serve urgent healthcare needs.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-content">
+                    <span class="timeline-year">2025</span>
+                    <h4>10K+ Customers</h4>
+                    <p>Reached milestone of serving over 10,000 happy customers with a 4.9/5 satisfaction rating.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     TEAM SECTION
+     ============================================ -->
+<section class="team-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-user-md"></i>
+                Our Team
+            </div>
+            <h2 class="section-title">
+                Meet Our <span style="color: var(--medical-accent);">Experts</span>
+            </h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">
+                Dedicated professionals committed to your health and well-being
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=300&fit=crop"
+                         alt="Head Pharmacist" class="team-image">
+                    <div class="team-info">
+                        <h4>Dr. Waqar Ahmed</h4>
+                        <p>Founder & Head Pharmacist</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=300&fit=crop"
+                         alt="Senior Pharmacist" class="team-image">
+                    <div class="team-info">
+                        <h4>Dr. Fatima Khan</h4>
+                        <p>Senior Pharmacist</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=300&fit=crop"
+                         alt="Clinical Advisor" class="team-image">
+                    <div class="team-info">
+                        <h4>Dr. Ahmad Hassan</h4>
+                        <p>Clinical Advisor</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CTA SECTION
+     ============================================ -->
+<section class="cta-section" data-aos="fade-up">
+    <div class="container">
+        <h2 class="cta-title">Need Healthcare Assistance?</h2>
+        <p class="cta-subtitle">
+            Our team of experts is ready to help you with all your pharmaceutical needs.
+            Contact us today for professional consultation.
+        </p>
+        <div class="cta-buttons">
+            <a href="../shop/search.html" class="btn btn-hero-primary">
+                <i class="fas fa-pills"></i>
+                Browse Medicines
+            </a>
+            <a href="tel:03211532010" class="btn btn-hero-secondary">
+                <i class="fas fa-phone"></i>
+                Call: 0321-1532010
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <span class="footer-name">Muneeb Drug House</span>
+                </div>
+                <p class="footer-description">
+                    Your trusted partner in health and wellness. Providing quality medicines with care,
+                    reliability, and professional service since 2010.
+                </p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-heading">Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="../shop/search.html"><i class="fas fa-chevron-right"></i> Medicines</a></li>
+                    <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="../shop/track-order.html"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Categories</h5>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Pain Relief</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Vitamins & Supplements</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Heart Care</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Diabetes Care</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Contact Info</h5>
+                <ul class="footer-links footer-contact">
+                    <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="tel:03211532010">0321-1532010</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:info@waqardrughouse.com">info@waqardrughouse.com</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Main Market, Lahore, Pakistan</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-clock"></i>
+                        <span>24/7 Emergency Service</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Muneeb Drug House. All Rights Reserved. | Made with ❤️ for better health</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- AOS - Animate On Scroll -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Laravel API Client & Utilities -->
+<script src="../../js/api-client.js"></script>
+<script src="../../js/script.js"></script>
+
+<!-- Custom Scripts -->
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 50
+});
+
+// Navbar Scroll Effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Update Cart Count
+function updateCartCount() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        const badge = document.getElementById('nav-cart-count');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+    } catch (e) {
+        console.error('Error updating cart count:', e);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartCount();
+});
+
+// Listen for cart updates
+window.addEventListener('storage', (e) => {
+    if (e.key === 'cart') {
+        updateCartCount();
+    }
+});
+</script>
+
+</body>
+</html>

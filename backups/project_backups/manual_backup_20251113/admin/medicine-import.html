@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Medicines - Waqar Drug House</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/components/_modern-sidebar.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .import-container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 10px 0;
+        }
+
+        .page-header p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .upload-text h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .upload-text p {
+            color: #64748b;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            padding: 20px;
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .file-info.show {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            width: 50px;
+            height: 50px;
+            background: #10b981;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 5px 0;
+        }
+
+        .file-size {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .remove-file {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .template-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .template-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .download-template-btn {
+            padding: 12px 24px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .download-template-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .template-info {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .template-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 15px 0;
+        }
+
+        .template-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .column-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .column-item i {
+            color: #3b82f6;
+        }
+
+        .preview-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .preview-section.show {
+            display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .import-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .import-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .import-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .preview-table th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .preview-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .preview-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .progress-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .progress-section.show {
+            display: block;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .result-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+            text-align: center;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 50px;
+            color: white;
+        }
+
+        .result-icon.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .result-icon.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @media (max-width: 768px) {
+            .import-container {
+                padding: 15px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+            }
+
+            .template-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="import-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-file-import"></i> Import Medicines from Excel</h1>
+            <p>Upload an Excel file to bulk import medicine data into the system</p>
+        </div>
+
+        <!-- Template Download Section -->
+        <div class="template-section">
+            <div class="template-header">
+                <h3><i class="fas fa-download"></i> Download Template</h3>
+                <button class="download-template-btn" onclick="downloadTemplate()">
+                    <i class="fas fa-file-excel"></i>
+                    Download Excel Template
+                </button>
+            </div>
+            <div class="template-info">
+                <h4>Required Columns:</h4>
+                <div class="template-columns">
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Medicine Name</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Generic Name</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Category</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Manufacturer</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Unit Price</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Stock Quantity</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Expiry Date</div>
+                    <div class="column-item"><i class="fas fa-check-circle"></i> Batch Number</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Drag & Drop Excel File Here</h3>
+                    <p>or click to browse and select file</p>
+                    <button class="upload-btn" type="button">
+                        <i class="fas fa-folder-open"></i> Choose File
+                    </button>
+                    <p style="margin-top: 15px; font-size: 14px;">Supported formats: .xlsx, .xls</p>
+                </div>
+            </div>
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
+            
+            <div class="file-info" id="fileInfo">
+                <div class="file-icon">
+                    <i class="fas fa-file-excel"></i>
+                </div>
+                <div class="file-details">
+                    <p class="file-name" id="fileName">medicines.xlsx</p>
+                    <p class="file-size" id="fileSize">2.5 MB</p>
+                </div>
+                <button class="remove-file" onclick="removeFile()">
+                    <i class="fas fa-times"></i> Remove
+                </button>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="preview-header">
+                <h3><i class="fas fa-eye"></i> Data Preview (<span id="recordCount">0</span> records)</h3>
+                <button class="import-btn" id="importBtn" onclick="importData()">
+                    <i class="fas fa-upload"></i> Import to Database
+                </button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="preview-table" id="previewTable">
+                    <thead id="previewTableHead">
+                    </thead>
+                    <tbody id="previewTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progressSection">
+            <h3><i class="fas fa-spinner fa-spin"></i> Importing Data...</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <p class="progress-text" id="progressText">Processing: 0 / 0</p>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-section" id="resultSection">
+            <div class="result-icon success" id="resultIcon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 id="resultTitle">Import Successful!</h2>
+            <p id="resultMessage">Successfully imported 25 medicines to the database</p>
+            <button class="upload-btn" style="margin-top: 20px;" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Import Another File
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- Scripts -->
+<script src="../js/modern-sidebar.js"></script>
+<script>
+    let excelData = [];
+    let selectedFile = null;
+
+    // Drag and Drop Events
+    const uploadArea = document.getElementById('uploadArea');
+    
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            processFile(file);
+        }
+    });
+
+    // Handle File Selection
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            processFile(file);
+        }
+    }
+
+    // Process Excel File
+    function processFile(file) {
+        if (!file.name.match(/\.(xlsx|xls)$/)) {
+            alert('Please select a valid Excel file (.xlsx or .xls)');
+            return;
+        }
+
+        selectedFile = file;
+        
+        // Show file info
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = formatFileSize(file.size);
+        document.getElementById('fileInfo').classList.add('show');
+
+        // Read Excel file
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+            
+            excelData = jsonData;
+            displayPreview(jsonData);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    // Display Data Preview
+    function displayPreview(data) {
+        if (data.length === 0) {
+            alert('No data found in Excel file');
+            return;
+        }
+
+        const previewSection = document.getElementById('previewSection');
+        const tableHead = document.getElementById('previewTableHead');
+        const tableBody = document.getElementById('previewTableBody');
+        const recordCount = document.getElementById('recordCount');
+
+        // Clear previous data
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        // Create table headers
+        const headers = Object.keys(data[0]);
+        const headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            headerRow.appendChild(th);
+        });
+        headerRow.innerHTML += '<th>Status</th>';
+        tableHead.appendChild(headerRow);
+
+        // Create table rows (show first 10 records)
+        const previewData = data.slice(0, 10);
+        previewData.forEach(row => {
+            const tr = document.createElement('tr');
+            headers.forEach(header => {
+                const td = document.createElement('td');
+                td.textContent = row[header] || '-';
+                tr.appendChild(td);
+            });
+            tr.innerHTML += '<td><span class="status-badge success">Ready</span></td>';
+            tableBody.appendChild(tr);
+        });
+
+        recordCount.textContent = data.length;
+        previewSection.classList.add('show');
+    }
+
+    // Import Data to Database
+    async function importData() {
+        const importBtn = document.getElementById('importBtn');
+        const previewSection = document.getElementById('previewSection');
+        const progressSection = document.getElementById('progressSection');
+        
+        importBtn.disabled = true;
+        previewSection.style.display = 'none';
+        progressSection.classList.add('show');
+
+        try {
+            let successCount = 0;
+            let errorCount = 0;
+
+            for (let i = 0; i < excelData.length; i++) {
+                const row = excelData[i];
+                
+                // Update progress
+                const progress = ((i + 1) / excelData.length) * 100;
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressText').textContent = `Processing: ${i + 1} / ${excelData.length}`;
+
+                // Send to API
+                const response = await fetch('../api/medicines.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'add',
+                        name: row['Medicine Name'] || row['name'],
+                        generic_name: row['Generic Name'] || row['generic_name'],
+                        category: row['Category'] || row['category'],
+                        manufacturer: row['Manufacturer'] || row['manufacturer'],
+                        price: row['Unit Price'] || row['price'],
+                        quantity: row['Stock Quantity'] || row['quantity'],
+                        expiry_date: row['Expiry Date'] || row['expiry_date'],
+                        batch_number: row['Batch Number'] || row['batch_number']
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    successCount++;
+                } else {
+                    errorCount++;
+                }
+
+                // Small delay to show progress
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            // Show results
+            showResults(successCount, errorCount);
+
+        } catch (error) {
+            console.error('Import error:', error);
+            alert('Error during import: ' + error.message);
+            progressSection.classList.remove('show');
+            previewSection.style.display = 'block';
+            importBtn.disabled = false;
+        }
+    }
+
+    // Show Import Results
+    function showResults(successCount, errorCount) {
+        const progressSection = document.getElementById('progressSection');
+        const resultSection = document.getElementById('resultSection');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultMessage = document.getElementById('resultMessage');
+
+        progressSection.classList.remove('show');
+        resultSection.classList.add('show');
+
+        if (errorCount === 0) {
+            resultIcon.classList.add('success');
+            resultIcon.innerHTML = '<i class="fas fa-check"></i>';
+            resultTitle.textContent = 'Import Successful!';
+            resultMessage.textContent = `Successfully imported ${successCount} medicines to the database.`;
+        } else {
+            resultIcon.classList.add('error');
+            resultIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            resultTitle.textContent = 'Import Completed with Errors';
+            resultMessage.textContent = `Imported ${successCount} medicines successfully. ${errorCount} records failed.`;
+        }
+    }
+
+    // Remove File
+    function removeFile() {
+        selectedFile = null;
+        excelData = [];
+        document.getElementById('fileInput').value = '';
+        document.getElementById('fileInfo').classList.remove('show');
+        document.getElementById('previewSection').classList.remove('show');
+    }
+
+    // Download Template
+    function downloadTemplate() {
+        const template = [
+            {
+                'Medicine Name': 'Paracetamol 500mg',
+                'Generic Name': 'Acetaminophen',
+                'Category': 'Pain Relief',
+                'Manufacturer': 'PharmaCo Ltd',
+                'Unit Price': 5.99,
+                'Stock Quantity': 100,
+                'Expiry Date': '2025-12-31',
+                'Batch Number': 'BATCH001'
+            },
+            {
+                'Medicine Name': 'Ibuprofen 400mg',
+                'Generic Name': 'Ibuprofen',
+                'Category': 'Pain Relief',
+                'Manufacturer': 'MediCorp',
+                'Unit Price': 8.50,
+                'Stock Quantity': 75,
+                'Expiry Date': '2026-06-30',
+                'Batch Number': 'BATCH002'
+            }
+        ];
+
+        const ws = XLSX.utils.json_to_sheet(template);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Medicines');
+        XLSX.writeFile(wb, 'medicine_import_template.xlsx');
+    }
+
+    // Format File Size
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+</script>
+
+<script>
+// Logout functions
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

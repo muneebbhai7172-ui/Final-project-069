@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Debug - Check Everything</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Stock Page Diagnostics</h1>
+
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function addResult(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = `<h3>${title}</h3>${content}`;
+            results.appendChild(div);
+        }
+
+        // Test 1: Check current URL
+        addResult('Current Page URL', `<pre>${window.location.href}</pre>`, 'info');
+
+        // Test 2: Check if Stock object exists
+        setTimeout(() => {
+            if (typeof Stock !== 'undefined') {
+                addResult('Stock Object', `✓ Stock object exists<br>Version: ${Stock.version || 'unknown'}`, 'success');
+            } else {
+                addResult('Stock Object', '✗ Stock object NOT found! stock.js not loaded properly', 'error');
+            }
+        }, 1000);
+
+        // Test 3: Test API directly
+        addResult('Testing API...', '<div id="api-test">Loading...</div>', 'info');
+
+        const apiUrl = 'http://127.0.0.1:8000/api/medicines/stock';
+        console.log('Testing API:', apiUrl);
+
+        fetch(apiUrl)
+            .then(response => {
+                console.log('API Response Status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API Data:', data);
+                document.getElementById('api-test').innerHTML = `
+                    ✓ API Working!<br>
+                    Total: ${data.total} medicines<br>
+                    Data array length: ${data.data ? data.data.length : 0}<br>
+                    <details>
+                        <summary>First medicine:</summary>
+                        <pre>${JSON.stringify(data.data[0], null, 2)}</pre>
+                    </details>
+                `;
+                results.children[2].className = 'test success';
+            })
+            .catch(error => {
+                console.error('API Error:', error);
+                document.getElementById('api-test').innerHTML = `
+                    ✗ API Error: ${error.message}<br>
+                    URL: ${apiUrl}<br>
+                    <strong>Possible issues:</strong>
+                    <ul>
+                        <li>Laravel dev server not running</li>
+                        <li>CORS blocking the request</li>
+                        <li>Wrong URL/port</li>
+                    </ul>
+                `;
+                results.children[2].className = 'test error';
+            });
+
+        // Test 4: Check helper functions
+        setTimeout(() => {
+            const helpers = {
+                'formatCurrency': typeof formatCurrency !== 'undefined',
+                'formatDate': typeof formatDate !== 'undefined',
+                'sanitizeHTML': typeof sanitizeHTML !== 'undefined',
+                'showLoading': typeof showLoading !== 'undefined',
+                'showError': typeof showError !== 'undefined',
+                'showSuccess': typeof showSuccess !== 'undefined',
+            };
+
+            const missing = Object.keys(helpers).filter(k => !helpers[k]);
+
+            if (missing.length === 0) {
+                addResult('Helper Functions', '✓ All utility functions loaded', 'success');
+            } else {
+                addResult('Helper Functions', `✗ Missing: ${missing.join(', ')}<br>utils.js not loaded!`, 'error');
+            }
+        }, 1000);
+
+        // Test 5: Check DOM elements
+        setTimeout(() => {
+            const elements = {
+                'stock-table-body': document.getElementById('stock-table-body'),
+                'total-in-stock': document.getElementById('total-in-stock'),
+                'stock-search': document.getElementById('stock-search'),
+                'stock-filter': document.getElementById('stock-filter'),
+            };
+
+            const missing = Object.keys(elements).filter(k => !elements[k]);
+
+            if (missing.length === 0) {
+                addResult('DOM Elements', '✓ All required elements found', 'success');
+            } else {
+                addResult('DOM Elements', `⚠ Missing elements: ${missing.join(', ')}`, 'error');
+            }
+        }, 1000);
+
+        // Test 6: Manual Stock initialization
+        addResult('Manual Test', `
+            <button onclick="manualTest()">Click to Manually Load Stock Data</button>
+            <div id="manual-result"></div>
+        `, 'info');
+
+        function manualTest() {
+            document.getElementById('manual-result').innerHTML = 'Loading...';
+
+            fetch('http://127.0.0.1:8000/api/medicines/stock')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        document.getElementById('manual-result').innerHTML = `
+                            <strong>✓ Success!</strong><br>
+                            Loaded ${data.data.length} medicines<br>
+                            <pre>${JSON.stringify(data.data.slice(0, 3), null, 2)}</pre>
+                        `;
+                    } else {
+                        document.getElementById('manual-result').innerHTML = `
+                            <strong>✗ Failed!</strong><br>
+                            Response: ${JSON.stringify(data)}
+                        `;
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('manual-result').innerHTML = `
+                        <strong>✗ Error!</strong><br>
+                        ${err.message}
+                    `;
+                });
+        }
+    </script>
+
+    <!-- Load the same scripts as stock page -->
+    <script src="js/utils.js?v=2.0"></script>
+    <script src="js/stock.js?v=2.0.0"></script>
+</body>
+</html>

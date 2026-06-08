@@ -1,0 +1,299 @@
+/* Enhanced Print Styles for Reports - Only Graph and Results */
+@media print {
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+    
+    /* Hide all non-printable elements completely */
+    .modern-sidebar,
+    .sidebar-overlay,
+    .page-header,
+    .report-types,
+    .filter-section,
+    .filter-header,
+    .filter-grid,
+    .filter-actions,
+    .btn-export,
+    .btn-print,
+    .btn-generate,
+    .header-actions,
+    aside,
+    nav,
+    button {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Show only the printable content */
+    #printableContent,
+    #printableContent *,
+    .print-header,
+    .print-header *,
+    .print-footer,
+    .print-footer * {
+        visibility: visible;
+    }
+    
+    /* Reset body styles for print */
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Reset main content for print */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .reports-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* Position the printable content */
+    #printableContent {
+        position: absolute;
+        left: 0;
+        top: 140px;
+        width: 100%;
+        padding: 20px;
+        background: white;
+    }
+    
+    /* Print header styling */
+    .print-header {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #3b82f6;
+        background: white;
+    }
+    
+    .print-logo {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 10px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        color: white;
+    }
+    
+    .print-company-name {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 8px 0;
+    }
+    
+    .print-report-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #64748b;
+        margin: 5px 0;
+    }
+    
+    .print-report-date {
+        font-size: 12px;
+        color: #94a3b8;
+        margin: 5px 0;
+    }
+    
+    /* Results section for print */
+    .results-section {
+        display: block !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Results header styling */
+    .results-header {
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+    
+    .results-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 15px;
+    }
+    
+    /* Summary styling for print */
+    .results-summary {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+    
+    .summary-item {
+        border: 2px solid #e2e8f0;
+        padding: 10px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white !important;
+    }
+    
+    .summary-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .summary-details h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .summary-details p {
+        font-size: 10px;
+        color: #64748b;
+        margin: 0;
+    }
+    
+    .summary-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .summary-label {
+        font-size: 10px;
+        color: #64748b;
+        margin: 0;
+    }
+    
+    /* Chart styling for print */
+    .chart-container {
+        page-break-inside: avoid;
+        margin: 20px 0;
+        height: 300px !important;
+        width: 100%;
+    }
+    
+    canvas {
+        max-width: 100% !important;
+        height: 300px !important;
+        page-break-inside: avoid;
+    }
+    
+    /* Table styling for print */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        page-break-inside: auto;
+        font-size: 10px;
+        margin-top: 20px;
+        background: white !important;
+    }
+    
+    table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    
+    thead {
+        display: table-header-group;
+    }
+    
+    tfoot {
+        display: table-footer-group;
+    }
+    
+    .results-table {
+        border: 1px solid #e2e8f0;
+    }
+    
+    .results-table th {
+        background: #f8fafc !important;
+        padding: 10px;
+        text-align: left;
+        font-weight: 600;
+        color: #1e293b;
+        border: 1px solid #e2e8f0;
+        font-size: 10px;
+    }
+    
+    .results-table td {
+        padding: 8px 10px;
+        border: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 9px;
+    }
+    
+    .results-table tr:hover {
+        background: white !important;
+    }
+    
+    /* Print footer */
+    .print-footer {
+        display: block !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        border-top: 2px solid #e2e8f0;
+        font-size: 10px;
+        color: #64748b;
+        background: white;
+    }
+    
+    /* Page settings */
+    @page {
+        margin: 1.5cm;
+        size: A4;
+    }
+    
+    /* Remove shadows and unnecessary styling */
+    .report-card,
+    .stats-card,
+    .data-table-container {
+        box-shadow: none !important;
+        background: white !important;
+    }
+    
+    /* Ensure no page breaks in important sections */
+    .summary-item,
+    .chart-container,
+    thead {
+        page-break-inside: avoid;
+    }
+}
+
+/* Screen-only elements */
+@media screen {
+    .print-header,
+    .print-footer {
+        display: none;
+    }
+}

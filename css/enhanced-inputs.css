@@ -1,0 +1,341 @@
+/* Enhanced Input Field Styles */
+
+/* Modern Input Group Design */
+.input-group-advanced {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+}
+
+.input-group-advanced:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-color: #667eea;
+}
+
+.input-group-advanced:focus-within {
+    box-shadow: 0 4px 25px rgba(102, 126, 234, 0.25);
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* Enhanced Input Fields */
+.enhanced-input {
+    height: 48px;
+    font-size: 16px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.enhanced-input:focus {
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+.enhanced-input::placeholder {
+    color: #a0a0a0;
+    font-weight: 400;
+}
+
+/* Input Group Text (Icons) */
+.input-group-text {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: none;
+    padding: 12px 16px;
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-group-text i {
+    font-size: 18px;
+    color: #667eea;
+}
+
+/* Standalone Enhanced Inputs (without input groups) */
+.form-control.enhanced-input:not(.border-start-0) {
+    height: 48px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    font-size: 16px;
+    padding: 12px 16px;
+    font-weight: 500;
+    background: #ffffff;
+}
+
+.form-control.enhanced-input:not(.border-start-0):hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-color: #667eea;
+}
+
+.form-control.enhanced-input:not(.border-start-0):focus {
+    box-shadow: 0 4px 25px rgba(102, 126, 234, 0.25);
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* Enhanced Select Fields */
+.form-select {
+    height: 48px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    font-size: 16px;
+    padding: 12px 16px;
+    font-weight: 500;
+    background: #ffffff;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+}
+
+.form-select:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-color: #667eea;
+}
+
+.form-select:focus {
+    box-shadow: 0 4px 25px rgba(102, 126, 234, 0.25);
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* Input Validator Icons */
+.input-validator {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: none;
+    animation: fadeInScale 0.3s ease;
+}
+
+.input-validator i {
+    font-size: 18px;
+}
+
+/* Show validator when input is valid */
+.form-control.is-valid + .input-validator {
+    display: block;
+}
+
+/* Enhanced Form Labels */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.form-label i {
+    color: #667eea;
+    margin-right: 6px;
+}
+
+/* Password Toggle Button */
+.btn-outline-secondary {
+    border: none;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #667eea;
+    padding: 12px 16px;
+    min-width: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Validation States */
+.form-control.is-valid:not(.border-start-0) {
+    border-color: #28a745;
+    box-shadow: 0 4px 25px rgba(40, 167, 69, 0.25);
+}
+
+.form-control.is-invalid:not(.border-start-0) {
+    border-color: #dc3545;
+    box-shadow: 0 4px 25px rgba(220, 53, 69, 0.25);
+}
+
+.input-group-advanced.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 4px 25px rgba(40, 167, 69, 0.25);
+}
+
+.input-group-advanced.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 4px 25px rgba(220, 53, 69, 0.25);
+}
+
+/* Invalid/Valid Feedback */
+.invalid-feedback, .valid-feedback {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 6px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: block;
+}
+
+.invalid-feedback {
+    background: linear-gradient(135deg, #ffe6e6 0%, #ffd6d6 100%);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.valid-feedback {
+    background: linear-gradient(135deg, #e6ffe6 0%, #d6ffd6 100%);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+/* Floating Labels Effect */
+.floating-label {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.floating-label .form-control {
+    height: 56px;
+    padding: 16px 16px 8px 16px;
+}
+
+.floating-label .form-label {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    background: white;
+    padding: 0 4px;
+    color: #a0a0a0;
+    text-transform: none;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.floating-label .form-control:focus + .form-label,
+.floating-label .form-control:not(:placeholder-shown) + .form-label {
+    top: -8px;
+    left: 12px;
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Button Enhancements */
+.btn-lg {
+    height: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46a3 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #218838 0%, #1ea07a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .enhanced-input, .form-select {
+        height: 44px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    .input-group-text {
+        min-width: 44px;
+        padding: 10px 12px;
+    }
+    
+    .btn-lg {
+        height: 46px;
+        font-size: 15px;
+    }
+    
+    .form-label {
+        font-size: 13px;
+    }
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .enhanced-input,
+[data-theme="dark"] .form-select {
+    background: #2d3748;
+    color: #e2e8f0;
+    border-color: #4a5568;
+}
+
+[data-theme="dark"] .input-group-advanced {
+    background: #2d3748;
+    border-color: #4a5568;
+}
+
+[data-theme="dark"] .input-group-text {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+[data-theme="dark"] .form-label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .enhanced-input::placeholder {
+    color: #a0aec0;
+}

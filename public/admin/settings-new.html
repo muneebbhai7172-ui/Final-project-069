@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>Settings - Muneeb Drug House</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Admin Theme CSS -->
+    <link rel="stylesheet" href="../css/admin-theme.css">
+    <link rel="stylesheet" href="../shared/css/advanced-sidebar.css?v=2.0">
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0f2fe 50%, #f5f3ff 100%);
+            background-attachment: fixed;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .modern-sidebar.collapsed ~ .main-content {
+            margin-left: 80px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0 !important;
+                padding: 20px;
+            }
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 30px 35px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.6s ease;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-header-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .settings-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .settings-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .nav-pills .nav-link {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            color: #64748b;
+            font-weight: 600;
+            padding: 12px 24px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            background: linear-gradient(135deg, #f0f4ff, #e8f4f8);
+            color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .user-table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .nav-pills .nav-link {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar-container"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="page-header mb-4">
+        <h1>
+            <div class="page-header-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            Settings
+        </h1>
+        <p class="text-muted mb-0">Manage system settings and user accounts</p>
+    </div>
+
+    <!-- Settings Tabs -->
+    <ul class="nav nav-pills mb-4" id="settingsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="profile-tab" data-bs-toggle="pill" data-bs-target="#profile" type="button">
+                <i class="fas fa-user me-2"></i>My Profile
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="users-tab" data-bs-toggle="pill" data-bs-target="#users" type="button">
+                <i class="fas fa-users me-2"></i>User Management
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="system-tab" data-bs-toggle="pill" data-bs-target="#system" type="button">
+                <i class="fas fa-cogs me-2"></i>System Settings
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="settingsTabContent">
+        <!-- Profile Tab -->
+        <div class="tab-pane fade show active" id="profile">
+            <div class="row g-4">
+                <!-- Account Information -->
+                <div class="col-lg-6">
+                    <div class="card settings-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="settings-icon bg-primary bg-opacity-10 text-primary me-3">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <h5 class="mb-0 fw-bold">Account Information</h5>
+                            </div>
+                            <form id="profileForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" value="Admin User">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Username</label>
+                                    <input type="text" class="form-control" id="username" value="admin" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Email</label>
+                                    <input type="email" class="form-control" id="email" value="admin@pharmacare.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Role</label>
+                                    <input type="text" class="form-control" value="Administrator" readonly>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="updateProfile()">
+                                    <i class="fas fa-save me-1"></i>Update Profile
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="col-lg-6">
+                    <div class="card settings-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="settings-icon bg-danger bg-opacity-10 text-danger me-3">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <h5 class="mb-0 fw-bold">Change Password</h5>
+                            </div>
+                            <form id="passwordForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                                <button type="button" class="btn btn-danger" onclick="changePassword()">
+                                    <i class="fas fa-key me-1"></i>Change Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div class="tab-pane fade" id="users">
+            <div class="card settings-card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-users me-2 text-primary"></i>All Users
+                        </h5>
+                        <button class="btn btn-primary" onclick="showAddUserModal()">
+                            <i class="fas fa-user-plus me-1"></i>Add User
+                        </button>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Settings Tab -->
+        <div class="tab-pane fade" id="system">
+            <div class="row g-4">
+                <!-- Store Information -->
+                <div class="col-lg-6">
+                    <div class="card settings-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="settings-icon bg-success bg-opacity-10 text-success me-3">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <h5 class="mb-0 fw-bold">Store Information</h5>
+                            </div>
+                            <form id="storeForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Store Name</label>
+                                    <input type="text" class="form-control" id="storeName" value="PharmaCare">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Address</label>
+                                    <textarea class="form-control" id="storeAddress" rows="3">123 Medical Street, Health City</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Phone</label>
+                                    <input type="tel" class="form-control" id="storePhone" value="+92 300 1234567">
+                                </div>
+                                <button type="button" class="btn btn-success" onclick="updateStoreInfo()">
+                                    <i class="fas fa-save me-1"></i>Save Changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Preferences -->
+                <div class="col-lg-6">
+                    <div class="card settings-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="settings-icon bg-info bg-opacity-10 text-info me-3">
+                                    <i class="fas fa-sliders-h"></i>
+                                </div>
+                                <h5 class="mb-0 fw-bold">System Preferences</h5>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Low Stock Alert Threshold</label>
+                                <input type="number" class="form-control" id="lowStockThreshold" value="10">
+                                <small class="text-muted">Alert when quantity falls below this number</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Currency</label>
+                                <select class="form-select" id="currency">
+                                    <option value="PKR" selected>Pakistani Rupee (Rs.)</option>
+                                    <option value="USD">US Dollar ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                </select>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                <label class="form-check-label" for="emailNotifications">
+                                    Enable Email Notifications
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-info text-white" onclick="updateSystemSettings()">
+                                <i class="fas fa-save me-1"></i>Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalTitle">
+                    <i class="fas fa-user-plus me-2"></i>Add User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text" class="form-control" id="userFullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Username</label>
+                        <input type="text" class="form-control" id="userUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email" class="form-control" id="userEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password</label>
+                        <input type="password" class="form-control" id="userPassword">
+                        <small class="text-muted">Leave blank to keep current password (when editing)</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Role</label>
+                        <select class="form-select" id="userRole" required>
+                            <option value="admin">Administrator</option>
+                            <option value="staff">Staff</option>
+                            <option value="pharmacist">Pharmacist</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveUser()">
+                    <i class="fas fa-save me-1"></i>Save User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+// Authentication check
+if (!sessionStorage.getItem('user_role')) {
+    window.location.href = '../login.html';
+}
+
+let userModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    userModal = new bootstrap.Modal(document.getElementById('userModal'));
+    loadUsers();
+});
+
+// Load users
+function loadUsers() {
+    fetch('/api/settings/users', {
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' }
+    })
+        .then(response => response.json())
+        .then(users => {
+            displayUsers(users);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showError('Failed to load users');
+        });
+}
+
+// Display users
+function displayUsers(users) {
+    const tbody = document.getElementById('usersTableBody');
+
+    if (!users || users.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-5 text-muted">No users found</td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = users.map(user => `
+        <tr>
+            <td><strong>${user.full_name || user.username}</strong></td>
+            <td>${user.username}</td>
+            <td>${user.email || 'N/A'}</td>
+            <td><span class="badge bg-primary">${user.role}</span></td>
+            <td><span class="badge bg-success">Active</span></td>
+            <td class="text-end">
+                <div class="user-table-actions justify-content-end">
+                    <button class="btn btn-sm btn-primary btn-action" onclick="editUser(${user.id})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger btn-action" onclick="deleteUser(${user.id})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Show add user modal
+function showAddUserModal() {
+    document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i>Add User';
+    document.getElementById('userForm').reset();
+    document.getElementById('userId').value = '';
+    userModal.show();
+}
+
+// Edit user
+function editUser(id) {
+    fetch(`/api/settings/users/${id}`, {
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' }
+    })
+        .then(response => response.json())
+        .then(user => {
+            document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-edit me-2"></i>Edit User';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('userFullName').value = user.full_name || '';
+            document.getElementById('userUsername').value = user.username;
+            document.getElementById('userEmail').value = user.email || '';
+            document.getElementById('userPassword').value = '';
+            document.getElementById('userRole').value = user.role;
+            userModal.show();
+        });
+}
+
+// Save user
+function saveUser() {
+    const id = document.getElementById('userId').value;
+    const data = {
+        full_name: document.getElementById('userFullName').value,
+        username: document.getElementById('userUsername').value,
+        email: document.getElementById('userEmail').value,
+        password: document.getElementById('userPassword').value,
+        role: document.getElementById('userRole').value
+    };
+
+    const url = id ? `/api/settings/users/${id}` : '/api/settings/users';
+    const method = id ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            userModal.hide();
+            loadUsers();
+            showSuccess(id ? 'User updated successfully!' : 'User created successfully!');
+        } else {
+            showError(result.message || 'Failed to save user');
+        }
+    });
+}
+
+// Delete user
+function deleteUser(id) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    fetch(`/api/settings/users/${id}`, {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            loadUsers();
+            showSuccess('User deleted successfully!');
+        } else {
+            showError(result.message || 'Failed to delete user');
+        }
+    });
+}
+
+// Update profile
+function updateProfile() {
+    const data = {
+        full_name: document.getElementById('fullName').value,
+        email: document.getElementById('email').value
+    };
+
+    fetch('/api/settings/profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showSuccess('Profile updated successfully!');
+        } else {
+            showError(result.message || 'Failed to update profile');
+        }
+    });
+}
+
+// Change password
+function changePassword() {
+    const current = document.getElementById('currentPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
+
+    if (newPass !== confirm) {
+        showError('New passwords do not match!');
+        return;
+    }
+
+    fetch('/api/settings/password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify({
+            current_password: current,
+            new_password: newPass
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            document.getElementById('passwordForm').reset();
+            showSuccess('Password changed successfully!');
+        } else {
+            showError(result.message || 'Failed to change password');
+        }
+    });
+}
+
+// Update store info
+function updateStoreInfo() {
+    const data = {
+        store_name: document.getElementById('storeName').value,
+        store_address: document.getElementById('storeAddress').value,
+        store_phone: document.getElementById('storePhone').value
+    };
+
+    fetch('/api/settings/store', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showSuccess('Store information updated!');
+        } else {
+            showError(result.message || 'Failed to update store info');
+        }
+    });
+}
+
+// Update system settings
+function updateSystemSettings() {
+    const data = {
+        low_stock_threshold: document.getElementById('lowStockThreshold').value,
+        currency: document.getElementById('currency').value,
+        email_notifications: document.getElementById('emailNotifications').checked
+    };
+
+    fetch('/api/settings/system', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showSuccess('System settings updated!');
+        } else {
+            showError(result.message || 'Failed to update settings');
+        }
+    });
+}
+
+function showSuccess(message) {
+    alert(message);
+}
+
+function showError(message) {
+    alert(message);
+}
+</script>
+
+<script src="../shared/js/sidebar-loader.js"></script>
+
+</body>
+</html>

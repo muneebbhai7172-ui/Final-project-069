@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory & Stock - HealthHub</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components/_modern-sidebar.css">
+    <script src="../js/admin-common.js"></script>
+    
+    <!-- Universal Admin Sidebar Loader -->
+    <script src="../js/admin-sidebar-loader.js"></script>
+</head>
+<body class="bg-light">
+
+<!-- Main Content -->
+<main class="main-content">
+<div class="d-flex">
+    <!-- Main Content -->
+    <div class="admin-content flex-grow-1" style="margin-left: 280px; min-height: 100vh; transition: margin-left 0.3s ease;">
+        <!-- Top Header -->
+        <div class="mb-4 p-4 bg-white shadow-sm rounded">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="d-flex align-items-center mb-2 mb-md-0">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary me-3">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-0 fw-bold text-primary">
+                            <i class="fas fa-boxes me-2"></i>Inventory & Stock Management
+                        </h1>
+                        <p class="text-muted mb-0 small">Monitor stock levels and manage inventory</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-outline-primary" id="import-excel-btn" title="Import medicines from Excel">
+                        <i class="fas fa-file-excel me-1"></i>Import Excel
+                    </button>
+                    <button class="btn btn-outline-success" id="export-stock-btn" title="Export stock report">
+                        <i class="fas fa-download me-1"></i>Export
+                    </button>
+                    <button class="btn btn-warning" id="low-stock-alert-btn" data-bs-toggle="modal" data-bs-target="#low-stock-modal" title="View low stock alerts">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Low Stock Alert
+                    </button>
+                    <button class="btn btn-primary" id="refresh-stock-btn" title="Refresh stock data">
+                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Stock Summary Cards -->
+        <div class="row mb-4 g-4">
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card border-0 shadow-sm h-100 gradient-card-success">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <div class="icon-circle bg-success bg-opacity-20 text-success">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-1 fw-bold text-success" id="total-in-stock">0</h3>
+                        <p class="card-text text-muted mb-0 fw-semibold">Items In Stock</p>
+                        <small class="text-success">Available for sale</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card border-0 shadow-sm h-100 gradient-card-warning">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <div class="icon-circle bg-warning bg-opacity-20 text-warning">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-1 fw-bold text-warning" id="low-stock-count">0</h3>
+                        <p class="card-text text-muted mb-0 fw-semibold">Low Stock Items</p>
+                        <small class="text-warning">Need reordering</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card border-0 shadow-sm h-100 gradient-card-danger">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <div class="icon-circle bg-danger bg-opacity-20 text-danger">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-1 fw-bold text-danger" id="out-of-stock-count">0</h3>
+                        <p class="card-text text-muted mb-0 fw-semibold">Out of Stock</p>
+                        <small class="text-danger">Unavailable</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card border-0 shadow-sm h-100 gradient-card-info">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <div class="icon-circle bg-info bg-opacity-20 text-info">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-1 fw-bold text-info" id="expired-count">0</h3>
+                        <p class="card-text text-muted mb-0 fw-semibold">Expired Items</p>
+                        <small class="text-info">Requires disposal</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light border-0">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-filter me-2 text-primary"></i>Advanced Filters & Search
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <label for="stock-filter" class="form-label fw-semibold">Stock Status</label>
+                        <select class="form-select" id="stock-filter">
+                            <option value="all">All Items</option>
+                            <option value="in-stock">In Stock</option>
+                            <option value="low-stock">Low Stock (< 10)</option>
+                            <option value="out-of-stock">Out of Stock</option>
+                            <option value="near-expiry">Near Expiry (30 days)</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label for="category-filter" class="form-label fw-semibold">Category</label>
+                        <select class="form-select" id="category-filter">
+                            <option value="">All Categories</option>
+                            <option value="Painkillers">Painkillers</option>
+                            <option value="Antibiotics">Antibiotics</option>
+                            <option value="Vitamins">Vitamins</option>
+                            <option value="Antihistamines">Antihistamines</option>
+                            <option value="Supplements">Supplements</option>
+                            <option value="First Aid">First Aid</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-8">
+                        <label for="stock-search" class="form-label fw-semibold">Search Medicine</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-pills"></i></span>
+                            <input type="text" class="form-control" id="stock-search" placeholder="Search by medicine name...">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label fw-semibold">Actions</label>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-fill" id="apply-stock-filters-btn">
+                                <i class="fas fa-filter me-1"></i>Apply
+                            </button>
+                            <button class="btn btn-outline-secondary" id="clear-stock-filters-btn" title="Clear all filters">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-table me-2 text-primary"></i>Stock Inventory
+                </h5>
+                <div class="d-flex align-items-center gap-3">
+                    <small class="text-muted" id="stock-count-badge">Total: 0 items</small>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary active" data-view="table">
+                            <i class="fas fa-table"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-view="grid">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="stock-table">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-hashtag me-1"></i>ID
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-pills me-1"></i>Medicine
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-tags me-1"></i>Category
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-cubes me-1"></i>Current Stock
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Min. Stock
+                                </th>
+                                <th class="border-0 fw-semibold text-center">
+                                    <i class="fas fa-info-circle me-1"></i>Status
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-calendar-alt me-1"></i>Expiry Date
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-clock me-1"></i>Days to Expiry
+                                </th>
+                                <th class="border-0 fw-semibold text-center">
+                                    <i class="fas fa-cogs me-1"></i>Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="stock-table-body">
+                            <!-- Data will be loaded here -->
+                            <tr>
+                                <td colspan="9" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Loading stock data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-3 border-top bg-light">
+                    <div id="stock-pagination-container" class="d-flex justify-content-between align-items-center">
+                        <div id="stock-results-info" class="text-muted">Loading...</div>
+                        <nav id="stock-pagination-nav" aria-label="Stock pagination"></nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Low Stock Alert Modal -->
+        <div class="modal fade" id="low-stock-modal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alert Dashboard
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <div>
+                                <strong>Attention Required!</strong> The following medicines are running low on stock and need immediate reordering.
+                            </div>
+                        </div>
+                        <div id="low-stock-alerts">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-warning" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Loading low stock alerts...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Close
+                        </button>
+                        <button type="button" class="btn btn-warning" onclick="location.href='modern-medicines.html'">
+                            <i class="fas fa-plus me-1"></i>Restock Items
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Stock Modal -->
+        <div class="modal fade" id="update-stock-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-edit me-2"></i>Update Stock Quantity
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Medicine Name</label>
+                            <input type="text" class="form-control" id="update-medicine-name" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Current Stock</label>
+                            <input type="number" class="form-control" id="update-current-stock" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">New Stock Quantity <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="update-new-stock" min="0" placeholder="Enter new stock quantity" required>
+                            <div class="form-text">Enter the updated stock quantity for this medicine</div>
+                        </div>
+                        <input type="hidden" id="update-medicine-id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" id="confirm-update-stock">
+                            <i class="fas fa-check me-1"></i>Update Stock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Excel Modal -->
+        <div class="modal fade" id="import-excel-modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-file-excel me-2"></i>Import Medicines from Excel
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Instructions:</strong> Upload an Excel file (.xlsx) with columns: Name, Category, Description, Price, Quantity, Manufacturer, Batch Number, Expiry Date
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="excel-file-input" class="form-label fw-bold">
+                                Select Excel File <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control" id="excel-file-input" accept=".xlsx,.xls" required>
+                            <div class="form-text">
+                                <i class="fas fa-download me-1"></i>
+                                <a href="#" id="download-template" class="text-decoration-none">Download Excel Template</a>
+                            </div>
+                        </div>
+
+                        <div id="excel-preview-section" style="display: none;">
+                            <hr>
+                            <h6 class="fw-bold">Preview Data (First 5 rows)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" id="excel-preview-table">
+                                    <thead class="table-light">
+                                        <tr id="excel-preview-header"></tr>
+                                    </thead>
+                                    <tbody id="excel-preview-body"></tbody>
+                                </table>
+                            </div>
+                            <div class="alert alert-success" id="excel-record-count"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-success" id="confirm-import-btn" disabled>
+                            <i class="fas fa-upload me-1"></i>Import Medicines
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- SheetJS for Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Utility Functions -->
+<script src="../js/utils.js?v=1.2"></script>
+<!-- Custom JavaScript -->
+<script src="../js/stock.js?v=1.3"></script>
+
+<script>
+let excelData = null;
+
+$(document).ready(function() {
+    // Check if user is logged in
+    if (!sessionStorage.getItem('user_role')) {
+        window.location.href = '../login.html';
+        return;
+    }
+    
+    // Initialize stock management
+    if (window.Stock) {
+        Stock.init();
+    }
+
+    // Import Excel Button
+    $('#import-excel-btn').on('click', function() {
+        $('#import-excel-modal').modal('show');
+    });
+
+    // Excel File Input Change
+    $('#excel-file-input').on('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            readExcelFile(file);
+        }
+    });
+
+    // Confirm Import Button
+    $('#confirm-import-btn').on('click', function() {
+        if (excelData && excelData.length > 0) {
+            importMedicines(excelData);
+        }
+    });
+
+    // Download Template
+    $('#download-template').on('click', function(e) {
+        e.preventDefault();
+        downloadExcelTemplate();
+    });
+});
+
+// Read Excel File
+function readExcelFile(file) {
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+            
+            if (jsonData.length === 0) {
+                alert('The Excel file is empty. Please upload a file with data.');
+                return;
+            }
+            
+            excelData = jsonData;
+            previewExcelData(jsonData);
+            $('#confirm-import-btn').prop('disabled', false);
+            
+        } catch (error) {
+            console.error('Error reading Excel file:', error);
+            alert('Error reading Excel file. Please make sure it is a valid Excel file.');
+        }
+    };
+    
+    reader.readAsArrayBuffer(file);
+}
+
+// Preview Excel Data
+function previewExcelData(data) {
+    const previewSection = $('#excel-preview-section');
+    const headerRow = $('#excel-preview-header');
+    const bodyRows = $('#excel-preview-body');
+    const recordCount = $('#excel-record-count');
+    
+    // Clear previous preview
+    headerRow.empty();
+    bodyRows.empty();
+    
+    if (data.length === 0) return;
+    
+    // Get headers from first row
+    const headers = Object.keys(data[0]);
+    headers.forEach(header => {
+        headerRow.append(`<th>${header}</th>`);
+    });
+    
+    // Show first 5 rows
+    const previewData = data.slice(0, 5);
+    previewData.forEach(row => {
+        let rowHtml = '<tr>';
+        headers.forEach(header => {
+            rowHtml += `<td>${row[header] || ''}</td>`;
+        });
+        rowHtml += '</tr>';
+        bodyRows.append(rowHtml);
+    });
+    
+    recordCount.html(`<i class="fas fa-check-circle me-2"></i><strong>Total Records:</strong> ${data.length} medicines ready to import`);
+    previewSection.show();
+}
+
+// Import Medicines
+function importMedicines(data) {
+    const confirmBtn = $('#confirm-import-btn');
+    const originalText = confirmBtn.html();
+    
+    confirmBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Importing...');
+    
+    $.ajax({
+        url: '../api/bulk_import.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ medicines: data }),
+        success: function(response) {
+            if (response.success) {
+                alert(`Successfully imported ${response.imported || data.length} medicines!`);
+                $('#import-excel-modal').modal('hide');
+                
+                // Reset form
+                $('#excel-file-input').val('');
+                $('#excel-preview-section').hide();
+                excelData = null;
+                
+                // Reload stock data
+                if (window.Stock) {
+                    Stock.loadStockData();
+                }
+            } else {
+                alert('Error importing medicines: ' + (response.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Import error:', error);
+            alert('Failed to import medicines. Please try again.');
+        },
+        complete: function() {
+            confirmBtn.prop('disabled', false).html(originalText);
+        }
+    });
+}
+
+// Download Excel Template
+function downloadExcelTemplate() {
+    const template = [
+        {
+            'Name': 'Aspirin 500mg',
+            'Category': 'Painkillers',
+            'Description': 'Pain reliever and fever reducer',
+            'Price': 5.99,
+            'Quantity': 100,
+            'Manufacturer': 'PharmaCorp',
+            'Batch Number': 'BATCH001',
+            'Expiry Date': '2025-12-31'
+        },
+        {
+            'Name': 'Amoxicillin 250mg',
+            'Category': 'Antibiotics',
+            'Description': 'Antibiotic for bacterial infections',
+            'Price': 12.50,
+            'Quantity': 50,
+            'Manufacturer': 'MediPharm',
+            'Batch Number': 'BATCH002',
+            'Expiry Date': '2026-06-30'
+        }
+    ];
+    
+    const ws = XLSX.utils.json_to_sheet(template);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Medicines');
+    XLSX.writeFile(wb, 'medicine_import_template.xlsx');
+}
+</script>
+
+<!-- Sidebar JS -->
+<script src="../js/modern-sidebar.js"></script>
+
+<script>
+// Logout functions
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

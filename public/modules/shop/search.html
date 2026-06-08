@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>Browse Medicines - Muneeb Drug House</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/medical-theme.css">
+    <link rel="stylesheet" href="../../css/style.css?v=5.0">
+
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #00b4d8;
+            --primary-dark: #023e8a;
+            --secondary: #48cae4;
+            --accent: #90e0ef;
+            --success: #2a9d8f;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --dark: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+        }
+
+        /* ============ COMPACT SEARCH HERO ============ */
+        .search-hero {
+            background: linear-gradient(135deg, #023e8a 0%, #0077b6 40%, #00b4d8 80%, #48cae4 100%);
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 80px 0 50px;
+            overflow: visible;
+            z-index: 100;
+        }
+
+        .hero-bg-layers {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-mesh {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(144, 224, 239, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(72, 202, 228, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 180, 216, 0.2) 0%, transparent 60%);
+            animation: meshMove 20s ease-in-out infinite;
+        }
+
+        @keyframes meshMove {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        /* Floating Medical Images */
+        .floating-med-images {
+            position: absolute;
+            inset: 0;
+        }
+
+        .float-med-img {
+            position: absolute;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            animation: floatMed 10s ease-in-out infinite;
+        }
+
+        .float-med-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .float-med-img::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.3), transparent);
+            z-index: 1;
+        }
+
+        .float-med-img-1 { display: none; }
+        .float-med-img-2 { display: none; }
+        .float-med-img-3 { display: none; }
+        .float-med-img-4 { display: none; }
+
+        @keyframes floatMed {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-12px) rotate(2deg) scale(1.02); }
+            50% { transform: translateY(-5px) rotate(0deg) scale(1.03); }
+            75% { transform: translateY(-18px) rotate(-2deg) scale(1.02); }
+        }
+
+        /* Floating Icons - Hidden for compact layout */
+        .hero-float-icons {
+            display: none;
+        }
+
+        .hero-float-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: iconBob 6s ease-in-out infinite;
+        }
+
+        .hero-float-icon i { font-size: 1.5rem; color: white; }
+
+        .hero-float-icon:nth-child(1) { top: 15%; left: 8%; animation-delay: 0s; }
+        .hero-float-icon:nth-child(2) { top: 60%; left: 3%; animation-delay: 2s; }
+        .hero-float-icon:nth-child(3) { bottom: 10%; left: 15%; animation-delay: 4s; }
+
+        @keyframes iconBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Glowing Orbs */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbPulse 12s ease-in-out infinite;
+        }
+
+        .glow-orb-1 { width: 200px; height: 200px; background: rgba(144, 224, 239, 0.35); top: -50px; right: -30px; }
+        .glow-orb-2 { width: 150px; height: 150px; background: rgba(0, 180, 216, 0.25); bottom: -40px; left: -40px; animation-delay: 6s; }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: none;
+        }
+
+        .hero-badge i { color: #fbbf24; }
+
+        .hero-title {
+            font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+            font-weight: 900;
+            color: white;
+            margin-bottom: 8px;
+            line-height: 1.1;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--accent), #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 500px;
+            margin: 0 auto 15px;
+            line-height: 1.4;
+        }
+
+        /* Compact Search Box */
+        .search-box-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
+            padding: 6px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box .search-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .search-box .search-icon i { color: white; font-size: 1.1rem; }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            padding: 12px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .search-box input::placeholder { color: var(--gray-500); }
+        .search-box input:focus { outline: none; }
+
+        .search-box .search-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 119, 182, 0.4);
+        }
+
+        /* Quick Filters in Hero */
+        .quick-filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-pill:hover, .filter-pill.active {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .filter-pill i { font-size: 1rem; }
+
+        /* Stats Row - Hidden for compact layout */
+        .stats-row {
+            display: none;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 5px;
+        }
+
+        /* ============ MAIN CONTENT SECTION ============ */
+        .main-content {
+            margin-top: -40px;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 80px;
+        }
+
+        .content-container {
+            background: white;
+            border-radius: 30px 30px 0 0;
+            padding: 35px 0;
+            box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Results Header */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .results-info h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .results-info p {
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            background: var(--gray-100);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .action-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Categories Grid - Hidden */
+        .categories-section {
+            display: none;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.05), rgba(0, 180, 216, 0.05));
+            border: 2px solid var(--gray-100);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover, .category-card.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.1), rgba(0, 180, 216, 0.1));
+            transform: translateY(-3px);
+        }
+
+        .category-card i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .category-card .name {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        /* Medicine Grid */
+        .medicine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Advanced Medicine Card */
+        .medicine-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-100);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 119, 182, 0.15);
+            border-color: var(--primary-light);
+        }
+
+        .card-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: rotateGradient 8s linear infinite;
+        }
+
+        @keyframes rotateGradient {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-image i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 1;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .card-badge.in-stock {
+            background: rgba(42, 157, 143, 0.9);
+            color: white;
+        }
+
+        .card-badge.low-stock {
+            background: rgba(251, 191, 36, 0.9);
+            color: white;
+        }
+
+        .card-badge.out-stock {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .card-category {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(0, 119, 182, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .card-desc {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .card-stock {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .btn-view-details-search {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 119, 182, 0.2);
+            margin-bottom: 15px;
+        }
+
+        .btn-view-details-search:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+            color: white;
+        }
+
+        .btn-view-details-search i {
+            font-size: 0.9rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .qty-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--primary);
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .qty-input {
+            width: 45px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .add-to-cart-btn {
+            flex: 1;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-to-cart-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.3);
+        }
+
+        .add-to-cart-btn:disabled {
+            background: var(--gray-200);
+            color: var(--gray-500);
+            cursor: not-allowed;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* No Results State */
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .no-results-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .no-results-icon i { font-size: 3rem; color: var(--gray-500); }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: var(--gray-500);
+            margin-bottom: 25px;
+        }
+
+        /* Suggestions Dropdown */
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 99999999 !important;
+            display: none;
+        }
+
+        /* Ensure search wrapper is above all content */
+        .search-box-wrapper {
+            position: relative;
+            z-index: 99999 !important;
+        }
+
+        .search-box {
+            position: relative;
+            z-index: 99999 !important;
+        }
+
+        /* Lower z-index for other sections */
+        .quick-filters {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-row {
+            position: relative;
+            z-index: 1;
+        }
+
+        .suggestion-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .suggestion-item:hover {
+            background: var(--gray-50);
+        }
+
+        .suggestion-item:last-child { border-bottom: none; }
+
+        .suggestion-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .suggestion-text { flex: 1; }
+        .suggestion-name { font-weight: 700; color: var(--dark); }
+        .suggestion-category { font-size: 0.8rem; color: var(--gray-500); }
+        .suggestion-price { font-weight: 800; color: var(--primary); }
+
+        /* Medicine Results Section - lower z-index */
+        .search-results {
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-filter-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Main content wrapper lower z-index */
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Floating Cart Button */
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .floating-cart-btn {
+            padding: 18px 30px;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(42, 157, 143, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .floating-cart-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(42, 157, 143, 0.5);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 992px) {
+            .medicine-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-hero {
+                min-height: auto;
+                padding: 75px 0 40px;
+            }
+
+            .float-med-img { display: none; }
+
+            .hero-title { font-size: 1.5rem; }
+
+            .search-box {
+                flex-direction: column;
+                padding: 12px;
+            }
+
+            .search-box .search-icon { display: none; }
+
+            .search-box input {
+                text-align: center;
+            }
+
+            .search-box .search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-filters {
+                gap: 8px;
+            }
+
+            .filter-pill {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+
+            .stats-row {
+                gap: 25px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .medicine-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- VERSION 2.0 - ADVANCED SEARCH PAGE -->
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg" id="mainNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="../frontend/index.html">
+            <div class="brand-logo"><i class="fas fa-plus-circle"></i></div>
+            <div class="brand-text">
+                <span class="brand-name">Muneeb Drug House</span>
+                <span class="brand-tagline">Your Health Partner</span>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="../frontend/index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="search.html"><i class="fas fa-capsules"></i><span>Medicines</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="../frontend/about.html"><i class="fas fa-info-circle"></i><span>About Us</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="track-order.html"><i class="fas fa-truck-medical"></i><span>Track Order</span></a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a class="btn btn-cart" href="cart.html">
+                    <i class="fas fa-shopping-cart"></i><span class="cart-text">Cart</span>
+                    <span class="cart-badge" id="nav-cart-count">0</span>
+                </a>
+                <!-- Guest Actions (shown when not logged in) -->
+                <div class="guest-actions" id="guestActions" style="display: flex;">
+                    <a class="btn btn-login" href="../auth/login.html"><i class="fas fa-user-md"></i><span>Login</span></a>
+                </div>
+                <!-- User Actions (shown when logged in) -->
+                <div class="user-actions" id="userActions" style="display: none;">
+                    <div class="dropdown">
+                        <button class="btn btn-user dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="navUserName">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="../customer/profile.html"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="../customer/orders.html"><i class="fas fa-box me-2"></i>My Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(event)"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Search Hero Section -->
+<section class="search-hero">
+    <div class="hero-bg-layers">
+        <div class="hero-mesh"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+    </div>
+
+    <div class="floating-med-images">
+        <div class="float-med-img float-med-img-1">
+            <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop" alt="Medicine">
+        </div>
+        <div class="float-med-img float-med-img-2">
+            <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=300&h=300&fit=crop" alt="Pills">
+        </div>
+        <div class="float-med-img float-med-img-3">
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=300&fit=crop" alt="Healthcare">
+        </div>
+        <div class="float-med-img float-med-img-4">
+            <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=300&h=300&fit=crop" alt="Pharmacy">
+        </div>
+    </div>
+
+    <div class="hero-float-icons">
+        <div class="hero-float-icon"><i class="fas fa-pills"></i></div>
+        <div class="hero-float-icon"><i class="fas fa-capsules"></i></div>
+        <div class="hero-float-icon"><i class="fas fa-prescription-bottle-alt"></i></div>
+    </div>
+
+    <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                <span>Over 5,000+ Quality Medicines</span>
+            </div>
+            <h1 class="hero-title">Find Your <span>Medicines</span></h1>
+            <p class="hero-subtitle">Search from our comprehensive database of quality medicines. Fast delivery, genuine products, and trusted by thousands of customers.</p>
+
+            <!-- Search Box -->
+            <div class="search-box-wrapper" data-aos="fade-up" data-aos-delay="200">
+                <div class="search-box" style="position: relative;">
+                    <div class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" id="medicine-search-input" placeholder="Search medicines by name, category, or condition..." autocomplete="off">
+                    <button class="search-btn" id="search-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        Search
+                    </button>
+                    <div id="main-search-suggestions" class="suggestions-dropdown"></div>
+                </div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="quick-filters" data-aos="fade-up" data-aos-delay="300">
+                <span class="filter-pill" data-filter="painkiller">
+                    <i class="fas fa-pills"></i> Painkillers
+                </span>
+                <span class="filter-pill" data-filter="antibiotic">
+                    <i class="fas fa-capsules"></i> Antibiotics
+                </span>
+                <span class="filter-pill" data-filter="vitamin">
+                    <i class="fas fa-leaf"></i> Vitamins
+                </span>
+                <span class="filter-pill" data-filter="heart">
+                    <i class="fas fa-heart"></i> Heart Care
+                </span>
+                <span class="filter-pill" data-filter="diabetes">
+                    <i class="fas fa-tint"></i> Diabetes
+                </span>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-row" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-item">
+                    <div class="stat-value">5000+</div>
+                    <div class="stat-label">Medicines</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">50+</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Genuine</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="content-container">
+        <div class="container">
+            <!-- Results Header -->
+            <div class="results-header" data-aos="fade-up">
+                <div class="results-info">
+                    <h2>Browse Medicines</h2>
+                    <p id="results-count">Loading medicines...</p>
+                </div>
+                <div class="results-actions">
+                    <button class="action-btn" id="sort-btn">
+                        <i class="fas fa-sort"></i> Sort
+                    </button>
+                    <button class="action-btn active" id="grid-view-btn">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="action-btn" id="list-view-btn">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories Section -->
+            <div class="categories-section" data-aos="fade-up">
+                <div class="categories-grid" id="categories-grid">
+                    <div class="category-card" data-category="all">
+                        <i class="fas fa-border-all"></i>
+                        <div class="name">All</div>
+                    </div>
+                    <div class="category-card" data-category="painkiller">
+                        <i class="fas fa-pills"></i>
+                        <div class="name">Painkillers</div>
+                    </div>
+                    <div class="category-card" data-category="antibiotic">
+                        <i class="fas fa-capsules"></i>
+                        <div class="name">Antibiotics</div>
+                    </div>
+                    <div class="category-card" data-category="vitamin">
+                        <i class="fas fa-leaf"></i>
+                        <div class="name">Vitamins</div>
+                    </div>
+                    <div class="category-card" data-category="heart">
+                        <i class="fas fa-heart"></i>
+                        <div class="name">Heart Care</div>
+                    </div>
+                    <div class="category-card" data-category="diabetes">
+                        <i class="fas fa-tint"></i>
+                        <div class="name">Diabetes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state" id="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Loading medicines...</p>
+            </div>
+
+            <!-- Medicine Grid -->
+            <div class="medicine-grid" id="medicine-list" data-aos="fade-up">
+                <!-- Medicine cards will be inserted here -->
+            </div>
+
+            <!-- No Results -->
+            <div class="no-results" id="no-results" style="display: none;">
+                <div class="no-results-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No Medicines Found</h3>
+                <p>Try adjusting your search terms or browse our categories</p>
+                <button class="add-to-cart-btn" onclick="performSearch('')" style="max-width: 200px; margin: 0 auto;">
+                    <i class="fas fa-redo"></i> Show All
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Floating Cart Button -->
+<div class="floating-cart" id="floating-cart">
+    <button class="floating-cart-btn" onclick="window.location.href='cart.html'">
+        <i class="fas fa-shopping-cart"></i>
+        Go to Cart (<span id="float-cart-count">0</span>)
+    </button>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand">
+                    <div class="footer-logo"><i class="fas fa-plus-circle"></i></div>
+                    <span class="footer-name">Muneeb Drug House</span>
+                </div>
+                <p class="footer-description">Your trusted partner in health and wellness since 2010.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-heading">Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="../frontend/index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="search.html"><i class="fas fa-chevron-right"></i> Medicines</a></li>
+                    <li><a href="../frontend/about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="track-order.html"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Contact Info</h5>
+                <ul class="footer-links footer-contact">
+                    <li><i class="fas fa-phone-alt"></i><a href="tel:03211532010">0321-1532010</a></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:info@waqardrughouse.com">info@waqardrughouse.com</a></li>
+                    <li><i class="fas fa-clock"></i><span>24/7 Emergency Service</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Muneeb Drug House. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AOS Animation -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- API Client -->
+<script src="../../js/utils.js"></script>
+<script src="../../js/api-client.js"></script>
+<!-- Custom JS -->
+<script src="../../js/script.js?v=5.0"></script>
+
+<script>
+// Check login status and update navbar
+function updateNavbarAuth() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const guestActions = document.getElementById('guestActions');
+    const userActions = document.getElementById('userActions');
+    const navUserName = document.getElementById('navUserName');
+
+    if (!guestActions || !userActions) return;
+
+    if (user) {
+        guestActions.style.display = 'none';
+        userActions.style.display = 'flex';
+        if (navUserName) {
+            navUserName.textContent = user.first_name || user.username || 'Account';
+        }
+    } else {
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+    }
+}
+
+// Logout function
+function logout(e) {
+    if (e) e.preventDefault();
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    window.location.href = '../frontend/index.html';
+}
+
+// Initialize navbar auth on load
+document.addEventListener('DOMContentLoaded', updateNavbarAuth);
+if (document.readyState !== 'loading') updateNavbarAuth();
+
+// Initialize AOS
+AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 50 });
+
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Current state
+let currentView = 'grid';
+let currentCategory = 'all';
+
+// DOM Ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Load initial medicines
+    performSearch('');
+
+    // Initialize autocomplete
+    initializeSearchAutocomplete();
+
+    // Update cart count
+    updateFloatingCart();
+
+    // Check URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('search');
+    if (searchTerm) {
+        document.getElementById('medicine-search-input').value = searchTerm;
+        performSearch(searchTerm);
+    }
+});
+
+// Search button click
+document.getElementById('search-btn').addEventListener('click', function() {
+    const searchTerm = document.getElementById('medicine-search-input').value;
+    performSearch(searchTerm);
+});
+
+// Search on Enter
+document.getElementById('medicine-search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch(this.value);
+        hideSuggestions();
+    }
+});
+
+// Quick filter pills
+document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const filter = this.dataset.filter;
+        document.getElementById('medicine-search-input').value = filter;
+        performSearch(filter);
+    });
+});
+
+// Category cards
+document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', function() {
+        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        currentCategory = this.dataset.category;
+
+        if (currentCategory === 'all') {
+            performSearch('');
+        } else {
+            performSearch(currentCategory);
+        }
+    });
+});
+
+// View toggle
+document.getElementById('grid-view-btn').addEventListener('click', function() {
+    currentView = 'grid';
+    document.getElementById('grid-view-btn').classList.add('active');
+    document.getElementById('list-view-btn').classList.remove('active');
+    document.getElementById('medicine-list').style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+});
+
+document.getElementById('list-view-btn').addEventListener('click', function() {
+    currentView = 'list';
+    document.getElementById('list-view-btn').classList.add('active');
+    document.getElementById('grid-view-btn').classList.remove('active');
+    document.getElementById('medicine-list').style.gridTemplateColumns = '1fr';
+});
+
+// Perform search
+function performSearch(searchTerm = '') {
+    const medicineList = document.getElementById('medicine-list');
+    const loadingState = document.getElementById('loading-state');
+    const noResults = document.getElementById('no-results');
+    const resultsCount = document.getElementById('results-count');
+
+    // Show loading
+    loadingState.style.display = 'block';
+    medicineList.innerHTML = '';
+    noResults.style.display = 'none';
+
+    // API call
+    const params = { limit: 50 };
+    if (searchTerm) params.search = searchTerm;
+
+    api.getMedicines(params)
+        .then(data => {
+            loadingState.style.display = 'none';
+
+            const medicines = data.data || data.medicines || [];
+
+            if (medicines.length > 0) {
+                renderMedicines(medicines);
+                resultsCount.textContent = searchTerm
+                    ? `Found ${medicines.length} medicine(s) for "${searchTerm}"`
+                    : `Showing ${medicines.length} medicines`;
+            } else {
+                noResults.style.display = 'block';
+                resultsCount.textContent = 'No results found';
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            loadingState.style.display = 'none';
+            noResults.style.display = 'block';
+            resultsCount.textContent = 'Error loading medicines';
+        });
+}
+
+// Render medicines
+function renderMedicines(medicines) {
+    const medicineList = document.getElementById('medicine-list');
+
+    const html = medicines.map(medicine => {
+        const stockStatus = medicine.quantity > 10 ? 'in-stock' : medicine.quantity > 0 ? 'low-stock' : 'out-stock';
+        const stockText = medicine.quantity > 10 ? 'In Stock' : medicine.quantity > 0 ? 'Low Stock' : 'Out of Stock';
+        const isDisabled = medicine.quantity <= 0;
+
+        return `
+            <div class="medicine-card">
+                <div class="card-image">
+                    <span class="card-badge ${stockStatus}">${stockText}</span>
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="card-body">
+                    <span class="card-category">${medicine.category || 'General'}</span>
+                    <h3 class="card-title">${escapeHtml(medicine.name)}</h3>
+                    <p class="card-desc">${escapeHtml(medicine.description || 'Quality medicine for your health needs')}</p>
+                    <div class="card-price-row">
+                        <span class="card-price">Rs. ${parseFloat(medicine.price).toFixed(2)}</span>
+                        <span class="card-stock">Stock: ${medicine.quantity}</span>
+                    </div>
+                    <a href="medicine-detail.html?id=${medicine.id}" class="btn-view-details-search">
+                        <i class="fas fa-info-circle"></i>
+                        <span>View Details</span>
+                    </a>
+                    <div class="card-actions">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="decreaseQty(${medicine.id})" ${isDisabled ? 'disabled' : ''}>
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" class="qty-input" id="qty-${medicine.id}" value="1" min="1" max="${medicine.quantity}" ${isDisabled ? 'disabled' : ''}>
+                            <button class="qty-btn" onclick="increaseQty(${medicine.id}, ${medicine.quantity})" ${isDisabled ? 'disabled' : ''}>
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addMedicineToCart(${medicine.id}, '${escapeHtml(medicine.name).replace(/'/g, "\\'")}', ${medicine.price}, ${medicine.quantity})" ${isDisabled ? 'disabled' : ''}>
+                            <i class="fas fa-cart-plus"></i>
+                            ${isDisabled ? 'Out of Stock' : 'Add'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    medicineList.innerHTML = html;
+}
+
+// Escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
+}
+
+// Quantity controls
+function increaseQty(medicineId, maxQty) {
+    const input = document.getElementById('qty-' + medicineId);
+    if (input) {
+        const current = parseInt(input.value) || 1;
+        if (current < maxQty) {
+            input.value = current + 1;
+        } else {
+            showToast(`Maximum ${maxQty} units available`, 'warning');
+        }
+    }
+}
+
+function decreaseQty(medicineId) {
+    const input = document.getElementById('qty-' + medicineId);
+    if (input) {
+        const current = parseInt(input.value) || 1;
+        if (current > 1) {
+            input.value = current - 1;
+        }
+    }
+}
+
+// Add to cart
+function addMedicineToCart(medicineId, medicineName, price, maxStock) {
+    const qtyInput = document.getElementById('qty-' + medicineId);
+    const quantity = parseInt(qtyInput?.value) || 1;
+
+    if (quantity > maxStock) {
+        showToast(`Only ${maxStock} units available!`, 'warning');
+        return;
+    }
+
+    // Get cart
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Check existing
+    const existing = cart.find(item => item.id == medicineId);
+
+    if (existing) {
+        const newQty = existing.quantity + quantity;
+        if (newQty > maxStock) {
+            showToast(`Cannot add more. Max ${maxStock} units.`, 'warning');
+            return;
+        }
+        existing.quantity = newQty;
+    } else {
+        cart.push({
+            id: medicineId,
+            name: medicineName,
+            price: parseFloat(price),
+            quantity: quantity,
+            stock: maxStock
+        });
+    }
+
+    // Save
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Reset qty
+    if (qtyInput) qtyInput.value = 1;
+
+    // Update UI
+    updateFloatingCart();
+    if (typeof updateCartCount === 'function') updateCartCount();
+
+    // Show toast
+    showToast(`${medicineName} added to cart!`, 'success');
+}
+
+// Update floating cart
+function updateFloatingCart() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    const floatingCart = document.getElementById('floating-cart');
+    const floatCount = document.getElementById('float-cart-count');
+    const navCount = document.getElementById('nav-cart-count');
+
+    if (floatCount) floatCount.textContent = total;
+    if (navCount) navCount.textContent = total;
+
+    if (floatingCart) {
+        floatingCart.style.display = total > 0 ? 'block' : 'none';
+    }
+}
+
+// Toast notification
+function showToast(message, type = 'info') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 99999;';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+
+    toast.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    toast.style.cssText = `
+        background: ${bgColor};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease;
+        font-weight: 600;
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Autocomplete
+function initializeSearchAutocomplete() {
+    const searchInput = document.getElementById('medicine-search-input');
+    const suggestionsContainer = document.getElementById('main-search-suggestions');
+    let searchTimeout;
+
+    if (!searchInput || !suggestionsContainer) return;
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        clearTimeout(searchTimeout);
+
+        if (query.length < 2) {
+            hideSuggestions();
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            fetchSuggestions(query);
+        }, 300);
+    });
+
+    searchInput.addEventListener('focus', function() {
+        if (this.value.length >= 2) {
+            suggestionsContainer.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+
+    function fetchSuggestions(query) {
+        api.searchMedicines(query)
+            .then(data => {
+                const suggestions = data.data || data.medicines || [];
+                if (suggestions.length > 0) {
+                    displaySuggestions(suggestions.slice(0, 8));
+                } else {
+                    hideSuggestions();
+                }
+            })
+            .catch(error => {
+                console.error('Suggestions error:', error);
+                hideSuggestions();
+            });
+    }
+
+    function displaySuggestions(suggestions) {
+        suggestionsContainer.innerHTML = suggestions.map(s => `
+            <div class="suggestion-item" onclick="selectSuggestion('${escapeHtml(s.name).replace(/'/g, "\\'")}')">
+                <div class="suggestion-icon"><i class="fas fa-pills"></i></div>
+                <div class="suggestion-text">
+                    <div class="suggestion-name">${escapeHtml(s.name)}</div>
+                    <div class="suggestion-category">${s.category || 'General'}</div>
+                </div>
+                <span class="suggestion-price">Rs. ${parseFloat(s.price).toFixed(2)}</span>
+            </div>
+        `).join('');
+
+        suggestionsContainer.style.display = 'block';
+    }
+}
+
+function selectSuggestion(name) {
+    document.getElementById('medicine-search-input').value = name;
+    hideSuggestions();
+    performSearch(name);
+}
+
+function hideSuggestions() {
+    const container = document.getElementById('main-search-suggestions');
+    if (container) container.style.display = 'none';
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100px); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>

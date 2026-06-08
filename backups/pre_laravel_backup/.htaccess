@@ -1,0 +1,21 @@
+# Enable RewriteEngine
+RewriteEngine On
+
+# Redirect root to frontend
+RewriteRule ^$ modules/frontend/index.html [L]
+
+# If the requested file doesn't exist, don't rewrite
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Allow direct access to modules
+RewriteRule ^modules/ - [L]
+
+# Allow direct access to CSS, JS, and images
+RewriteRule ^(css|js|images)/ - [L]
+
+# Prevent direct access to config and includes
+RewriteRule ^(config|includes)/ - [F,L]
+
+# Set default error document
+ErrorDocument 404 /waqar/modules/frontend/index.html

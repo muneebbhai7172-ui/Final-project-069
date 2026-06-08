@@ -1,0 +1,190 @@
+/* Enhanced Modern Button Styles */
+.btn {
+    font-weight: 600;
+    border-radius: 15px;
+    padding: 0.9rem 2rem;
+    transition: all var(--transition-normal) var(--ease-bounce);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: 0.025em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode theme toggle button */
+[data-theme="dark"] .btn-outline-secondary {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .btn-outline-secondary:hover {
+    background: var(--bg-muted);
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+/* Dark mode primary buttons */
+[data-theme="dark"] .btn-primary {
+    background: var(--primary-gradient);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .btn-outline-primary:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: all var(--transition-normal) var(--ease-in-out);
+    z-index: 0;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.6s ease;
+    z-index: 0;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn > * {
+    position: relative;
+    z-index: 1;
+}
+
+.btn:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: var(--button-glow);
+}
+
+.btn:active {
+    transform: translateY(-2px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    background-size: 200% 200%;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid transparent;
+    animation: gradientPulse 4s ease-in-out infinite;
+}
+
+.btn-primary:hover {
+    color: white;
+    filter: brightness(1.15) saturate(1.2);
+    box-shadow: var(--button-glow);
+    animation: none;
+    background-position: 100% 50%;
+}
+
+.btn-secondary {
+    background: var(--secondary-gradient);
+    background-size: 200% 200%;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    animation: gradientPulse 4s ease-in-out infinite 1s;
+}
+
+.btn-outline-primary {
+    background: var(--card-gradient);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.btn-outline-primary::before {
+    background: linear-gradient(90deg, transparent, rgba(13, 148, 136, 0.1), transparent);
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--button-glow);
+}
+
+.btn-light {
+    background: var(--light-gradient);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Button Sizes */
+.btn-lg {
+    padding: 1.1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 18px;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+}
+
+.bg-glass {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Ripple Effect for Buttons */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: rippleAnimation 0.6s linear;
+    pointer-events: none;
+}
+
+/* Enhanced Button Animations */
+.pulse-button {
+    animation: buttonPulse 2s ease-in-out infinite;
+}
+
+.glow-button:hover {
+    box-shadow: 0 0 30px rgba(13, 148, 136, 0.8), 0 0 60px rgba(20, 184, 166, 0.6);
+    animation: glow 1.5s ease-in-out infinite alternate;
+}

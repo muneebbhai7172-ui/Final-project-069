@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Waqar Drug House</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components/_modern-sidebar.css">
+    
+    <style>
+        body {
+            background: #f5f7fa;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .modern-sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-dispatched {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #2563eb;
+        }
+        
+        /* Status Select Dropdown Styling */
+        .status-select {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .status-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .status-select.status-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fbbf24;
+        }
+        
+        .status-select.status-dispatched {
+            background: #dbeafe;
+            color: #1e40af;
+            border-color: #60a5fa;
+        }
+        
+        .status-select.status-completed {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #34d399;
+        }
+        
+        .status-select.status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #f87171;
+        }
+        
+        .status-select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .status-select option {
+            background: white;
+            color: #1e293b;
+            padding: 10px;
+        }
+        
+        /* Card View Styles */
+        #cardView {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        #cardView .card {
+            transition: all 0.3s ease;
+        }
+        
+        #cardView .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* View Toggle Buttons */
+        .btn-group .btn {
+            padding: 8px 16px;
+        }
+        
+        .btn-group .btn.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        /* Search Box Styling */
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        /* Search Suggestions Dropdown - Properly under modals */
+        .search-suggestions {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: white !important;
+            border: 2px solid #3b82f6 !important;
+            border-top: none !important;
+            border-radius: 0 0 8px 8px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+            max-height: 450px !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            z-index: 1040 !important;
+            margin-top: 0 !important;
+            display: none;
+            width: 100% !important;
+        }
+        
+        .search-suggestions.show {
+            display: block !important;
+        }
+        
+        /* Bootstrap Modal z-index hierarchy */
+        .modal-backdrop {
+            z-index: 1050 !important;
+        }
+        
+        .modal {
+            z-index: 1055 !important;
+        }
+        
+        /* FORCE PARENT CONTAINERS TO NOT CLIP */
+        .card, .card-body, .row, .col-md-6, .input-group {
+            overflow: visible !important;
+        }
+        
+        .main-content > .card {
+            overflow: visible !important;
+        }
+        
+        /* Ensure proper stacking - LOWER than modal */
+        .col-md-6:has(.input-group) {
+            position: relative !important;
+            z-index: 100 !important;
+            overflow: visible !important;
+        }
+        
+        .suggestion-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background: #e3f2fd;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .suggestion-value {
+            font-size: 15px;
+            color: #212529;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .suggestion-details {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .no-suggestions {
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* Ensure input group has proper positioning */
+        .input-group {
+            position: relative !important;
+            overflow: visible !important;
+        }
+
+        /* Fix for suggestions being cut off - FORCE VISIBLE */
+        .card-body {
+            overflow: visible !important;
+        }
+        
+        .card {
+            overflow: visible !important;
+        }
+        
+        /* Override any Bootstrap overflow settings */
+        .row {
+            overflow: visible !important;
+        }
+        
+        [class*="col-"] {
+            overflow: visible !important;
+        }
+        
+        .suggestion-details {
+            font-size: 12px;
+            color: #868e96;
+            margin-top: 2px;
+        }
+        
+        .no-suggestions {
+            padding: 15px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            
+            #cardView .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Sidebar -->
+<aside class="modern-sidebar">
+    <button class="sidebar-toggle">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-pills"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <h4>Waqar Drug House</h4>
+            <p>Admin Panel</p>
+        </div>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=Admin+User&background=667eea&color=fff&bold=true" alt="Admin">
+            <span class="user-status"></span>
+        </div>
+        <div class="user-info">
+            <p class="user-name">Admin User</p>
+            <p class="user-role">Administrator</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Main Menu</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard">
+                    <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-medicines.html" class="nav-link" data-tooltip="Medicines">
+                    <span class="nav-icon"><i class="fas fa-pills"></i></span>
+                    <span class="nav-text">Medicines</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="orders.html" class="nav-link active" data-tooltip="Orders">
+                    <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <span class="nav-text">Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-customers.html" class="nav-link" data-tooltip="Customers">
+                    <span class="nav-icon"><i class="fas fa-users"></i></span>
+                    <span class="nav-text">Customers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="stock-check.html" class="nav-link" data-tooltip="Stock">
+                    <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+                    <span class="nav-text">Stock</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-billing.html" class="nav-link" data-tooltip="Billing">
+                    <span class="nav-icon"><i class="fas fa-receipt"></i></span>
+                    <span class="nav-text">Billing</span>
+                </a>
+            </li>
+        </ul>
+        <div class="nav-section-title">Reports & Settings</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="modern-reports.html" class="nav-link" data-tooltip="Reports">
+                    <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                    <span class="nav-text">Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="backup.html" class="nav-link" data-tooltip="Backup">
+                    <span class="nav-icon"><i class="fas fa-database"></i></span>
+                    <span class="nav-text">Backup</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link" data-tooltip="Settings">
+                    <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout(); return false;" class="nav-link" data-tooltip="Logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; margin: 10px; border-radius: 10px;">
+            <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+            <span class="nav-text">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Logout
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-sign-out-alt fa-3x text-danger mb-3"></i>
+                <h5>Are you sure you want to logout?</h5>
+                <p class="text-muted">You will need to login again to access the system.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="mb-0 fw-bold">
+            <i class="fas fa-receipt me-2 text-primary"></i>Order Management
+        </h1>
+        <p class="text-muted mb-0">Manage customer orders and track delivery status</p>
+    </div>
+
+    <!-- Search and View Controls -->
+    <div class="card border-0 shadow-sm mb-3" style="overflow: visible !important; position: relative; z-index: 100;">
+        <div class="card-body" style="overflow: visible !important;">
+            <div class="row align-items-center" style="overflow: visible !important;">
+                <div class="col-md-6 mb-3 mb-md-0" style="position: relative; z-index: 101; overflow: visible !important;">
+                    <div class="input-group position-relative" style="position: relative !important; overflow: visible !important;">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control" id="orderSearch" placeholder="Search by order ID, customer name, or phone number..." autocomplete="off">
+                        <!-- Search Suggestions Dropdown -->
+                        <div id="searchSuggestions" class="search-suggestions"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group me-2" role="group">
+                        <button type="button" class="btn btn-outline-primary active" id="tableViewBtn" onclick="switchView('table')">
+                            <i class="fas fa-table me-1"></i>Table
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="cardViewBtn" onclick="switchView('card')">
+                            <i class="fas fa-th-large me-1"></i>Cards
+                        </button>
+                    </div>
+                    <button class="btn btn-primary me-2" onclick="loadOrders()">
+                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                    </button>
+                    <button class="btn btn-danger" onclick="showDeleteAllModal()">
+                        <i class="fas fa-trash-alt me-1"></i>Delete All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table View -->
+    <div id="tableView" class="card border-0 shadow-sm" style="position: relative; z-index: 1;">
+        <div class="card-header bg-white border-0">
+            <h5 class="card-title mb-0 fw-bold">All Orders</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" class="form-check-input" id="selectAllOrders" onchange="toggleSelectAll(this)">
+                            </th>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Order Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Loading orders...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card View (Hidden by default) -->
+    <div id="cardView" class="row g-3" style="display: none;">
+        <!-- Cards will be dynamically added here -->
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderDetailsContent">
+                <!-- Order details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Change Modal -->
+<div class="modal fade" id="statusChangeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="statusModalHeader">
+                <h5 class="modal-title" id="statusModalTitle">
+                    <i class="fas fa-sync-alt me-2"></i>Change Order Status
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info mb-3" id="statusChangeInfo">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span id="statusInfoText">Select a new status for this order</span>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Order ID:</label>
+                    <div class="fs-5 text-primary" id="modalOrderId"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Current Status:</label>
+                    <div>
+                        <span class="status-badge" id="modalCurrentStatus"></span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="newStatusSelect" class="form-label fw-bold">New Status:</label>
+                    <select class="form-select form-select-lg" id="newStatusSelect">
+                        <option value="Pending">🟡 Pending - Order placed, awaiting dispatch</option>
+                        <option value="Dispatched">🔵 Dispatched - Order shipped, stock deducted</option>
+                        <option value="Completed">🟢 Completed - Order delivered successfully</option>
+                        <option value="Cancelled">🔴 Cancelled - Order cancelled</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="statusNotes" class="form-label fw-bold">Notes (Optional):</label>
+                    <textarea class="form-control" id="statusNotes" rows="3" placeholder="Add any additional notes about this status change..."></textarea>
+                </div>
+                
+                <div id="statusWarningBox" class="alert alert-warning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div id="statusWarningText"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="confirmStatusChange()">
+                    <i class="fas fa-check me-2"></i>Confirm Change
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Order Modal -->
+<div class="modal fade" id="deleteOrderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-trash-alt me-2"></i>Delete Order
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning!</strong> This action cannot be undone.
+                </div>
+                
+                <p class="mb-3">Are you sure you want to delete this order?</p>
+                
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <p class="mb-2"><strong>Order ID:</strong> <span id="deleteOrderId"></span></p>
+                        <p class="mb-2"><strong>Customer:</strong> <span id="deleteCustomerName"></span></p>
+                        <p class="mb-0"><strong>Total Amount:</strong> <span id="deleteOrderAmount"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteOrder()">
+                    <i class="fas fa-trash me-2"></i>Delete Order
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Orders Modal -->
+<div class="modal fade" id="deleteAllOrdersModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-circle me-2"></i>Delete All Orders
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-radiation me-2"></i>
+                    <strong>CRITICAL WARNING!</strong> This will permanently delete ALL orders from the database.
+                </div>
+                
+                <p class="text-danger fw-bold fs-5 mb-3">⚠️ THIS ACTION CANNOT BE UNDONE! ⚠️</p>
+                
+                <div class="card bg-light mb-3">
+                    <div class="card-body">
+                        <p class="mb-2"><strong>Total Orders:</strong> <span id="totalOrdersCount" class="text-danger fw-bold"></span></p>
+                        <p class="mb-0 text-muted small">All order records will be permanently deleted from the system.</p>
+                    </div>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="confirmDeleteAll">
+                    <label class="form-check-label fw-bold text-danger" for="confirmDeleteAll">
+                        I understand this will delete ALL orders permanently
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteAllOrders()" id="deleteAllBtn" disabled>
+                    <i class="fas fa-trash-alt me-2"></i>Delete All Orders
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Sidebar JS -->
+<script src="../js/modern-sidebar.js"></script>
+
+<script>
+// Check authentication
+if (!sessionStorage.getItem('user_role')) {
+    window.location.href = '../login.html';
+}
+
+let allOrders = []; // Store all orders for filtering
+let currentView = 'table'; // Current view mode
+
+// Switch between table and card view
+function switchView(view) {
+    currentView = view;
+    const tableView = document.getElementById('tableView');
+    const cardView = document.getElementById('cardView');
+    const tableBtn = document.getElementById('tableViewBtn');
+    const cardBtn = document.getElementById('cardViewBtn');
+    
+    if (view === 'table') {
+        tableView.style.display = 'block';
+        cardView.style.display = 'none';
+        tableBtn.classList.add('active');
+        cardBtn.classList.remove('active');
+    } else {
+        tableView.style.display = 'none';
+        cardView.style.display = 'flex';
+        tableBtn.classList.remove('active');
+        cardBtn.classList.add('active');
+        renderCardView(allOrders);
+    }
+}
+
+// Render card view
+function renderCardView(orders) {
+    const cardView = document.getElementById('cardView');
+    
+    if (!orders || orders.length === 0) {
+        cardView.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No orders found</p>
+            </div>
+        `;
+        return;
+    }
+    
+    cardView.innerHTML = '';
+    orders.forEach(order => {
+        const statusClass = getStatusClass(order.status);
+        const card = `
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">${order.order_id || order.id}</h5>
+                            <span class="badge ${statusClass}">${order.status}</span>
+                        </div>
+                        <p class="card-text mb-2">
+                            <i class="fas fa-user text-muted me-2"></i>
+                            <strong>${order.customer_name || 'N/A'}</strong>
+                        </p>
+                        <p class="card-text mb-2">
+                            <i class="fas fa-phone text-muted me-2"></i>
+                            ${order.phone || 'N/A'}
+                        </p>
+                        <p class="card-text mb-2">
+                            <i class="fas fa-rupee-sign text-muted me-2"></i>
+                            <strong class="text-primary">Rs. ${parseFloat(order.total_amount || 0).toFixed(2)}</strong>
+                        </p>
+                        <p class="card-text mb-3">
+                            <i class="fas fa-calendar text-muted me-2"></i>
+                            <small class="text-muted">${formatDate(order.created_at || order.order_date)}</small>
+                        </p>
+                        <div class="d-flex gap-2">
+                            <select class="form-select form-select-sm flex-grow-1 ${statusClass}" 
+                                    onchange="updateOrderStatus(${order.id}, this.value)">
+                                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Dispatched" ${order.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
+                                <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                            <button class="btn btn-sm btn-primary" onclick="viewOrderDetails(${order.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        cardView.innerHTML += card;
+    });
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('orderSearch');
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    
+    if (searchInput) {
+        // Show suggestions on input
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            
+            if (searchTerm.length === 0) {
+                displayOrders(allOrders);
+                hideSuggestions();
+                return;
+            }
+            
+            // Show suggestions if search term is at least 1 character
+            if (searchTerm.length >= 1) {
+                showSuggestions(searchTerm);
+            }
+            
+            // Filter orders
+            filterOrders(searchTerm);
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+        
+        // Show suggestions on focus if there's text
+        searchInput.addEventListener('focus', function(e) {
+            if (e.target.value.trim().length > 0) {
+                showSuggestions(e.target.value.trim());
+            }
+        });
+    }
+    
+    loadOrders();
+});
+
+// Filter orders based on search term
+function filterOrders(searchTerm) {
+    const lowerSearch = searchTerm.toLowerCase();
+    
+    const filtered = allOrders.filter(order => {
+        const orderId = (order.order_id || order.id || '').toString().toLowerCase();
+        const customerName = (order.customer_name || '').toLowerCase();
+        const phone = (order.phone || '').toString().toLowerCase();
+        
+        return orderId.includes(lowerSearch) || 
+               customerName.includes(lowerSearch) || 
+               phone.includes(lowerSearch);
+    });
+    
+    displayOrders(filtered);
+}
+
+// Show search suggestions
+function showSuggestions(searchTerm) {
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    const lowerSearch = searchTerm.toLowerCase();
+    
+    // Find matching orders
+    const matches = allOrders.filter(order => {
+        const orderId = (order.order_id || order.id || '').toString().toLowerCase();
+        const customerName = (order.customer_name || '').toLowerCase();
+        const phone = (order.phone || '').toString().toLowerCase();
+        
+        return orderId.includes(lowerSearch) || 
+               customerName.includes(lowerSearch) || 
+               phone.includes(lowerSearch);
+    }).slice(0, 5); // Limit to 5 suggestions
+    
+    if (matches.length === 0) {
+        suggestionsBox.innerHTML = '<div class="no-suggestions"><i class="fas fa-search me-2"></i>No matching orders found</div>';
+        suggestionsBox.style.display = 'block';
+        suggestionsBox.classList.add('show');
+        return;
+    }
+    
+    let html = '';
+    matches.forEach(order => {
+        const orderId = order.order_id || order.id;
+        const statusClass = getStatusClass(order.status);
+        
+        html += `
+            <div class="suggestion-item" onclick="selectSuggestion('${orderId}', '${(order.customer_name || '').replace(/'/g, "\\'")}')">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="suggestion-label">Order ID</span>
+                        <div class="suggestion-value">${orderId}</div>
+                        <div class="suggestion-details">
+                            <i class="fas fa-user me-1"></i>${order.customer_name || 'N/A'}
+                            <i class="fas fa-phone ms-2 me-1"></i>${order.phone || 'N/A'}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge ${statusClass}">${order.status}</span>
+                        <div class="suggestion-details mt-1">Rs. ${parseFloat(order.total_amount || 0).toFixed(2)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    suggestionsBox.innerHTML = html;
+    suggestionsBox.style.display = 'block';
+    suggestionsBox.classList.add('show');
+}
+
+// Hide suggestions
+function hideSuggestions() {
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    if (suggestionsBox) {
+        suggestionsBox.style.display = 'none';
+        suggestionsBox.classList.remove('show');
+    }
+}
+
+// Select a suggestion
+function selectSuggestion(orderId, customerName) {
+    const searchInput = document.getElementById('orderSearch');
+    searchInput.value = orderId;
+    hideSuggestions();
+    filterOrders(orderId);
+}
+
+// Display orders based on current view
+function displayOrders(orders) {
+    if (currentView === 'table') {
+        renderTableView(orders);
+    } else {
+        renderCardView(orders);
+    }
+}
+
+// Render table view
+function renderTableView(orders) {
+    const tbody = document.getElementById('orders-table-body');
+    
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No orders found</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    orders.forEach(order => {
+        const statusClass = getStatusClass(order.status);
+        const row = `
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input order-checkbox" value="${order.id}" onchange="updateSelectAllState()">
+                </td>
+                <td><strong>${order.order_id || order.id}</strong></td>
+                <td>${order.customer_name || 'N/A'}</td>
+                <td>${order.phone || 'N/A'}</td>
+                <td><strong>Rs. ${parseFloat(order.total_amount || 0).toFixed(2)}</strong></td>
+                <td>
+                    <span class="status-badge ${statusClass}" style="cursor: pointer;" onclick="showStatusChangeModal(${order.id}, '${order.status}', '${order.order_id || order.id}')">
+                        ${order.status}
+                    </span>
+                </td>
+                <td>${formatDate(order.created_at || order.order_date)}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1" onclick="viewOrderDetails(${order.id})" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="showDeleteOrderModal(${order.id}, '${order.order_id || order.id}', '${(order.customer_name || 'N/A').replace(/'/g, "\\'")}', ${order.total_amount || 0})" title="Delete Order">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+// Load orders from API
+function loadOrders() {
+    fetch('../api/orders.php')
+        .then(response => response.json())
+        .then(data => {
+            allOrders = data; // Store for filtering
+            displayOrders(data);
+        })
+        .catch(error => {
+            console.error('Error loading orders:', error);
+            document.getElementById('orders-table-body').innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-danger">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <p>Error loading orders. Please try again.</p>
+                    </td>
+                </tr>
+            `;
+        });
+}
+
+// Get status class
+function getStatusClass(status) {
+    switch(status) {
+        case 'Pending': return 'status-pending';
+        case 'Dispatched': return 'status-dispatched';
+        case 'Completed': return 'status-completed';
+        case 'Cancelled': return 'status-cancelled';
+        default: return '';
+    }
+}
+
+// Format date with time
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    
+    const dateStr = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+    
+    const timeStr = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+    
+    return `${dateStr} at ${timeStr}`;
+}
+
+// Toggle select all checkboxes
+function toggleSelectAll(checkbox) {
+    const checkboxes = document.querySelectorAll('.order-checkbox');
+    checkboxes.forEach(cb => cb.checked = checkbox.checked);
+}
+
+// Update select all state
+function updateSelectAllState() {
+    const selectAll = document.getElementById('selectAllOrders');
+    const checkboxes = document.querySelectorAll('.order-checkbox');
+    const checkedBoxes = document.querySelectorAll('.order-checkbox:checked');
+    
+    if (checkboxes.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    } else if (checkedBoxes.length === checkboxes.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+    } else if (checkedBoxes.length > 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+    } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    }
+}
+
+// Show status change modal
+let currentStatusChangeOrderId = null;
+let currentStatusChangeStatus = null;
+
+function showStatusChangeModal(orderId, currentStatus, orderIdDisplay) {
+    currentStatusChangeOrderId = orderId;
+    currentStatusChangeStatus = currentStatus;
+    
+    // Update modal content
+    document.getElementById('modalOrderId').textContent = orderIdDisplay;
+    document.getElementById('modalCurrentStatus').textContent = currentStatus;
+    document.getElementById('modalCurrentStatus').className = 'status-badge ' + getStatusClass(currentStatus);
+    
+    // Set select value
+    document.getElementById('newStatusSelect').value = currentStatus;
+    document.getElementById('statusNotes').value = '';
+    
+    // Update info based on current status
+    updateStatusInfo(currentStatus);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('statusChangeModal'));
+    modal.show();
+    
+    // Add event listener for status select change
+    document.getElementById('newStatusSelect').onchange = function() {
+        updateStatusWarning(currentStatus, this.value);
+    };
+}
+
+// Update status info text
+function updateStatusInfo(currentStatus) {
+    const infoText = document.getElementById('statusInfoText');
+    switch(currentStatus) {
+        case 'Pending':
+            infoText.textContent = 'This order is awaiting dispatch. Select a new status to update the order.';
+            break;
+        case 'Dispatched':
+            infoText.textContent = 'This order has been dispatched. Stock has been deducted.';
+            break;
+        case 'Completed':
+            infoText.textContent = 'This order has been completed and delivered.';
+            break;
+        case 'Cancelled':
+            infoText.textContent = 'This order has been cancelled.';
+            break;
+    }
+}
+
+// Update status warning
+function updateStatusWarning(currentStatus, newStatus) {
+    const warningBox = document.getElementById('statusWarningBox');
+    const warningText = document.getElementById('statusWarningText');
+    
+    warningBox.style.display = 'none';
+    
+    if (newStatus === 'Dispatched' && currentStatus !== 'Dispatched') {
+        warningBox.style.display = 'block';
+        warningBox.className = 'alert alert-info';
+        warningText.innerHTML = `
+            <strong>Dispatch Actions:</strong><br>
+            • Stock will be deducted from inventory<br>
+            • Receipt/bill will be generated<br>
+            • Customer records will be updated<br>
+            • Order becomes trackable by customer
+        `;
+    } else if (newStatus === 'Cancelled' && currentStatus === 'Dispatched') {
+        warningBox.style.display = 'block';
+        warningBox.className = 'alert alert-warning';
+        warningText.innerHTML = `
+            <strong>Warning:</strong> This order was already dispatched!<br>
+            • Stock will be RESTORED to inventory<br>
+            • This action cannot be undone
+        `;
+    } else if (newStatus === 'Cancelled') {
+        warningBox.style.display = 'block';
+        warningBox.className = 'alert alert-warning';
+        warningText.innerHTML = `
+            <strong>Warning:</strong> Order will be cancelled.<br>
+            This action cannot be undone.
+        `;
+    } else if (newStatus === 'Completed') {
+        warningBox.style.display = 'block';
+        warningBox.className = 'alert alert-success';
+        warningText.innerHTML = `
+            <strong>Complete Order:</strong><br>
+            • Mark order as delivered<br>
+            • Finalize transaction
+        `;
+    }
+}
+
+// Confirm status change from modal
+function confirmStatusChange() {
+    const newStatus = document.getElementById('newStatusSelect').value;
+    const notes = document.getElementById('statusNotes').value.trim();
+    
+    if (currentStatusChangeOrderId && currentStatusChangeStatus !== newStatus) {
+        // Store if order details modal was open
+        const detailsModal = document.getElementById('orderDetailsModal');
+        const isDetailsOpen = detailsModal && detailsModal.classList.contains('show');
+        
+        // Close status change modal
+        bootstrap.Modal.getInstance(document.getElementById('statusChangeModal')).hide();
+        
+        // Call update function
+        updateOrderStatus(currentStatusChangeOrderId, newStatus, notes);
+        
+        // If order details was open, refresh it after a short delay
+        if (isDetailsOpen) {
+            setTimeout(() => {
+                viewOrderDetails(currentStatusChangeOrderId);
+            }, 1000);
+        }
+    } else if (currentStatusChangeStatus === newStatus) {
+        showNotification('⚠️ Please select a different status', 'warning');
+    }
+}
+
+// Show delete order modal
+let currentDeleteOrderId = null;
+
+function showDeleteOrderModal(orderId, orderIdDisplay, customerName, amount) {
+    currentDeleteOrderId = orderId;
+    
+    document.getElementById('deleteOrderId').textContent = orderIdDisplay;
+    document.getElementById('deleteCustomerName').textContent = customerName;
+    document.getElementById('deleteOrderAmount').textContent = 'Rs. ' + parseFloat(amount).toFixed(2);
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteOrderModal'));
+    modal.show();
+}
+
+// Confirm delete order
+function confirmDeleteOrder() {
+    if (!currentDeleteOrderId) return;
+    
+    // Close modal
+    bootstrap.Modal.getInstance(document.getElementById('deleteOrderModal')).hide();
+    
+    // Show loading notification
+    showNotification('Deleting order...', 'info');
+    
+    // Call delete API
+    fetch('../api/orders.php', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: currentDeleteOrderId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('✅ Order deleted successfully!', 'success');
+            loadOrders();
+        } else {
+            showNotification('❌ Error: ' + (data.message || 'Failed to delete order'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('❌ Network error. Please try again.', 'error');
+    });
+    
+    currentDeleteOrderId = null;
+}
+
+// Show delete all orders modal
+function showDeleteAllModal() {
+    document.getElementById('totalOrdersCount').textContent = allOrders.length;
+    document.getElementById('confirmDeleteAll').checked = false;
+    document.getElementById('deleteAllBtn').disabled = true;
+    
+    // Enable delete button only when checkbox is checked
+    document.getElementById('confirmDeleteAll').onchange = function() {
+        document.getElementById('deleteAllBtn').disabled = !this.checked;
+    };
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteAllOrdersModal'));
+    modal.show();
+}
+
+// Confirm delete all orders
+function confirmDeleteAllOrders() {
+    if (!document.getElementById('confirmDeleteAll').checked) {
+        return;
+    }
+    
+    // Close modal
+    bootstrap.Modal.getInstance(document.getElementById('deleteAllOrdersModal')).hide();
+    
+    // Show loading notification
+    showNotification('Deleting all orders...', 'info');
+    
+    // Call delete all API
+    fetch('../api/orders.php', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            delete_all: true
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('✅ All orders deleted successfully!', 'success');
+            loadOrders();
+        } else {
+            showNotification('❌ Error: ' + (data.message || 'Failed to delete orders'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('❌ Network error. Please try again.', 'error');
+    });
+}
+
+// Update order status (modified to accept notes parameter)
+function updateOrderStatus(orderId, newStatus, notes = '') {
+    // Get current status from the order
+    const currentOrder = allOrders.find(o => o.id === orderId);
+    const currentStatus = currentOrder ? currentOrder.status : '';
+    
+    // Show confirmation dialog with more details
+    let confirmMsg = '';
+    let confirmTitle = '';
+    
+    if (newStatus === 'Dispatched') {
+        confirmTitle = '🚚 DISPATCH ORDER';
+        confirmMsg = `This will:\n\n` +
+                    `✅ Mark order as Dispatched\n` +
+                    `✅ Deduct items from stock inventory\n` +
+                    `✅ Generate receipt/bill for customer\n` +
+                    `✅ Update customer purchase records\n` +
+                    `✅ Customer can track order status\n\n` +
+                    `⚠️ This action will update inventory!\n\n` +
+                    `Are you sure you want to DISPATCH this order?`;
+    } else if (newStatus === 'Completed') {
+        confirmTitle = '✅ COMPLETE ORDER';
+        confirmMsg = `Mark this order as Completed/Delivered?\n\n` +
+                    `This indicates that:\n` +
+                    `✅ Customer has received the order\n` +
+                    `✅ Delivery is confirmed\n` +
+                    `✅ Transaction is finalized\n\n` +
+                    `Continue?`;
+    } else if (newStatus === 'Cancelled') {
+        confirmTitle = '❌ CANCEL ORDER';
+        confirmMsg = `Are you sure you want to CANCEL this order?\n\n`;
+        if (currentStatus === 'Dispatched') {
+            confirmMsg += `⚠️ WARNING: Order was already dispatched!\n` +
+                         `This will RESTORE items back to stock.\n\n`;
+        }
+        confirmMsg += `This action cannot be undone!\n\nContinue?`;
+    } else {
+        confirmMsg = `Change order status to "${newStatus}"?`;
+    }
+    
+    if (!confirm(confirmTitle + '\n\n' + confirmMsg)) {
+        loadOrders(); // Reload to reset the dropdown
+        return;
+    }
+    
+    // Show loading state
+    const statusSelects = document.querySelectorAll(`select[data-id="${orderId}"]`);
+    statusSelects.forEach(select => {
+        select.disabled = true;
+        select.style.opacity = '0.6';
+    });
+    
+    fetch('../api/orders.php', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: orderId,
+            status: newStatus,
+            notes: notes || `Status changed from ${currentStatus} to ${newStatus} by admin`
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message based on status
+            let successMsg = '';
+            let successTitle = '';
+            
+            if (newStatus === 'Dispatched') {
+                successTitle = '✅ ORDER DISPATCHED SUCCESSFULLY!';
+                successMsg = '\n\n' +
+                      '✓ Stock inventory updated\n' +
+                      '✓ Receipt/bill generated\n' +
+                      '✓ Customer records updated\n' +
+                      '✓ Customer can now track order\n\n' +
+                      'You can print/download the bill from order details.';
+                
+                // Show success notification
+                showNotification(successTitle + successMsg, 'success');
+                
+                // Reload and show bill option
+                loadOrders();
+                setTimeout(() => {
+                    viewOrderDetails(orderId);
+                }, 500);
+                
+            } else if (newStatus === 'Completed') {
+                successTitle = '✅ ORDER COMPLETED!';
+                successMsg = '\n\nOrder has been marked as delivered.\nCustomer transaction is finalized.';
+                showNotification(successTitle + successMsg, 'success');
+                loadOrders();
+                
+            } else if (newStatus === 'Cancelled') {
+                successTitle = '❌ ORDER CANCELLED';
+                successMsg = '\n\nOrder has been cancelled.';
+                if (currentStatus === 'Dispatched') {
+                    successMsg += '\nStock has been restored.';
+                }
+                showNotification(successTitle + successMsg, 'warning');
+                loadOrders();
+                
+            } else {
+                showNotification('Order status updated to: ' + newStatus, 'success');
+                loadOrders();
+            }
+        } else {
+            showNotification('❌ Error: ' + (data.message || 'Failed to update order status'), 'error');
+            loadOrders();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('❌ Network error. Please check your connection.', 'error');
+        loadOrders();
+    });
+}
+
+// Show notification toast
+function showNotification(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            max-width: 400px;
+        `;
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    const bgColors = {
+        success: 'linear-gradient(135deg, #10b981, #059669)',
+        error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+        warning: 'linear-gradient(135deg, #f59e0b, #d97706)',
+        info: 'linear-gradient(135deg, #3b82f6, #2563eb)'
+    };
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    toast.style.cssText = `
+        background: ${bgColors[type] || bgColors.info};
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: start;
+        gap: 15px;
+        animation: slideInRight 0.3s ease;
+        max-width: 100%;
+        word-wrap: break-word;
+    `;
+    
+    toast.innerHTML = `
+        <i class="fas ${icons[type] || icons.info}" style="font-size: 24px; margin-top: 2px;"></i>
+        <div style="flex: 1; white-space: pre-line; line-height: 1.6;">${message}</div>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; margin-left: 10px; opacity: 0.8; transition: opacity 0.2s;">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    if (!document.getElementById('toastAnimations')) {
+        style.id = 'toastAnimations';
+        document.head.appendChild(style);
+    }
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+// View order details
+function viewOrderDetails(orderId) {
+    fetch(`../api/orders.php?order_id=${orderId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error loading order details: ' + data.error);
+                return;
+            }
+            
+            const statusClass = getStatusClass(data.status);
+            const isDispatched = data.status === 'Dispatched' || data.status === 'Completed';
+            
+            let itemsHtml = '';
+            if (data.items && data.items.length > 0) {
+                data.items.forEach(item => {
+                    itemsHtml += `
+                        <tr>
+                            <td>${item.medicine_name || 'N/A'}</td>
+                            <td>${item.quantity || 0}</td>
+                            <td>Rs. ${parseFloat(item.price || 0).toFixed(2)}</td>
+                            <td><strong>Rs. ${parseFloat(item.subtotal || 0).toFixed(2)}</strong></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                itemsHtml = '<tr><td colspan="4" class="text-center">No items found</td></tr>';
+            }
+            
+            const modalContent = `
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Order ID:</strong> ${data.order_id || data.id}</p>
+                        <p><strong>Customer:</strong> ${data.customer_name || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            <strong>Status:</strong> 
+                            <span class="status-badge ${statusClass}">${data.status}</span>
+                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="showStatusChangeModal('${data.order_id || data.id}', '${data.status}')" title="Change Status">
+                                <i class="fas fa-edit"></i> Change
+                            </button>
+                        </p>
+                        <p><strong>Order Date:</strong> ${formatDate(data.created_at || data.order_date)}</p>
+                        <p><strong>Payment Method:</strong> ${data.payment_method || 'N/A'}</p>
+                        ${data.payment_method && data.payment_method.toLowerCase() !== 'cash_on_delivery' && data.payment_method.toLowerCase() !== 'cash' ? `
+                            <p><strong>Transaction ID:</strong> <span class="badge bg-info">${data.transaction_id || 'N/A'}</span></p>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <p><strong>Delivery Address:</strong></p>
+                    <p class="ms-3">${data.address || 'N/A'}</p>
+                </div>
+                
+                ${data.notes ? `<div class="mb-3"><p><strong>Notes:</strong></p><p class="ms-3">${data.notes}</p></div>` : ''}
+                
+                ${isDispatched ? `
+                    <div class="alert alert-success mb-3">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Order Dispatched!</strong> Bill is available for print/download.
+                    </div>
+                ` : ''}
+                
+                <h6 class="fw-bold mt-4 mb-3">Order Items</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-end">Total:</th>
+                                <th>Rs. ${parseFloat(data.total_amount || 0).toFixed(2)}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                ${isDispatched ? `
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-primary" onclick="printBill('${data.order_id || data.id}')">
+                            <i class="fas fa-print me-2"></i>Print Bill
+                        </button>
+                        <button class="btn btn-success" onclick="downloadBill('${data.order_id || data.id}')">
+                            <i class="fas fa-download me-2"></i>Download PDF
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('orderDetailsContent').innerHTML = modalContent;
+            
+            // Store order data for bill generation
+            window.currentOrderData = data;
+            
+            // Hide search suggestions when modal opens
+            hideSuggestions();
+            
+            const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading order details');
+        });
+}
+
+// Print Bill
+function printBill(orderId) {
+    const data = window.currentOrderData;
+    if (!data) {
+        alert('Order data not available');
+        return;
+    }
+    
+    // Create print window
+    const printWindow = window.open('', '', 'height=600,width=800');
+    
+    let itemsRows = '';
+    if (data.items && data.items.length > 0) {
+        data.items.forEach(item => {
+            itemsRows += `
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.medicine_name || 'N/A'}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity || 0}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">Rs. ${parseFloat(item.price || 0).toFixed(2)}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;"><strong>Rs. ${parseFloat(item.subtotal || 0).toFixed(2)}</strong></td>
+                </tr>
+            `;
+        });
+    }
+    
+    const billHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Order Bill - ${data.order_id || data.id}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                    color: #333;
+                }
+                .bill-header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                    border-bottom: 3px solid #007bff;
+                    padding-bottom: 20px;
+                }
+                .bill-header h1 {
+                    margin: 0;
+                    color: #007bff;
+                    font-size: 28px;
+                }
+                .bill-header p {
+                    margin: 5px 0;
+                    color: #666;
+                }
+                .bill-info {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 30px;
+                }
+                .info-section {
+                    flex: 1;
+                }
+                .info-section h3 {
+                    color: #007bff;
+                    font-size: 16px;
+                    margin-bottom: 10px;
+                    border-bottom: 2px solid #007bff;
+                    padding-bottom: 5px;
+                }
+                .info-section p {
+                    margin: 5px 0;
+                    font-size: 14px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                table thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+                table th {
+                    padding: 12px;
+                    text-align: left;
+                }
+                table td {
+                    padding: 10px;
+                }
+                .total-section {
+                    margin-top: 20px;
+                    text-align: right;
+                    border-top: 2px solid #007bff;
+                    padding-top: 15px;
+                }
+                .total-section h2 {
+                    margin: 0;
+                    color: #007bff;
+                    font-size: 24px;
+                }
+                .status-badge {
+                    display: inline-block;
+                    padding: 5px 15px;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    background-color: #28a745;
+                    color: white;
+                }
+                .footer {
+                    margin-top: 40px;
+                    text-align: center;
+                    color: #666;
+                    font-size: 12px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 20px;
+                }
+                @media print {
+                    body { margin: 0; }
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="bill-header">
+                <h1>🏥 WAQAR DRUG HOUSE</h1>
+                <p>Complete Pharmacy Solutions</p>
+                <p>Phone: +92-XXX-XXXXXXX | Email: info@waqardrughouse.com</p>
+            </div>
+            
+            <div class="bill-info">
+                <div class="info-section">
+                    <h3>Bill To:</h3>
+                    <p><strong>${data.customer_name || 'N/A'}</strong></p>
+                    <p>Phone: ${data.phone || 'N/A'}</p>
+                    <p>Email: ${data.email || 'N/A'}</p>
+                    <p>Address: ${data.address || 'N/A'}</p>
+                </div>
+                <div class="info-section" style="text-align: right;">
+                    <h3>Order Details:</h3>
+                    <p><strong>Order ID:</strong> ${data.order_id || data.id}</p>
+                    <p><strong>Date:</strong> ${formatDate(data.created_at || data.order_date)}</p>
+                    <p><strong>Status:</strong> <span class="status-badge">${data.status}</span></p>
+                    <p><strong>Payment:</strong> ${data.payment_method || 'N/A'}</p>
+                    ${data.payment_method && data.payment_method.toLowerCase() !== 'cash_on_delivery' && data.payment_method.toLowerCase() !== 'cash' ? `
+                        <p><strong>Transaction ID:</strong> ${data.transaction_id || 'N/A'}</p>
+                    ` : ''}
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th style="text-align: center;">Quantity</th>
+                        <th style="text-align: right;">Price</th>
+                        <th style="text-align: right;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsRows}
+                </tbody>
+            </table>
+            
+            <div class="total-section">
+                <h2>Total Amount: Rs. ${parseFloat(data.total_amount || 0).toFixed(2)}</h2>
+            </div>
+            
+            <div class="footer">
+                <p><strong>Thank you for your business!</strong></p>
+                <p>This is a computer-generated bill. No signature required.</p>
+                <p>Generated on: ${new Date().toLocaleString()}</p>
+            </div>
+            
+            <div class="no-print" style="text-align: center; margin-top: 20px;">
+                <button onclick="window.print()" style="padding: 10px 30px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    Print Bill
+                </button>
+                <button onclick="window.close()" style="padding: 10px 30px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">
+                    Close
+                </button>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    printWindow.document.write(billHTML);
+    printWindow.document.close();
+    printWindow.focus();
+}
+
+// Download Bill as PDF
+function downloadBill(orderId) {
+    const data = window.currentOrderData;
+    if (!data) {
+        alert('Order data not available');
+        return;
+    }
+    
+    // Check if jsPDF is loaded
+    if (typeof window.jspdf === 'undefined') {
+        // Load jsPDF dynamically
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        script.onload = () => {
+            generatePDFBill(data);
+        };
+        document.head.appendChild(script);
+    } else {
+        generatePDFBill(data);
+    }
+}
+
+function generatePDFBill(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(0, 123, 255);
+    doc.text('WAQAR DRUG HOUSE', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Complete Pharmacy Solutions', 105, 27, { align: 'center' });
+    doc.text('Phone: +92-XXX-XXXXXXX | Email: info@waqardrughouse.com', 105, 32, { align: 'center' });
+    
+    // Line separator
+    doc.setDrawColor(0, 123, 255);
+    doc.setLineWidth(0.5);
+    doc.line(20, 35, 190, 35);
+    
+    // Bill To and Order Details
+    doc.setFontSize(12);
+    doc.setTextColor(0, 123, 255);
+    doc.text('Bill To:', 20, 45);
+    doc.text('Order Details:', 120, 45);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+    doc.text(`${data.customer_name || 'N/A'}`, 20, 52);
+    doc.text(`Phone: ${data.phone || 'N/A'}`, 20, 58);
+    doc.text(`Email: ${data.email || 'N/A'}`, 20, 64);
+    doc.text(`Address: ${data.address || 'N/A'}`, 20, 70);
+    
+    doc.text(`Order ID: ${data.order_id || data.id}`, 120, 52);
+    doc.text(`Date: ${formatDate(data.created_at || data.order_date)}`, 120, 58);
+    doc.text(`Status: ${data.status}`, 120, 64);
+    doc.text(`Payment: ${data.payment_method || 'N/A'}`, 120, 70);
+    
+    // Add Transaction ID if payment is not cash on delivery
+    let yPosOffset = 76;
+    if (data.payment_method && data.payment_method.toLowerCase() !== 'cash_on_delivery' && data.payment_method.toLowerCase() !== 'cash') {
+        doc.text(`Transaction ID: ${data.transaction_id || 'N/A'}`, 120, yPosOffset);
+        yPosOffset += 6;
+    }
+    
+    // Items table
+    let yPos = yPosOffset + 9;
+    doc.setFontSize(12);
+    doc.setTextColor(0, 123, 255);
+    doc.text('Order Items:', 20, yPos);
+    
+    yPos += 7;
+    doc.setFontSize(10);
+    doc.setFillColor(0, 123, 255);
+    doc.rect(20, yPos, 170, 7, 'F');
+    doc.setTextColor(255);
+    doc.text('Medicine', 25, yPos + 5);
+    doc.text('Qty', 110, yPos + 5);
+    doc.text('Price', 135, yPos + 5);
+    doc.text('Subtotal', 165, yPos + 5);
+    
+    yPos += 10;
+    doc.setTextColor(0);
+    
+    if (data.items && data.items.length > 0) {
+        data.items.forEach(item => {
+            doc.text(`${item.medicine_name || 'N/A'}`, 25, yPos);
+            doc.text(`${item.quantity || 0}`, 110, yPos);
+            doc.text(`Rs. ${parseFloat(item.price || 0).toFixed(2)}`, 135, yPos);
+            doc.text(`Rs. ${parseFloat(item.subtotal || 0).toFixed(2)}`, 165, yPos);
+            yPos += 7;
+        });
+    }
+    
+    // Total
+    yPos += 5;
+    doc.setDrawColor(0, 123, 255);
+    doc.setLineWidth(0.5);
+    doc.line(20, yPos, 190, yPos);
+    
+    yPos += 8;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 123, 255);
+    doc.text(`Total Amount: Rs. ${parseFloat(data.total_amount || 0).toFixed(2)}`, 190, yPos, { align: 'right' });
+    
+    // Footer
+    yPos += 20;
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Thank you for your business!', 105, yPos, { align: 'center' });
+    doc.text('This is a computer-generated bill. No signature required.', 105, yPos + 5, { align: 'center' });
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, yPos + 10, { align: 'center' });
+    
+    // Save PDF
+    doc.save(`Bill_${data.order_id || data.id}_${Date.now()}.pdf`);
+}
+
+// Logout function
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+
+// Load orders on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadOrders();
+    
+    // Initialize sidebar dropdown functionality
+    const dropdownItems = document.querySelectorAll('.nav-dropdown');
+    dropdownItems.forEach(item => {
+        const link = item.querySelector('a.nav-link');
+        const dropdownMenu = item.querySelector('.dropdown-menu');
+        
+        if (link && dropdownMenu) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle active state
+                const wasActive = item.classList.contains('active');
+                
+                // Close all other dropdowns
+                dropdownItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current dropdown
+                item.classList.toggle('active', !wasActive);
+            });
+        }
+        
+        // Add click handlers to dropdown menu items to allow navigation
+        if (dropdownMenu) {
+            const childLinks = dropdownMenu.querySelectorAll('a.nav-link');
+            childLinks.forEach(childLink => {
+                childLink.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent parent dropdown from toggling
+                    // Allow default navigation to href
+                });
+            });
+        }
+    });
+    
+    // Sidebar toggle functionality
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const sidebar = document.querySelector('.modern-sidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            if (mainContent) {
+                mainContent.style.marginLeft = sidebar.classList.contains('collapsed') ? '80px' : '280px';
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
+

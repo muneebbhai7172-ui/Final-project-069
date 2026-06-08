@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AI Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        button {
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005f91;
+        }
+        #result {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Chat Debugging Tool</h1>
+
+    <div class="test-section">
+        <h2>Test AI Chat API</h2>
+        <p>Medicine ID: <input type="number" id="medicineId" value="242" /></p>
+        <p>Question: <input type="text" id="question" value="What is this medicine used for?" style="width: 400px;" /></p>
+        <button onclick="testChat()">Send Chat Message</button>
+        <button onclick="testStatus()">Check API Status</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Result:</h2>
+        <div id="result">Results will appear here...</div>
+    </div>
+
+    <script>
+        async function testChat() {
+            const medicineId = document.getElementById('medicineId').value;
+            const question = document.getElementById('question').value;
+            const result = document.getElementById('result');
+
+            result.innerHTML = 'Sending request...';
+
+            try {
+                console.log('Sending:', { medicine_id: medicineId, question: question });
+
+                const response = await fetch('/api/medicine-ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        medicine_id: parseInt(medicineId),
+                        question: question
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                result.className = data.success ? 'success' : 'error';
+                result.innerHTML = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                console.error('Error:', error);
+                result.className = 'error';
+                result.innerHTML = 'Error: ' + error.message + '\n\n' + error.stack;
+            }
+        }
+
+        async function testStatus() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Checking status...';
+
+            try {
+                const response = await fetch('/api/medicine-ai/status');
+                const data = await response.json();
+
+                result.className = 'success';
+                result.innerHTML = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                result.className = 'error';
+                result.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

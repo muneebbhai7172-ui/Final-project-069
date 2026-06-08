@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <meta name="description" content="Muneeb Drug House - Your trusted online pharmacy for quality medicines, healthcare products, and expert consultation. Fast delivery & 24/7 service.">
+    <title>Muneeb Drug House - Your Trusted Online Pharmacy</title>
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Swiper CSS for Carousel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom Medical Theme CSS -->
+    <link rel="stylesheet" href="../../css/medical-theme.css">
+</head>
+<body>
+
+<!-- ============================================
+     NAVBAR
+     ============================================ -->
+<nav class="navbar navbar-expand-lg" id="mainNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <div class="brand-logo">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Muneeb Drug House</span>
+                <span class="brand-tagline">Your Health Partner</span>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon">
+                <i class="fas fa-bars"></i>
+            </span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../shop/search.html">
+                        <i class="fas fa-capsules"></i>
+                        <span>Medicines</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../shop/track-order.html">
+                        <i class="fas fa-truck-medical"></i>
+                        <span>Track Order</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a class="btn btn-cart" href="../shop/cart.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-text">Cart</span>
+                    <span class="cart-badge" id="nav-cart-count">0</span>
+                </a>
+                <!-- Guest Actions (shown when not logged in) -->
+                <div class="guest-actions" id="guestActions" style="display: flex;">
+                    <a class="btn btn-login" href="../auth/login.html">
+                        <i class="fas fa-user-md"></i>
+                        <span>Login</span>
+                    </a>
+                </div>
+                <!-- User Actions (shown when logged in) -->
+                <div class="user-actions" id="userActions" style="display: none;">
+                    <div class="dropdown">
+                        <button class="btn btn-user dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="navUserName">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="../customer/profile.html"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="../customer/orders.html"><i class="fas fa-box me-2"></i>My Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(event)"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================
+     ADVANCED HERO SECTION
+     ============================================ -->
+<section class="hero-section-advanced">
+    <!-- Animated Background Layers -->
+    <div class="hero-bg-layer hero-bg-gradient"></div>
+    <div class="hero-bg-layer hero-bg-mesh"></div>
+    <div class="hero-bg-layer hero-bg-particles" id="particles-js"></div>
+
+    <!-- Animated DNA Helix Background -->
+    <div class="dna-helix-container">
+        <div class="dna-strand dna-strand-1"></div>
+        <div class="dna-strand dna-strand-2"></div>
+    </div>
+
+    <!-- Floating 3D Medical Icons -->
+    <div class="hero-3d-elements">
+        <div class="floating-3d-icon icon-1" data-aos="zoom-in" data-aos-delay="500">
+            <div class="icon-glow"></div>
+            <i class="fas fa-heartbeat"></i>
+        </div>
+        <div class="floating-3d-icon icon-2" data-aos="zoom-in" data-aos-delay="700">
+            <div class="icon-glow"></div>
+            <i class="fas fa-dna"></i>
+        </div>
+        <div class="floating-3d-icon icon-3" data-aos="zoom-in" data-aos-delay="900">
+            <div class="icon-glow"></div>
+            <i class="fas fa-pills"></i>
+        </div>
+        <div class="floating-3d-icon icon-4" data-aos="zoom-in" data-aos-delay="1100">
+            <div class="icon-glow"></div>
+            <i class="fas fa-stethoscope"></i>
+        </div>
+        <div class="floating-3d-icon icon-5" data-aos="zoom-in" data-aos-delay="1300">
+            <div class="icon-glow"></div>
+            <i class="fas fa-capsules"></i>
+        </div>
+    </div>
+
+    <!-- Glowing Orbs -->
+    <div class="glowing-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <div class="container position-relative" style="z-index: 10;">
+        <div class="row align-items-center min-vh-100 py-5">
+            <!-- Content Column -->
+            <div class="col-lg-6">
+                <div class="hero-content-advanced">
+                    <!-- Animated Badge -->
+                    <div class="hero-badge-advanced" data-aos="fade-right" data-aos-delay="200">
+                        <div class="badge-glow"></div>
+                        <div class="badge-content">
+                            <div class="badge-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <span>#1 Trusted Pharmacy in Pakistan</span>
+                            <div class="badge-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Animated Title -->
+                    <h1 class="hero-title-advanced" data-aos="fade-up" data-aos-delay="400">
+                        <span class="title-line title-line-1">
+                            <span class="word-animate">Your</span>
+                            <span class="word-animate">Health</span>
+                        </span>
+                        <span class="title-line title-line-2">
+                            <span class="word-animate">Is</span>
+                            <span class="word-animate">Our</span>
+                        </span>
+                        <span class="title-line title-line-3">
+                            <span class="highlight-advanced">
+                                <span class="highlight-text">Priority</span>
+                                <svg class="highlight-underline" viewBox="0 0 200 20">
+                                    <path d="M0,10 Q50,0 100,10 T200,10" stroke="url(#gradient-underline)" stroke-width="4" fill="none"/>
+                                </svg>
+                            </span>
+                        </span>
+                    </h1>
+
+                    <!-- Subtitle with typing effect -->
+                    <p class="hero-subtitle-advanced" data-aos="fade-up" data-aos-delay="600">
+                        <span class="subtitle-icon"><i class="fas fa-check-circle"></i></span>
+                        Experience modern healthcare with our comprehensive pharmacy solutions.
+                        <span class="highlight-word">Quality medicines</span>,
+                        <span class="highlight-word">expert consultation</span>, and
+                        <span class="highlight-word">fast delivery</span> — all in one place.
+                    </p>
+
+                    <!-- Search Bar in Hero -->
+                    <div class="hero-search-bar" data-aos="fade-up" data-aos-delay="700">
+                        <div class="search-bar-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" placeholder="Search medicines, vitamins, healthcare products..." id="hero-search-input">
+                            <button class="search-btn-advanced" onclick="window.location.href='../shop/search.html'">
+                                <span>Search</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="search-suggestions">
+                            <span>Popular:</span>
+                            <a href="../shop/search.html?q=paracetamol">Paracetamol</a>
+                            <a href="../shop/search.html?q=vitamins">Vitamins</a>
+                            <a href="../shop/search.html?q=antibiotics">Antibiotics</a>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="hero-buttons-advanced" data-aos="fade-up" data-aos-delay="800">
+                        <a href="../shop/search.html" class="btn-advanced btn-primary-advanced">
+                            <span class="btn-bg"></span>
+                            <span class="btn-content">
+                                <i class="fas fa-capsules"></i>
+                                <span>Browse Medicines</span>
+                            </span>
+                            <span class="btn-shine"></span>
+                        </a>
+                        <a href="tel:03211532010" class="btn-advanced btn-secondary-advanced">
+                            <span class="btn-border"></span>
+                            <span class="btn-content">
+                                <i class="fas fa-phone-alt"></i>
+                                <span>Call Now</span>
+                            </span>
+                        </a>
+                        <a href="#features" class="btn-advanced btn-icon-advanced">
+                            <i class="fas fa-play"></i>
+                        </a>
+                    </div>
+
+                    <!-- Live Stats Counter -->
+                    <div class="hero-stats-advanced" data-aos="fade-up" data-aos-delay="1000">
+                        <div class="stat-card-advanced">
+                            <div class="stat-icon"><i class="fas fa-pills"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-number" data-target="5000">0</div>
+                                <div class="stat-label">Medicines</div>
+                            </div>
+                            <div class="stat-badge">+</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-card-advanced">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-number" data-target="10000">0</div>
+                                <div class="stat-label">Happy Customers</div>
+                            </div>
+                            <div class="stat-badge">+</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-card-advanced">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Service</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Column - Advanced 3D Card Stack -->
+            <div class="col-lg-6">
+                <div class="hero-visual-advanced" data-aos="fade-left" data-aos-delay="400">
+                    <!-- Main 3D Card -->
+                    <div class="hero-card-3d">
+                        <div class="card-3d-inner">
+                            <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600&h=700&fit=crop"
+                                 alt="Professional Pharmacist" class="hero-main-image">
+                            <div class="card-3d-overlay"></div>
+                        </div>
+                        <div class="card-3d-shadow"></div>
+                    </div>
+
+                    <!-- Floating Feature Cards -->
+                    <div class="hero-feature-card feature-card-1" data-aos="zoom-in" data-aos-delay="800">
+                        <div class="feature-card-glow"></div>
+                        <div class="feature-card-icon">
+                            <i class="fas fa-truck-fast"></i>
+                        </div>
+                        <div class="feature-card-content">
+                            <h5>Express Delivery</h5>
+                            <p>Within 2 hours</p>
+                        </div>
+                        <div class="feature-card-badge">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-card feature-card-2" data-aos="zoom-in" data-aos-delay="1000">
+                        <div class="feature-card-glow"></div>
+                        <div class="feature-card-icon success">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-card-content">
+                            <h5>100% Genuine</h5>
+                            <p>Verified Products</p>
+                        </div>
+                        <div class="feature-card-check">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-card feature-card-3" data-aos="zoom-in" data-aos-delay="1200">
+                        <div class="feature-card-glow"></div>
+                        <div class="feature-card-icon warning">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-card-content">
+                            <h5>24/7 Support</h5>
+                            <p>Always Available</p>
+                        </div>
+                        <div class="feature-card-live">
+                            <span class="live-dot"></span>
+                            <span>LIVE</span>
+                        </div>
+                    </div>
+
+                    <!-- Notification Pop-up -->
+                    <div class="hero-notification" data-aos="fade-left" data-aos-delay="1400">
+                        <div class="notification-avatar">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=50&h=50&fit=crop" alt="Customer">
+                        </div>
+                        <div class="notification-content">
+                            <p><strong>Sarah</strong> just ordered</p>
+                            <span>Vitamin C Complex</span>
+                        </div>
+                        <div class="notification-time">Just now</div>
+                    </div>
+
+                    <!-- Rating Card -->
+                    <div class="hero-rating-card" data-aos="zoom-in" data-aos-delay="1600">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="rating-score">4.9</div>
+                        <div class="rating-count">10K+ Reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" data-aos="fade-up" data-aos-delay="1800">
+        <div class="mouse">
+            <div class="wheel"></div>
+        </div>
+        <span>Scroll to explore</span>
+        <div class="scroll-arrows">
+            <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     FEATURES SECTION
+     ============================================ -->
+<section class="features-section" id="features">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-star"></i>
+                Why Choose Us
+            </div>
+            <h2 class="section-title">
+                Healthcare Made <span class="text-gradient">Simple</span>
+            </h2>
+            <p class="section-subtitle">
+                We provide comprehensive pharmacy services with a focus on quality, convenience, and customer care.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <h4>Wide Range of Medicines</h4>
+                    <p>Access to over 5000+ medicines including prescription drugs, OTC medicines, and healthcare products from trusted brands.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--gradient-success);">
+                        <i class="fas fa-truck-fast"></i>
+                    </div>
+                    <h4>Fast & Reliable Delivery</h4>
+                    <p>Get your medicines delivered right to your doorstep with our express delivery service. Track your order in real-time.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h4>Expert Consultation</h4>
+                    <p>Our licensed pharmacists are available 24/7 to answer your queries and provide professional medication guidance.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>100% Genuine Products</h4>
+                    <p>We source all medicines directly from authorized distributors ensuring authenticity and quality of every product.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h4>Best Prices Guaranteed</h4>
+                    <p>Competitive pricing with regular discounts and offers. Save more on your healthcare needs with our loyalty program.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #06b6d4, #22d3ee);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>24/7 Emergency Service</h4>
+                    <p>Round-the-clock pharmacy services for your urgent medical needs. We're here whenever you need us, day or night.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     MEDICINE CAROUSEL SECTION
+     ============================================ -->
+<section class="medicine-carousel-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-fire"></i>
+                Popular Products
+            </div>
+            <h2 class="section-title">
+                Featured <span class="text-gradient">Medicines</span>
+            </h2>
+            <p class="section-subtitle">
+                Explore our most popular and trusted healthcare products
+            </p>
+        </div>
+    </div>
+
+    <!-- Swiper Carousel -->
+    <div class="swiper medicine-swiper" data-aos="fade-up" data-aos-delay="200">
+        <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=300&fit=crop"
+                         alt="Pain Relief" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Pain Relief</div>
+                        <h5 class="medicine-card-title">Paracetamol 500mg</h5>
+                        <div class="medicine-card-price">Rs. 45</div>
+                        <a href="../shop/medicine-detail.html?id=1" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400&h=300&fit=crop"
+                         alt="Vitamins" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Vitamins</div>
+                        <h5 class="medicine-card-title">Vitamin C Complex</h5>
+                        <div class="medicine-card-price">Rs. 350</div>
+                        <a href="../shop/medicine-detail.html?id=2" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop"
+                         alt="Antibiotics" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Antibiotics</div>
+                        <h5 class="medicine-card-title">Amoxicillin 250mg</h5>
+                        <div class="medicine-card-price">Rs. 180</div>
+                        <a href="../shop/medicine-detail.html?id=3" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=300&fit=crop"
+                         alt="Heart Care" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Heart Care</div>
+                        <h5 class="medicine-card-title">Aspirin 75mg</h5>
+                        <div class="medicine-card-price">Rs. 95</div>
+                        <a href="../shop/medicine-detail.html?id=4" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=300&fit=crop"
+                         alt="Diabetes Care" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Diabetes Care</div>
+                        <h5 class="medicine-card-title">Metformin 500mg</h5>
+                        <div class="medicine-card-price">Rs. 120</div>
+                        <a href="../shop/medicine-detail.html?id=5" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop"
+                         alt="Skin Care" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Skin Care</div>
+                        <h5 class="medicine-card-title">Vitamin E Cream</h5>
+                        <div class="medicine-card-price">Rs. 275</div>
+                        <a href="../shop/medicine-detail.html?id=6" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=300&fit=crop"
+                         alt="Cold & Flu" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">Cold & Flu</div>
+                        <h5 class="medicine-card-title">Cough Syrup</h5>
+                        <div class="medicine-card-price">Rs. 85</div>
+                        <a href="../shop/medicine-detail.html?id=7" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8 -->
+            <div class="swiper-slide">
+                <div class="medicine-card">
+                    <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=400&h=300&fit=crop"
+                         alt="First Aid" class="medicine-card-image">
+                    <div class="medicine-card-body">
+                        <div class="medicine-card-category">First Aid</div>
+                        <h5 class="medicine-card-title">First Aid Kit</h5>
+                        <div class="medicine-card-price">Rs. 450</div>
+                        <a href="../shop/medicine-detail.html?id=8" class="btn-view-details">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
+</section>
+
+<!-- ============================================
+     CATEGORIES SECTION - Auto-Sliding Carousel
+     ============================================ -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-th-large"></i>
+                Browse Categories
+            </div>
+            <h2 class="section-title">
+                Shop by <span class="text-gradient">Category</span>
+            </h2>
+            <p class="section-subtitle">
+                Find medicines by category for quick and easy access
+            </p>
+        </div>
+    </div>
+
+    <!-- Category Swiper Carousel -->
+    <div class="swiper category-swiper" data-aos="fade-up" data-aos-delay="200">
+        <div class="swiper-wrapper">
+            <!-- Heart Care -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=heart" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1628348070889-cb656235b4eb?w=400&h=250&fit=crop" alt="Heart Care">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon heart">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h5>Heart Care</h5>
+                        <p>Cardiovascular medicines</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Neurological -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=brain" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=250&fit=crop" alt="Neurological">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon brain">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h5>Neurological</h5>
+                        <p>Brain & Nerve health</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Respiratory -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=respiratory" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=250&fit=crop" alt="Respiratory">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon lungs">
+                            <i class="fas fa-lungs"></i>
+                        </div>
+                        <h5>Respiratory</h5>
+                        <p>Lung & Breathing</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Immunity -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=immunity" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=250&fit=crop" alt="Immunity">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon immunity">
+                            <i class="fas fa-shield-virus"></i>
+                        </div>
+                        <h5>Immunity</h5>
+                        <p>Immune Boosters</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Diabetes -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=diabetes" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400&h=250&fit=crop" alt="Diabetes">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon diabetes">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h5>Diabetes</h5>
+                        <p>Blood Sugar Control</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Vitamins -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=vitamins" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=250&fit=crop" alt="Vitamins">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon vitamins">
+                            <i class="fas fa-capsules"></i>
+                        </div>
+                        <h5>Vitamins</h5>
+                        <p>Supplements & Nutrition</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Pain Relief -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=pain" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=250&fit=crop" alt="Pain Relief">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon" style="background: linear-gradient(135deg, #ef4444, #f87171);">
+                            <i class="fas fa-hand-holding-medical"></i>
+                        </div>
+                        <h5>Pain Relief</h5>
+                        <p>Pain Management</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Digestive -->
+            <div class="swiper-slide">
+                <a href="../shop/search.html?category=digestive" class="category-card-carousel d-block text-decoration-none">
+                    <div class="category-card-image">
+                        <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=250&fit=crop" alt="Digestive">
+                        <div class="category-overlay"></div>
+                    </div>
+                    <div class="category-card-content">
+                        <div class="category-icon" style="background: linear-gradient(135deg, #22c55e, #4ade80);">
+                            <i class="fas fa-stomach"></i>
+                        </div>
+                        <h5>Digestive</h5>
+                        <p>Stomach & Gut Health</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <div class="swiper-button-prev category-nav"></div>
+        <div class="swiper-button-next category-nav"></div>
+
+        <!-- Pagination -->
+        <div class="swiper-pagination category-pagination"></div>
+    </div>
+</section>
+
+<!-- ============================================
+     STATS SECTION
+     ============================================ -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3 class="counter" data-target="10000">0</h3>
+                    <p>Happy Customers</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-card">
+                    <i class="fas fa-pills"></i>
+                    <h3 class="counter" data-target="5000">0</h3>
+                    <p>Medicines Available</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-card">
+                    <i class="fas fa-truck"></i>
+                    <h3 class="counter" data-target="500">0</h3>
+                    <p>Daily Deliveries</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-card">
+                    <i class="fas fa-award"></i>
+                    <h3>4.9<small>/5</small></h3>
+                    <p>Customer Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     TESTIMONIALS SECTION
+     ============================================ -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-badge">
+                <i class="fas fa-quote-left"></i>
+                Testimonials
+            </div>
+            <h2 class="section-title">
+                What Our <span class="text-gradient">Customers Say</span>
+            </h2>
+            <p class="section-subtitle">
+                Real stories from real customers who trust us with their healthcare needs
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">
+                        "Excellent service! Got my medicines delivered within hours. The pharmacist was very helpful in explaining the dosage. Highly recommended!"
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://ui-avatars.com/api/?name=Ahmed+Khan&background=0077b6&color=fff&size=50"
+                             alt="Ahmed Khan" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Ahmed Khan</div>
+                            <div class="testimonial-role">Regular Customer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">
+                        "I've been ordering from Muneeb Drug House for years. Their prices are competitive and the quality is always top-notch. Best pharmacy in town!"
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://ui-avatars.com/api/?name=Fatima+Ali&background=2a9d8f&color=fff&size=50"
+                             alt="Fatima Ali" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Fatima Ali</div>
+                            <div class="testimonial-role">Verified Buyer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="testimonial-text">
+                        "The 24/7 emergency service saved me when my child needed medicine at midnight. They delivered it within 30 minutes. Amazing service!"
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://ui-avatars.com/api/?name=Muhammad+Waqas&background=f59e0b&color=fff&size=50"
+                             alt="Muhammad Waqas" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Muhammad Waqas</div>
+                            <div class="testimonial-role">Loyal Customer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CTA SECTION
+     ============================================ -->
+<section class="cta-section" data-aos="fade-up">
+    <div class="container">
+        <h2 class="cta-title">Ready to Order Your Medicines?</h2>
+        <p class="cta-subtitle">
+            Browse our extensive collection of medicines and healthcare products.
+            Get them delivered to your doorstep quickly and safely.
+        </p>
+        <div class="cta-buttons">
+            <a href="../shop/search.html" class="btn btn-hero-primary">
+                <i class="fas fa-search"></i>
+                Browse Medicines
+            </a>
+            <a href="tel:03211532010" class="btn btn-hero-secondary">
+                <i class="fas fa-phone"></i>
+                Call Us Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <span class="footer-name">Muneeb Drug House</span>
+                </div>
+                <p class="footer-description">
+                    Your trusted partner in health and wellness. Providing quality medicines with care,
+                    reliability, and professional service since 2010.
+                </p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-heading">Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="../shop/search.html"><i class="fas fa-chevron-right"></i> Medicines</a></li>
+                    <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="../shop/track-order.html"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Categories</h5>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Pain Relief</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Vitamins & Supplements</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Heart Care</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Diabetes Care</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Contact Info</h5>
+                <ul class="footer-links footer-contact">
+                    <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="tel:03211532010">0321-1532010</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:info@waqardrughouse.com">info@waqardrughouse.com</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Main Market, Lahore, Pakistan</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-clock"></i>
+                        <span>24/7 Emergency Service</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Muneeb Drug House. All Rights Reserved. | Made with ❤️ for better health</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<!-- AOS - Animate On Scroll -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Laravel API Client & Utilities -->
+<script src="../../js/api-client.js"></script>
+<script src="../../js/script.js"></script>
+
+<!-- Custom Scripts -->
+<script>
+// Check login status and update navbar
+function updateNavbarAuth() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const guestActions = document.getElementById('guestActions');
+    const userActions = document.getElementById('userActions');
+    const navUserName = document.getElementById('navUserName');
+
+    if (!guestActions || !userActions) return;
+
+    if (user) {
+        guestActions.style.display = 'none';
+        userActions.style.display = 'flex';
+        if (navUserName) {
+            navUserName.textContent = user.first_name || user.username || 'Account';
+        }
+    } else {
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+    }
+}
+
+// Logout function
+function logout(e) {
+    if (e) e.preventDefault();
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    // Call API to clear session
+    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    window.location.href = '../frontend/index.html';
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateNavbarAuth();
+});
+
+// Also run immediately in case DOM is already loaded
+if (document.readyState !== 'loading') {
+    updateNavbarAuth();
+}
+
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 50
+});
+
+// Navbar Scroll Effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Initialize Medicine Swiper Carousel
+const medicineSwiper = new Swiper('.medicine-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+    },
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+        576: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+        },
+        768: {
+            slidesPerView: 3,
+            spaceBetween: 25,
+        },
+        992: {
+            slidesPerView: 4,
+            spaceBetween: 30,
+        },
+    }
+});
+
+// Initialize Category Swiper Carousel - Auto Moving
+const categorySwiper = new Swiper('.category-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+    },
+    speed: 800,
+    effect: 'slide',
+    grabCursor: true,
+    pagination: {
+        el: '.category-pagination',
+        clickable: true,
+        dynamicBullets: true,
+    },
+    navigation: {
+        nextEl: '.swiper-button-next.category-nav',
+        prevEl: '.swiper-button-prev.category-nav',
+    },
+    breakpoints: {
+        480: {
+            slidesPerView: 2,
+            spaceBetween: 15,
+        },
+        768: {
+            slidesPerView: 3,
+            spaceBetween: 20,
+        },
+        992: {
+            slidesPerView: 4,
+            spaceBetween: 25,
+        },
+        1200: {
+            slidesPerView: 5,
+            spaceBetween: 30,
+        },
+    }
+});
+
+// Counter Animation
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter');
+
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.floor(current).toLocaleString() + '+';
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target.toLocaleString() + '+';
+            }
+        };
+
+        updateCounter();
+    });
+}
+
+// Intersection Observer for Counter Animation
+const statsSection = document.querySelector('.stats-section');
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            animateCounters();
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+if (statsSection) {
+    statsObserver.observe(statsSection);
+}
+
+// Update Cart Count
+function updateCartCount() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        const badge = document.getElementById('nav-cart-count');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+    } catch (e) {
+        console.error('Error updating cart count:', e);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartCount();
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+
+// Listen for cart updates
+window.addEventListener('storage', (e) => {
+    if (e.key === 'cart') {
+        updateCartCount();
+    }
+});
+</script>
+
+</body>
+</html>

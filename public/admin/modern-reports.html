@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>Reports - Muneeb Drug House</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- SheetJS for Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Admin Theme CSS -->
+    <link rel="stylesheet" href="../css/admin-theme.css">
+    <link rel="stylesheet" href="../shared/css/advanced-sidebar.css?v=clean-light-v2">
+
+    <!-- Theme CSS - Must load AFTER sidebar CSS to override properly -->
+    <link rel="stylesheet" href="../css/theme-variables.css">
+
+    <!-- Advanced Sidebar Loader -->
+    <script src="../shared/js/sidebar-loader.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 50%, #ecfdf5 100%);
+            background-attachment: fixed;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+        }
+
+        .advanced-sidebar.collapsed ~ .main-content {
+            margin-left: 80px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+
+        .reports-container {
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 30px 35px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.6s ease;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #ef4444, #8b5cf6);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-header-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.35);
+        }
+
+        /* Report Type Cards */
+        .report-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 5px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.6s;
+        }
+
+        .report-card:hover::after {
+            left: 100%;
+        }
+
+        .report-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-card.active {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        }
+
+        .report-card.sales { border-top-color: #10b981; }
+        .report-card.stock { border-top-color: #f59e0b; }
+        .report-card.expiry { border-top-color: #ef4444; }
+        .report-card.customer { border-top-color: #8b5cf6; }
+
+        .report-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .report-card.sales .report-icon { background: linear-gradient(135deg, #10b981, #059669); }
+        .report-card.stock .report-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .report-card.expiry .report-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .report-card.customer .report-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .report-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 8px 0;
+        }
+
+        .report-description {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .filter-input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-generate {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-export {
+            padding: 12px 24px;
+            background: white;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .btn-export.pdf { color: #ef4444; }
+        .btn-export.pdf:hover { border-color: #ef4444; }
+
+        .btn-export.excel { color: #10b981; }
+        .btn-export.excel:hover { border-color: #10b981; }
+
+        /* Results Section */
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .results-summary {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .summary-icon.green { background: #10b981; }
+        .summary-icon.blue { background: #3b82f6; }
+        .summary-icon.orange { background: #f59e0b; }
+
+        .summary-details h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .summary-details p {
+            font-size: 12px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .results-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            height: 400px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .no-data i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .reports-container {
+                padding: 15px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .btn-generate, .btn-export {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar will be loaded here -->
+<div id="sidebar-container"></div>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="reports-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Reports & Analytics</h1>
+            <p>Generate comprehensive reports with charts and export to PDF or Excel</p>
+        </div>
+
+        <!-- Report Type Selection -->
+        <div class="report-types">
+            <div class="report-card sales active" onclick="selectReportType('sales')">
+                <div class="report-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3 class="report-title">Sales Report</h3>
+                <p class="report-description">Daily, weekly, and monthly sales analytics</p>
+            </div>
+
+            <div class="report-card stock" onclick="selectReportType('stock')">
+                <div class="report-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3 class="report-title">Stock Report</h3>
+                <p class="report-description">Current inventory and stock levels</p>
+            </div>
+
+            <div class="report-card expiry" onclick="selectReportType('expiry')">
+                <div class="report-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="report-title">Expiry Report</h3>
+                <p class="report-description">Medicines nearing expiration date</p>
+            </div>
+
+            <div class="report-card customer" onclick="selectReportType('customer')">
+                <div class="report-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="report-title">Customer Report</h3>
+                <p class="report-description">Customer purchase history and analytics</p>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <h3 class="filter-title" id="filterTitle">Sales Report Filters</h3>
+            </div>
+
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Date From</label>
+                    <input type="date" class="filter-input" id="dateFrom" value="2025-10-01">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Date To</label>
+                    <input type="date" class="filter-input" id="dateTo" value="2025-10-30">
+                </div>
+
+                <div class="filter-group" id="categoryFilter">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-input" id="category">
+                        <option value="">All Categories</option>
+                        <option value="Pain Relief">Pain Relief</option>
+                        <option value="Antibiotics">Antibiotics</option>
+                        <option value="Vitamins">Vitamins</option>
+                        <option value="Antacids">Antacids</option>
+                    </select>
+                </div>
+
+                <div class="filter-group" id="periodFilter">
+                    <label class="filter-label">Period</label>
+                    <select class="filter-input" id="period">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-generate" onclick="generateReport()">
+                    <i class="fas fa-chart-bar"></i>
+                    Generate Report
+                </button>
+                <button class="btn-export pdf" onclick="exportToPDF()">
+                    <i class="fas fa-file-pdf"></i>
+                    Export PDF
+                </button>
+                <button class="btn-export excel" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel"></i>
+                    Export Excel
+                </button>
+                <button class="btn-export" onclick="printReport()">
+                    <i class="fas fa-print"></i>
+                    Print
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- Print Only Header -->
+            <div class="print-header" style="display: none;">
+                <div class="print-logo">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <h1 class="print-company-name">Muneeb Drug House</h1>
+                <h2 class="print-report-title" id="printReportTitle">Sales Report</h2>
+                <p class="print-report-date" id="printReportDate"></p>
+            </div>
+
+            <!-- Printable Content Container -->
+            <div id="printableContent">
+                <div class="results-header">
+                    <h3 class="results-title" id="resultsTitle">Sales Report Results</h3>
+                    <div class="results-summary" id="resultsSummary">
+                        <div class="summary-item">
+                            <div class="summary-icon green">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="totalRevenue">Rs. 45,250</h4>
+                                <p>Total Revenue</p>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon blue">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="totalOrders">156</h4>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon orange">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="averageOrder">Rs. 290</h4>
+                                <p>Average Order</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="chart-container">
+                    <canvas id="reportChart"></canvas>
+                </div>
+
+                <!-- Data Table -->
+                <div style="overflow-x: auto; margin-top: 30px;">
+                    <table class="results-table" id="resultsTable">
+                        <thead id="resultsTableHead">
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Print Footer -->
+            <div class="print-footer" style="display: none;">
+                <p>Generated on <span id="printGeneratedDate"></span> | Muneeb Drug House Management System</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Scripts - Load API client before main script -->
+<script src="../js/utils.js"></script>
+<script src="../js/api-client.js"></script>
+<script src="../js/crud-helpers.js"></script>
+
+<script>
+    // Initialize API client
+    const api = new APIClient();
+
+    let currentReportType = 'sales';
+    let reportData = [];
+    let reportChart = null;
+
+    // Select Report Type
+    function selectReportType(type) {
+        currentReportType = type;
+
+        // Update active card
+        document.querySelectorAll('.report-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.querySelector(`.report-card.${type}`).classList.add('active');
+
+        // Update filter title
+        const titles = {
+            sales: 'Sales Report Filters',
+            stock: 'Stock Report Filters',
+            expiry: 'Expiry Report Filters',
+            customer: 'Customer Report Filters'
+        };
+        document.getElementById('filterTitle').textContent = titles[type];
+
+        // Show/hide filters based on type
+        document.getElementById('categoryFilter').style.display = type === 'sales' || type === 'stock' ? 'flex' : 'none';
+        document.getElementById('periodFilter').style.display = type === 'sales' ? 'flex' : 'none';
+    }
+
+    // Generate Report
+    async function generateReport() {
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+
+        if (!dateFrom || !dateTo) {
+            showToast('Please select date range', 'warning');
+            return;
+        }
+
+        // Show loading
+        document.getElementById('resultsSection').classList.add('show');
+
+        // Map report types to Laravel API endpoints
+        const reportTypeMap = {
+            'sales': 'sales',
+            'stock': 'inventory',
+            'expiry': 'inventory', // Use inventory endpoint for expiry, will filter client-side
+            'customer': 'customers'
+        };
+
+        const apiEndpoint = reportTypeMap[currentReportType] || 'sales';
+
+        // Build query parameters using Laravel's expected parameter names
+        const params = new URLSearchParams({
+            date_from: dateFrom,
+            date_to: dateTo
+        });
+
+        if (currentReportType === 'sales') {
+            params.append('group', document.getElementById('period').value);
+        }
+
+        try {
+            // Use API client for proper base URL handling
+            const data = await api.request(`/api/reports/${apiEndpoint}?${params.toString()}`);
+            console.log('Report data received:', data);
+
+            if (data.success) {
+                // For expiry report, filter expired/expiring items and calculate summary
+                if (currentReportType === 'expiry' && Array.isArray(data.data)) {
+                    const today = new Date();
+                    const expiringData = data.data.filter(item => {
+                        if (!item.expiry_date) return false;
+                        const expiryDate = new Date(item.expiry_date);
+                        const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                        return daysUntilExpiry <= 90; // Show items expiring within 90 days or already expired
+                    }).map(item => {
+                        const expiryDate = new Date(item.expiry_date);
+                        const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                        return {
+                            ...item,
+                            days_until_expiry: daysUntilExpiry,
+                            status: daysUntilExpiry < 0 ? 'Expired' :
+                                   daysUntilExpiry <= 30 ? 'Critical' :
+                                   daysUntilExpiry <= 60 ? 'Warning' : 'Notice'
+                        };
+                    });
+
+                    // Calculate expiry summary
+                    const expirySummary = {
+                        expired: expiringData.filter(item => item.days_until_expiry < 0).length,
+                        expiring_30_days: expiringData.filter(item => item.days_until_expiry >= 0 && item.days_until_expiry <= 30).length,
+                        expiring_60_days: expiringData.filter(item => item.days_until_expiry > 30 && item.days_until_expiry <= 60).length,
+                        total_potential_loss: expiringData.reduce((sum, item) => sum + (parseFloat(item.price || 0) * parseFloat(item.quantity || 0)), 0)
+                    };
+
+                    // Store the filtered data for export
+                    reportData = expiringData;
+                    displayReport({ summary: expirySummary, data: expiringData });
+                } else {
+                    // Store the array data for export
+                    reportData = data.data || [];
+                    // Pass the full data object with summary
+                    displayReport(data);
+                }
+
+                console.log('✅ Report data stored, length:', reportData.length);
+                showToast('Report generated successfully!', 'success');
+            } else {
+                console.error('Report error:', data.message);
+                showToast('Error: ' + (data.message || 'Failed to generate report'), 'error');
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            showToast('Failed to fetch report data: ' + error.message, 'error');
+        }
+    }
+
+    // Toast notification
+    function showToast(message, type = 'info') {
+        const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+        const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+        const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        toast.style.cssText = `background: ${bgColor}; color: white; margin-bottom: 10px; border-radius: 8px;`;
+        toast.innerHTML = `
+            <div class="toast-body d-flex align-items-center">
+                <i class="fas fa-${icon} me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
+        document.body.appendChild(container);
+        return container;
+    }
+
+    // Display Report
+    function displayReport(responseData) {
+        console.log('Displaying report:', currentReportType, responseData);
+
+        if (!responseData) {
+            console.error('No data to display');
+            showToast('No data received from server', 'error');
+            return;
+        }
+
+        // Extract data and summary from response
+        const summary = responseData.summary || {};
+        const dataArray = Array.isArray(responseData) ? responseData : (responseData.data || []);
+
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsSummary = document.getElementById('resultsSummary');
+
+        // Update title
+        const titles = {
+            sales: 'Sales Report Results',
+            stock: 'Stock Inventory Report',
+            expiry: 'Medicine Expiry Report',
+            customer: 'Customer Report Results'
+        };
+        resultsTitle.textContent = titles[currentReportType];
+
+        // Update summary based on report type
+        if (currentReportType === 'stock') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-pills"></i>
+                    <div>
+                        <div class="summary-value">${summary.total_items || 0}</div>
+                        <div class="summary-label">Total Medicines</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <div class="summary-value">${summary.low_stock || 0}</div>
+                        <div class="summary-label">Low Stock</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <div class="summary-value">${summary.out_of_stock || 0}</div>
+                        <div class="summary-label">Out of Stock</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(summary.total_value || 0).toFixed(2)}</div>
+                        <div class="summary-label">Total Stock Value</div>
+                    </div>
+                </div>
+            `;
+        } else if (currentReportType === 'expiry') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <div>
+                        <div class="summary-value">${summary.expired || 0}</div>
+                        <div class="summary-label">Expired</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <div>
+                        <div class="summary-value">${summary.expiring_30_days || 0}</div>
+                        <div class="summary-label">Expiring in 30 Days</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-calendar-week"></i>
+                    <div>
+                        <div class="summary-value">${summary.expiring_60_days || 0}</div>
+                        <div class="summary-label">Expiring in 60 Days</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(summary.total_potential_loss || 0).toFixed(2)}</div>
+                        <div class="summary-label">Potential Loss</div>
+                    </div>
+                </div>
+            `;
+        } else if (currentReportType === 'sales') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(summary.total_sales || 0).toFixed(2)}</div>
+                        <div class="summary-label">Total Revenue</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div>
+                        <div class="summary-value">${summary.total_transactions || 0}</div>
+                        <div class="summary-label">Total Transactions</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(summary.average_sale || 0).toFixed(2)}</div>
+                        <div class="summary-label">Average Sale</div>
+                    </div>
+                </div>
+            `;
+        } else if (currentReportType === 'customer') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <div class="summary-value">${summary.total_customers || 0}</div>
+                        <div class="summary-label">Total Customers</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <div class="summary-value">${parseFloat(summary.total_loyalty_points || 0).toFixed(0)}</div>
+                        <div class="summary-label">Total Loyalty Points</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <div class="summary-value">${parseFloat(summary.average_points || 0).toFixed(1)}</div>
+                        <div class="summary-label">Avg Points per Customer</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate and display chart from data
+        generateChartFromData(dataArray, summary);
+
+        // Display table with data
+        displayTable(dataArray);
+    }
+
+    // Display Chart
+    function displayChart(data) {
+        console.log('Displaying chart with data:', data);
+
+        // Validate data
+        if (!data || !data.labels || !data.values || data.labels.length === 0) {
+            console.warn('Invalid chart data:', data);
+            return;
+        }
+
+        const canvas = document.getElementById('reportChart');
+        if (!canvas) {
+            console.error('Canvas element not found');
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
+
+        // Destroy existing chart
+        if (reportChart) {
+            reportChart.destroy();
+        }
+
+        // Determine chart label based on report type
+        let datasetLabel = 'Revenue';
+        if (currentReportType === 'stock' || currentReportType === 'inventory') {
+            datasetLabel = 'Quantity';
+        } else if (currentReportType === 'expiry') {
+            datasetLabel = 'Count';
+        } else if (currentReportType === 'customer') {
+            datasetLabel = 'Customers';
+        }
+
+        // Create new chart
+        reportChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: datasetLabel,
+                    data: data.values,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (currentReportType === 'sales') {
+                                    label += 'Rs. ' + context.parsed.y.toFixed(2);
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                if (currentReportType === 'sales') {
+                                    return 'Rs. ' + value.toLocaleString();
+                                }
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        console.log('Chart created successfully');
+    }
+
+    // Display Table
+    function displayTable(data) {
+        const tableHead = document.getElementById('resultsTableHead');
+        const tableBody = document.getElementById('resultsTableBody');
+
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="100%" class="no-data" style="text-align: center; padding: 40px;"><i class="fas fa-inbox"></i><br>No data available</td></tr>';
+            return;
+        }
+
+        // Define columns to display based on report type
+        let columnsToDisplay = [];
+        let columnHeaders = [];
+
+        if (currentReportType === 'stock') {
+            columnsToDisplay = ['name', 'category', 'quantity', 'price', 'manufacturer', 'batch_number', 'expiry_date'];
+            columnHeaders = ['Medicine Name', 'Category', 'Stock', 'Price (Rs.)', 'Manufacturer', 'Batch', 'Expiry Date'];
+        } else if (currentReportType === 'expiry') {
+            columnsToDisplay = ['name', 'category', 'quantity', 'expiry_date', 'days_until_expiry', 'status'];
+            columnHeaders = ['Medicine Name', 'Category', 'Stock', 'Expiry Date', 'Days Left', 'Status'];
+        } else if (currentReportType === 'sales') {
+            columnsToDisplay = ['invoice_number', 'created_at', 'customer_name', 'total', 'payment_method'];
+            columnHeaders = ['Invoice', 'Date', 'Customer', 'Total (Rs.)', 'Payment Method'];
+        } else if (currentReportType === 'customer') {
+            columnsToDisplay = ['name', 'phone', 'email', 'points', 'purchases', 'last_purchase_date'];
+            columnHeaders = ['Customer Name', 'Phone', 'Email', 'Points', 'Purchases', 'Last Purchase'];
+        }
+
+        // Create header row
+        const headerRow = document.createElement('tr');
+        columnHeaders.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            th.style.cssText = 'padding: 12px; text-align: left; border-bottom: 2px solid #e5e7eb; background: #f9fafb; font-weight: 600;';
+            headerRow.appendChild(th);
+        });
+        tableHead.appendChild(headerRow);
+
+        // Create data rows
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.style.cssText = index % 2 === 0 ? 'background: white;' : 'background: #f9fafb;';
+
+            columnsToDisplay.forEach(column => {
+                const td = document.createElement('td');
+                td.style.cssText = 'padding: 12px; border-bottom: 1px solid #e5e7eb;';
+
+                let value = row[column];
+
+                // Format specific columns
+                if (column === 'price' || column === 'total') {
+                    value = 'Rs. ' + parseFloat(value || 0).toFixed(2);
+                } else if (column === 'expiry_date' || column === 'created_at' || column === 'last_purchase_date') {
+                    if (value) {
+                        const date = new Date(value);
+                        value = date.toLocaleDateString('en-PK');
+                    }
+                } else if (column === 'days_until_expiry') {
+                    value = value !== undefined ? value : 'N/A';
+                    if (value < 0) {
+                        td.style.color = '#dc2626';
+                        td.style.fontWeight = 'bold';
+                    } else if (value <= 30) {
+                        td.style.color = '#f59e0b';
+                        td.style.fontWeight = 'bold';
+                    }
+                } else if (column === 'status') {
+                    const statusColors = {
+                        'Expired': '#dc2626',
+                        'Critical': '#f59e0b',
+                        'Warning': '#eab308',
+                        'Notice': '#3b82f6',
+                        'In Stock': '#10b981',
+                        'Low Stock': '#f59e0b',
+                        'Out of Stock': '#dc2626'
+                    };
+                    td.style.color = statusColors[value] || '#000';
+                    td.style.fontWeight = 'bold';
+                } else if (column === 'quantity') {
+                    const qty = parseInt(value || 0);
+                    if (qty === 0) {
+                        td.style.color = '#dc2626';
+                        td.style.fontWeight = 'bold';
+                    } else if (qty < 20) {
+                        td.style.color = '#f59e0b';
+                    }
+                }
+
+                td.textContent = value !== null && value !== undefined ? value : 'N/A';
+                tr.appendChild(td);
+            });
+
+            tableBody.appendChild(tr);
+        });
+
+        console.log(`✅ Table displayed with ${data.length} rows`);
+    }
+
+    // Generate Chart from Data
+    function generateChartFromData(data, summary) {
+        console.log('📊 generateChartFromData called with', data?.length, 'items, reportType:', currentReportType);
+
+        if (!data || data.length === 0) {
+            console.log('No data available for chart');
+            return;
+        }
+
+        let chartData = { labels: [], values: [] };
+
+        if (currentReportType === 'stock') {
+            // Group by category and sum quantities
+            const categoryData = {};
+            data.forEach(item => {
+                const cat = item.category || 'Uncategorized';
+                if (!categoryData[cat]) {
+                    categoryData[cat] = 0;
+                }
+                categoryData[cat] += parseInt(item.quantity || 0);
+            });
+            chartData.labels = Object.keys(categoryData).slice(0, 10);
+            chartData.values = chartData.labels.map(label => categoryData[label]);
+            console.log('📊 Stock chart data:', chartData);
+        } else if (currentReportType === 'sales') {
+            // Group by date
+            const dateData = {};
+            data.forEach(item => {
+                if (item.created_at) {
+                    const date = new Date(item.created_at).toLocaleDateString('en-PK');
+                    if (!dateData[date]) {
+                        dateData[date] = 0;
+                    }
+                    dateData[date] += parseFloat(item.total || 0);
+                }
+            });
+            const sortedDates = Object.keys(dateData).sort();
+            chartData.labels = sortedDates.slice(-10);
+            chartData.values = chartData.labels.map(date => dateData[date]);
+            console.log('📊 Sales chart data:', chartData);
+        } else if (currentReportType === 'expiry') {
+            // Group by status
+            const statusData = { 'Expired': 0, 'Critical': 0, 'Warning': 0, 'Notice': 0 };
+            data.forEach(item => {
+                if (item.status && statusData.hasOwnProperty(item.status)) {
+                    statusData[item.status]++;
+                }
+            });
+            chartData.labels = Object.keys(statusData);
+            chartData.values = Object.values(statusData);
+            console.log('📊 Expiry chart data:', chartData);
+        } else if (currentReportType === 'customer') {
+            // Top 10 customers by purchases
+            const sortedCustomers = [...data].sort((a, b) => (b.purchases || 0) - (a.purchases || 0)).slice(0, 10);
+            chartData.labels = sortedCustomers.map(c => c.name || 'Unknown');
+            chartData.values = sortedCustomers.map(c => c.purchases || 0);
+            console.log('📊 Customer chart data:', chartData);
+        }
+
+        if (chartData.labels.length > 0) {
+            displayChart(chartData);
+        } else {
+            console.log('No chart data generated - labels empty');
+        }
+    }
+
+    // Export to PDF
+    function exportToPDF() {
+        if (!reportData || reportData.length === 0) {
+            alert('Please generate a report first');
+            return;
+        }
+
+        if (typeof window.jspdf === 'undefined') {
+            alert('PDF library not loaded. Please refresh the page.');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Add title
+        doc.setFontSize(20);
+        doc.text(currentReportType.toUpperCase() + ' REPORT', 14, 20);
+
+        // Add date
+        doc.setFontSize(10);
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        doc.text('Period: ' + dateFrom + ' to ' + dateTo, 14, 28);
+        doc.text('Generated on: ' + new Date().toLocaleString(), 14, 34);
+
+        // Prepare table data based on report type
+        let headers = [];
+        let rows = [];
+
+        if (currentReportType === 'stock') {
+            headers = ['Name', 'Category', 'Quantity', 'Price', 'Manufacturer'];
+            rows = reportData.map(item => [
+                item.name || '',
+                item.category || '',
+                item.quantity || 0,
+                'Rs. ' + parseFloat(item.price || 0).toFixed(2),
+                item.manufacturer || ''
+            ]);
+        } else if (currentReportType === 'sales') {
+            headers = ['Invoice', 'Date', 'Customer', 'Total'];
+            rows = reportData.map(item => [
+                item.invoice_number || '',
+                item.created_at ? new Date(item.created_at).toLocaleDateString() : '',
+                item.customer_name || '',
+                'Rs. ' + parseFloat(item.total || 0).toFixed(2)
+            ]);
+        } else if (currentReportType === 'customer') {
+            headers = ['Name', 'Phone', 'Points', 'Purchases'];
+            rows = reportData.map(item => [
+                item.name || '',
+                item.phone || '',
+                item.points || 0,
+                item.purchases || 0
+            ]);
+        } else if (currentReportType === 'expiry') {
+            headers = ['Name', 'Expiry Date', 'Days Left', 'Status'];
+            rows = reportData.map(item => [
+                item.name || '',
+                item.expiry_date ? new Date(item.expiry_date).toLocaleDateString() : '',
+                item.days_until_expiry || 'N/A',
+                item.status || ''
+            ]);
+        }
+
+        // Add table using autoTable
+        doc.autoTable({
+            head: [headers],
+            body: rows,
+            startY: 40,
+            theme: 'grid',
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [59, 130, 246], textColor: 255 }
+        });
+
+        // Save PDF
+        try {
+            doc.save(currentReportType + '_report_' + new Date().toISOString().split('T')[0] + '.pdf');
+            showToast('PDF downloaded successfully!', 'success');
+        } catch (error) {
+            console.error('PDF save error:', error);
+            alert('Failed to save PDF: ' + error.message);
+        }
+    }
+
+    // Export to Excel
+    function exportToExcel() {
+        if (!reportData || reportData.length === 0) {
+            alert('Please generate a report first');
+            return;
+        }
+
+        if (typeof XLSX === 'undefined') {
+            alert('Excel library not loaded. Please refresh the page.');
+            return;
+        }
+
+        console.log('Exporting to Excel, reportData:', reportData);
+
+        // Prepare data for Excel based on report type
+        let excelData = [];
+
+        if (currentReportType === 'stock') {
+            excelData = reportData.map(item => ({
+                'Name': item.name || '',
+                'Category': item.category || '',
+                'Quantity': item.quantity || 0,
+                'Price': parseFloat(item.price || 0).toFixed(2),
+                'Manufacturer': item.manufacturer || '',
+                'Batch Number': item.batch_number || '',
+                'Expiry Date': item.expiry_date ? new Date(item.expiry_date).toLocaleDateString() : ''
+            }));
+        } else if (currentReportType === 'sales') {
+            excelData = reportData.map(item => ({
+                'Invoice': item.invoice_number || '',
+                'Date': item.created_at ? new Date(item.created_at).toLocaleDateString() : '',
+                'Customer': item.customer_name || '',
+                'Total': parseFloat(item.total || 0).toFixed(2),
+                'Payment Method': item.payment_method || ''
+            }));
+        } else if (currentReportType === 'customer') {
+            excelData = reportData.map(item => ({
+                'Name': item.name || '',
+                'Phone': item.phone || '',
+                'Email': item.email || '',
+                'Points': item.points || 0,
+                'Purchases': item.purchases || 0,
+                'Last Purchase': item.last_purchase_date || ''
+            }));
+        } else if (currentReportType === 'expiry') {
+            excelData = reportData.map(item => ({
+                'Name': item.name || '',
+                'Category': item.category || '',
+                'Quantity': item.quantity || 0,
+                'Expiry Date': item.expiry_date ? new Date(item.expiry_date).toLocaleDateString() : '',
+                'Days Until Expiry': item.days_until_expiry || 'N/A',
+                'Status': item.status || ''
+            }));
+        }
+
+        if (excelData.length === 0) {
+            alert('No data available to export');
+            return;
+        }
+
+        console.log('Excel data prepared:', excelData.length, 'rows');
+
+        try {
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, currentReportType.toUpperCase());
+            XLSX.writeFile(wb, currentReportType + '_report_' + new Date().toISOString().split('T')[0] + '.xlsx');
+            showToast('Excel file downloaded successfully!', 'success');
+        } catch (error) {
+            console.error('Excel export error:', error);
+            alert('Failed to export Excel: ' + error.message);
+        }
+    }
+
+    // Print Report
+    function printReport() {
+        if (!reportData || reportData.length === 0) {
+            alert('Please generate a report first');
+            return;
+        }
+
+        // Update print header
+        const titles = {
+            sales: 'Sales Report',
+            stock: 'Stock Inventory Report',
+            expiry: 'Medicine Expiry Report',
+            customer: 'Customer Report'
+        };
+
+        document.getElementById('printReportTitle').textContent = titles[currentReportType];
+
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        document.getElementById('printReportDate').textContent = `Period: ${dateFrom} to ${dateTo}`;
+
+        const now = new Date();
+        document.getElementById('printGeneratedDate').textContent = now.toLocaleString();
+
+        // Trigger print
+        window.print();
+    }
+
+    // Initialize with authentication check and sample data
+    window.addEventListener('load', () => {
+        // Check authentication first
+        if (!sessionStorage.getItem('user_role')) {
+            window.location.href = '../login.html';
+            return;
+        }
+
+        // Set default date range (last 30 days to today)
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        document.getElementById('dateFrom').value = formatDate(thirtyDaysAgo);
+        document.getElementById('dateTo').value = formatDate(today);
+
+        // Generate initial report with default dates
+        generateReport();
+    });
+</script>
+
+<!-- Sidebar JS -->
+<script src="../shared/js/advanced-sidebar.js"></script>
+
+<script>
+// Logout functions
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

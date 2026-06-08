@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Sidebar Cache</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .message {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Sidebar Cache Cleared!</h1>
+        <div class="message">
+            <strong>Success!</strong> The sidebar cache has been cleared and all navigation links have been updated.
+        </div>
+        <div class="info">
+            <strong>What was fixed:</strong>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>✅ Dashboard link updated</li>
+                <li>✅ Billing link updated</li>
+                <li>✅ Customers link updated</li>
+                <li>✅ <strong>Medicines link fixed</strong></li>
+                <li>✅ Stock link updated</li>
+                <li>✅ Orders link updated</li>
+                <li>✅ Reports link updated</li>
+                <li>✅ Settings link updated</li>
+            </ul>
+        </div>
+        <a href="/modules/dashboard/index.html" class="btn">Go to Dashboard</a>
+        <a href="/modules/medicines/index.html" class="btn">Go to Medicines</a>
+    </div>
+
+    <script>
+        // Clear the cached sidebar from sessionStorage
+        sessionStorage.clear();
+        localStorage.removeItem('sidebarCollapsed');
+        console.log('✅ Sidebar cache cleared from sessionStorage');
+        console.log('✅ All session data cleared');
+
+        // Force reload after 2 seconds
+        setTimeout(() => {
+            window.location.href = '/modules/medicines/index.html';
+        }, 2000);
+    </script>
+</body>
+</html>

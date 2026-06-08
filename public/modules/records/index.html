@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+    <title>Billing Records - Muneeb Drug House</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery UI for Autocomplete -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../shared/css/advanced-sidebar.css?v=2.0">
+
+    <!-- Theme CSS - Must load AFTER sidebar CSS to override properly -->
+    <link rel="stylesheet" href="../../css/theme-variables.css">
+
+    <!-- Advanced Sidebar Loader -->
+    <script src="../../shared/js/sidebar-loader.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .modern-sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .loading-spinner {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3b82f6;
+            display: none;
+        }
+
+        .search-box.loading .loading-spinner {
+            display: block;
+        }
+
+        .records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .record-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #3b82f6;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .invoice-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .record-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .record-info {
+            margin-bottom: 12px;
+        }
+
+        .record-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+
+        .record-value {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .record-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 12px;
+        }
+
+        .record-date {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .customer-type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-walkin {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-registered {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Bill Detail Modal */
+        .bill-detail-modal .modal-dialog {
+            max-width: 900px;
+        }
+
+        .bill-detail-content {
+            padding: 30px;
+        }
+
+        .bill-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .bill-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 35px;
+            color: white;
+        }
+
+        .items-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        .items-table th {
+            background: #f8fafc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .items-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .totals-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+
+        .total-row.grand-total {
+            border-top: 2px solid #e2e8f0;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar will be loaded here -->
+<div id="sidebar-container"></div>
+
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-file-invoice"></i> Billing Records</h1>
+        <p style="color: #64748b; margin: 0;">Search and view past bills and receipts</p>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <h5 style="margin-bottom: 20px; color: #1e293b;"><i class="fas fa-search"></i> Advanced Search</h5>
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="recordSearch" placeholder="Search by invoice number, customer name, or phone number..." autocomplete="off">
+            <i class="fas fa-spinner fa-spin loading-spinner"></i>
+        </div>
+        <div style="margin-top: 15px; font-size: 13px; color: #64748b;">
+            <i class="fas fa-info-circle"></i> Type at least 2 characters to search. Search works for invoice numbers, customer names, and phone numbers.
+        </div>
+    </div>
+
+    <!-- Records Grid -->
+    <div id="recordsContainer">
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h5>Search for bills and receipts</h5>
+            <p>Start typing to find past transactions</p>
+        </div>
+    </div>
+</main>
+
+<!-- Bill Detail Modal -->
+<div class="modal fade bill-detail-modal" id="billDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-file-invoice"></i> Bill Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="bill-detail-content" id="billDetailContent">
+                    <!-- Bill content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+let currentBillData = null;
+
+function getApiBaseUrl() {
+    const loc = window.location;
+    if (loc.port === '8000') {
+        return loc.origin;
+    }
+    if (loc.pathname.includes('/waqar/')) {
+        return loc.origin + '/waqar/public';
+    }
+    return loc.origin;
+}
+
+$(document).ready(function() {
+    // Validate the Laravel session instead of relying on sessionStorage.
+    fetch(getApiBaseUrl() + '/api/auth/user', {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success && !data.user && !data.username) {
+            window.location.href = '../auth/login.html';
+            return;
+        }
+
+        if (data.user || data.username) {
+            const user = data.user || data;
+            sessionStorage.setItem('user_role', user.role || 'staff');
+        }
+
+        initializeSearch();
+        loadRecentBills();
+    })
+    .catch(error => {
+        console.error('Auth check failed:', error);
+        window.location.href = '../auth/login.html';
+    });
+});
+
+function initializeSearch() {
+    let searchTimeout;
+
+    $('#recordSearch').on('input', function() {
+        const query = $(this).val().trim();
+
+        clearTimeout(searchTimeout);
+
+        if (query.length < 2) {
+            $('#recordsContainer').html(`
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h5>Search for bills and receipts</h5>
+                    <p>Start typing to find past transactions</p>
+                </div>
+            `);
+            return;
+        }
+
+        $('.search-box').addClass('loading');
+
+        searchTimeout = setTimeout(() => {
+            searchBills(query);
+        }, 300);
+    });
+}
+
+function searchBills(query) {
+    $.ajax({
+        url: getApiBaseUrl() + '/api/bills',
+        method: 'GET',
+        data: { search: query },
+        dataType: 'json',
+        success: function(response) {
+            $('.search-box').removeClass('loading');
+
+            if (response.success && response.data && response.data.length > 0) {
+                displayRecords(response.data);
+            } else {
+                $('#recordsContainer').html(`
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h5>No records found</h5>
+                        <p>Try searching with different keywords</p>
+                    </div>
+                `);
+            }
+        },
+        error: function(err) {
+            $('.search-box').removeClass('loading');
+            console.error('Search error:', err);
+            $('#recordsContainer').html(`
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h5>Error loading records</h5>
+                    <p>Please try again</p>
+                </div>
+            `);
+        }
+    });
+}
+
+function loadRecentBills() {
+    $.ajax({
+        url: getApiBaseUrl() + '/api/bills',
+        method: 'GET',
+        data: { limit: 50 },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                displayRecords(response.data);
+            } else {
+                $('#recordsContainer').html(`
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h5>No bills found</h5>
+                        <p>No bills have been created yet</p>
+                    </div>
+                `);
+            }
+        },
+        error: function() {
+            $('#recordsContainer').html(`
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h5>Error loading bills</h5>
+                    <p>Please try again</p>
+                </div>
+            `);
+        }
+    });
+}
+
+function displayRecords(bills) {
+    let html = '<div class="records-grid">';
+
+    bills.forEach(bill => {
+        const customerType = bill.customer_type === 'registered' ? 'Registered' : 'Walk-in';
+        const badgeClass = bill.customer_type === 'registered' ? 'badge-registered' : 'badge-walkin';
+        const date = new Date(bill.created_at).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        html += `
+            <div class="record-card" onclick="viewBillDetail(${bill.id})">
+                <div class="record-header">
+                    <div class="invoice-number">${bill.invoice_number}</div>
+                    <div class="record-amount">Rs. ${parseFloat(bill.total).toFixed(2)}</div>
+                </div>
+                <div class="record-info">
+                    <div class="record-label">Customer</div>
+                    <div class="record-value">${bill.customer_name}</div>
+                </div>
+                ${bill.customer_phone ? `
+                <div class="record-info">
+                    <div class="record-label">Phone</div>
+                    <div class="record-value">${bill.customer_phone}</div>
+                </div>
+                ` : ''}
+                <div class="record-footer">
+                    <div class="record-date"><i class="fas fa-clock"></i> ${date}</div>
+                    <div class="customer-type-badge ${badgeClass}">${customerType}</div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    $('#recordsContainer').html(html);
+}
+
+function viewBillDetail(billId) {
+    $.ajax({
+        url: `${getApiBaseUrl()}/api/bills/${billId}`,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.data) {
+                currentBillData = response.data;
+                displayBillDetail(response.data);
+                const modal = new bootstrap.Modal(document.getElementById('billDetailModal'));
+                modal.show();
+            } else {
+                alert('Failed to load bill details');
+            }
+        },
+        error: function(err) {
+            console.error('Error loading bill:', err);
+            alert('Error loading bill details');
+        }
+    });
+}
+
+function displayBillDetail(bill) {
+    const items = JSON.parse(bill.items);
+    const date = new Date(bill.created_at).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    let itemsHtml = '';
+    items.forEach(item => {
+        itemsHtml += `
+            <tr>
+                <td>${item.name}</td>
+                <td style="text-align: center;">${item.quantity}</td>
+                <td style="text-align: right;">Rs. ${parseFloat(item.price).toFixed(2)}</td>
+                <td style="text-align: right;">Rs. ${parseFloat(item.total).toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    const html = `
+        <div class="bill-header">
+            <div class="bill-logo">
+                <i class="fas fa-pills"></i>
+            </div>
+            <h2 style="font-size: 24px; font-weight: 700; margin: 10px 0 5px 0;">Muneeb Drug House</h2>
+            <p style="font-size: 12px; color: #64748b;">Medical Plaza, Main Boulevard<br>Phone: +92-300-1234567</p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-weight: 600; color: #64748b;">Invoice No:</span>
+                <span style="color: #1e293b;">${bill.invoice_number}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-weight: 600; color: #64748b;">Date:</span>
+                <span style="color: #1e293b;">${date}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-weight: 600; color: #64748b;">Customer:</span>
+                <span style="color: #1e293b;">${bill.customer_name}</span>
+            </div>
+            ${bill.customer_phone ? `
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-weight: 600; color: #64748b;">Phone:</span>
+                <span style="color: #1e293b;">${bill.customer_phone}</span>
+            </div>
+            ` : ''}
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-weight: 600; color: #64748b;">Type:</span>
+                <span style="color: #1e293b;">${bill.customer_type === 'registered' ? 'Registered Customer' : 'Walk-in Customer'}</span>
+            </div>
+        </div>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Medicine</th>
+                    <th style="text-align: center;">Qty</th>
+                    <th style="text-align: right;">Price</th>
+                    <th style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${itemsHtml}
+            </tbody>
+        </table>
+
+        <div class="totals-section">
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <span>Rs. ${parseFloat(bill.subtotal).toFixed(2)}</span>
+            </div>
+            <div class="total-row">
+                <span>Discount:</span>
+                <span>Rs. ${parseFloat(bill.discount).toFixed(2)}</span>
+            </div>
+            <div class="total-row">
+                <span>Tax (2%):</span>
+                <span>Rs. ${parseFloat(bill.tax).toFixed(2)}</span>
+            </div>
+            <div class="total-row grand-total">
+                <span>Grand Total:</span>
+                <span>Rs. ${parseFloat(bill.total).toFixed(2)}</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-action btn-print" onclick="printBill()">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button class="btn-action btn-pdf" onclick="downloadBillPDF()">
+                <i class="fas fa-file-pdf"></i> Download PDF
+            </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #e2e8f0;">
+            <p style="font-size: 13px; color: #64748b; margin: 0;">Thank you for choosing Muneeb Drug House!</p>
+        </div>
+    `;
+
+    $('#billDetailContent').html(html);
+}
+
+function printBill() {
+    const printContent = document.getElementById('billDetailContent').innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Bill - ${currentBillData.invoice_number}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                .items-table th, .items-table td { padding: 10px; border: 1px solid #ddd; }
+                .items-table th { background: #f5f5f5; }
+                .totals-section { background: #f9f9f9; padding: 15px; margin: 20px 0; }
+                .total-row { display: flex; justify-content: space-between; padding: 5px 0; }
+                .grand-total { font-size: 20px; font-weight: bold; border-top: 2px solid #333; padding-top: 10px; margin-top: 10px; }
+                .action-buttons { display: none; }
+            </style>
+        </head>
+        <body>${printContent}</body>
+        </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
+}
+
+function downloadBillPDF() {
+    if (!currentBillData) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const items = JSON.parse(currentBillData.items);
+
+    // Header
+    doc.setFillColor(102, 126, 234);
+    doc.rect(0, 0, 210, 40, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.text('MUNEEB DRUG HOUSE', 105, 20, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text('Medical Plaza, Main Boulevard', 105, 28, { align: 'center' });
+    doc.text('Phone: +92-300-1234567', 105, 34, { align: 'center' });
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.text('Invoice: ' + currentBillData.invoice_number, 14, 50);
+    doc.text('Customer: ' + currentBillData.customer_name, 14, 57);
+    if (currentBillData.customer_phone) {
+        doc.text('Phone: ' + currentBillData.customer_phone, 14, 64);
+    }
+
+    // Items table
+    const tableData = items.map(item => [
+        item.name,
+        item.quantity,
+        'Rs. ' + parseFloat(item.price).toFixed(2),
+        'Rs. ' + parseFloat(item.total).toFixed(2)
+    ]);
+
+    doc.autoTable({
+        head: [['Medicine', 'Qty', 'Price', 'Total']],
+        body: tableData,
+        startY: 75,
+        theme: 'grid'
+    });
+
+    // Totals
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(11);
+    doc.text('Subtotal: Rs. ' + parseFloat(currentBillData.subtotal).toFixed(2), 140, finalY);
+    doc.text('Tax: Rs. ' + parseFloat(currentBillData.tax).toFixed(2), 140, finalY + 7);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('Total: Rs. ' + parseFloat(currentBillData.total).toFixed(2), 140, finalY + 17);
+
+    doc.save('Bill_' + currentBillData.invoice_number + '.pdf');
+}
+
+// Load all records when page loads
+$(document).ready(function() {
+    loadRecentBills();
+});
+</script>
+
+</body>
+</html>

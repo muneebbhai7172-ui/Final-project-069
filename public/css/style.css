@@ -1,0 +1,35 @@
+/* Professional Light Gradient Pharmacy POS Styles - Modular Version */
+
+/* 1. Base Styles - Foundation */
+@import 'base/_typography.css';   /* Font imports */
+@import 'base/_variables.css';    /* CSS custom properties (light theme) */
+@import 'base/_themes.css';       /* Dark theme variables */
+@import 'base/_reset.css';        /* Global reset and base styles */
+
+/* 2. Layout Styles - Structure */
+@import 'layout/_navigation.css'; /* Navbar and navigation */
+@import 'layout/_footer.css';     /* Footer styles */
+
+/* 3. Component Styles - Reusable UI elements */
+@import 'components/_buttons.css'; /* Button styles and animations */
+@import 'components/_cards.css';   /* Card components */
+@import 'components/_forms.css';   /* Form controls and inputs */
+@import 'components/_tables.css';  /* Table styles */
+
+/* 4. Page Styles - Specific page styling */
+@import 'pages/_login.css';       /* Login page styles */
+@import 'pages/_home.css';        /* Home page styles */
+
+/* 5. Utilities - Helpers and utilities */
+@import 'utilities/_scrollbar.css';  /* Custom scrollbar */
+@import 'utilities/_animations.css'; /* Keyframes and animations */
+@import 'utilities/_helpers.css';    /* Utility classes and badges */
+@import 'utilities/_responsive.css'; /* Media queries and responsive design */
+
+/* Note: This modular approach improves maintainability by:
+ * - Organizing styles by purpose and scope
+ * - Making it easier to find and modify specific features
+ * - Allowing better CSS caching and loading strategies
+ * - Reducing conflicts and improving code readability
+ * - Enabling easier collaboration among developers
+ */

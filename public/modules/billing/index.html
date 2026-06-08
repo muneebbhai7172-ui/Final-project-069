@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+    <title>Enhanced Billing - Muneeb Drug House</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- jQuery UI for Autocomplete -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../shared/css/advanced-sidebar.css?v=clean-light-v2">
+    <link rel="stylesheet" href="../../css/admin-premium.css?v=2.0">
+
+    <!-- Advanced Sidebar Loader -->
+    <script src="../../shared/js/sidebar-loader.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--admin-bg);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .modern-sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+
+        .page-header {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 24px;
+        }
+
+        @media (max-width: 1400px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .billing-form, .receipt-preview {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .receipt-preview {
+            position: sticky;
+            top: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .customer-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .customer-type-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .customer-type-btn.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .customer-type-btn:hover {
+            border-color: #3b82f6;
+        }
+
+        .autocomplete-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-left: 45px; /* Space for icon */
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .autocomplete-wrapper .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .autocomplete-wrapper .loading-spinner {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3b82f6;
+            font-size: 14px;
+            display: none;
+        }
+
+        .autocomplete-wrapper.loading .loading-spinner {
+            display: block;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .ui-autocomplete {
+            max-height: 350px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            z-index: 10000 !important;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 8px 0;
+            margin-top: 5px;
+        }
+
+        .ui-menu-item {
+            padding: 0;
+            border-bottom: 1px solid #f1f5f9;
+            list-style: none;
+        }
+
+        .ui-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .ui-menu-item > div {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ui-menu-item:hover > div,
+        .ui-menu-item.ui-state-focus > div,
+        .ui-menu-item.ui-state-active > div {
+            background: #eff6ff !important;
+            color: #3b82f6 !important;
+            border: none !important;
+        }
+
+        .autocomplete-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .autocomplete-item-main {
+            flex: 1;
+        }
+
+        .autocomplete-item-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .autocomplete-item-subtitle {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .autocomplete-item-badge {
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .autocomplete-item-price {
+            font-weight: 700;
+            color: #10b981;
+            font-size: 16px;
+        }
+
+        .no-results-message {
+            padding: 30px 15px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .no-results-message i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: block;
+            opacity: 0.5;
+        }
+
+        .quantity-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quantity-controls input {
+            flex: 1;
+        }
+
+        .btn-add-item {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .items-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        .items-table th {
+            background: #f8fafc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .items-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .totals-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+
+        .total-row.grand-total {
+            border-top: 2px solid #e2e8f0;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .receipt-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 35px;
+            color: white;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 10px 0 5px 0;
+        }
+
+        .company-info {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .receipt-info {
+            margin-bottom: 20px;
+        }
+
+        .info-group {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            font-weight: 600;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast-notification.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .toast-notification.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .toast-notification.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        @media print {
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+            }
+
+            .page-header, .billing-form, .sidebar, aside {
+                display: none !important;
+            }
+
+            .content-grid {
+                display: block !important;
+            }
+
+            .receipt-preview {
+                box-shadow: none !important;
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar will be loaded here -->
+<div id="sidebar-container"></div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border: none; border-radius: 16px; overflow: hidden;">
+            <div class="modal-body text-center" style="padding: 40px;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-check" style="font-size: 40px; color: white;"></i>
+                </div>
+                <h4 style="color: #1e293b; font-weight: 700; margin-bottom: 10px;">Bill Saved Successfully!</h4>
+                <p style="color: #64748b; margin-bottom: 5px;" id="successInvoice">Invoice: INV-12345678</p>
+                <p style="color: #64748b; margin-bottom: 25px;" id="successTotal">Total: Rs. 0.00</p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 10px 20px; border: none; border-radius: 8px;" onclick="printReceipt()">
+                        <i class="fas fa-print"></i> Print Receipt
+                    </button>
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 10px 20px; border: none; border-radius: 8px;" onclick="closeSuccessModal()">
+                        <i class="fas fa-plus"></i> New Bill
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="billing-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-receipt"></i> Enhanced Billing System</h1>
+            <p style="color: #64748b; margin: 0;">Create bills with medicine search, customer management, and instant receipts</p>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Billing Form -->
+            <div class="billing-form">
+                <!-- Customer Type Selection -->
+                <div class="section-title">
+                    <i class="fas fa-user"></i> Customer Information
+                </div>
+
+                <div class="customer-type-selector">
+                    <button class="customer-type-btn active" onclick="setCustomerType('walk-in')">
+                        <i class="fas fa-walking"></i> Walk-in Customer
+                    </button>
+                    <button class="customer-type-btn" onclick="setCustomerType('registered')">
+                        <i class="fas fa-user-check"></i> Registered Customer
+                    </button>
+                </div>
+
+                <!-- Walk-in Customer Form -->
+                <div id="walkinForm">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-user"></i> Customer Name *</label>
+                        <input type="text" class="form-input" id="walkinName" placeholder="Enter customer name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" class="form-input" id="walkinPhone" placeholder="Enter phone number">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> Address (Optional)</label>
+                        <input type="text" class="form-input" id="walkinAddress" placeholder="Enter address">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="saveAsCustomer">
+                        <label class="form-check-label" for="saveAsCustomer">
+                            Save as registered customer for future
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Registered Customer Form -->
+                <div id="registeredForm" style="display: none;">
+                    <div class="autocomplete-wrapper">
+                        <label class="form-label"><i class="fas fa-search"></i> Search Customer *</label>
+                        <input type="text" class="form-input" id="customerSearch" placeholder="Type customer name or phone..." autocomplete="off">
+                        <input type="hidden" id="selectedCustomerId">
+                    </div>
+                    <div id="customerDetails" style="display: none; background: #f8fafc; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1" id="customerDetailName"></h6>
+                                <p class="mb-1 small text-muted" id="customerDetailPhone"></p>
+                                <p class="mb-0 small text-muted" id="customerDetailAddress"></p>
+                            </div>
+                            <span class="badge bg-primary" id="customerDetailPoints">0 points</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Medicine Search & Add -->
+                <div class="section-title">
+                    <i class="fas fa-pills"></i> Add Medicines
+                </div>
+
+                <div class="autocomplete-wrapper">
+                    <label class="form-label"><i class="fas fa-search"></i> Search Medicine *</label>
+                    <input type="text" class="form-input" id="medicineSearch" placeholder="Type medicine name..." autocomplete="off">
+                    <input type="hidden" id="selectedMedicineId">
+                    <input type="hidden" id="selectedMedicineName">
+                    <input type="hidden" id="selectedMedicinePrice">
+                    <input type="hidden" id="selectedMedicineStock">
+                </div>
+
+                <!-- Selected Medicine Display -->
+                <div id="selectedMedicineDisplay" style="display: none; background: #f0fdf4; border: 2px solid #10b981; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: #059669; margin-bottom: 5px;">
+                                <i class="fas fa-check-circle"></i> <span id="displayMedicineName"></span>
+                            </div>
+                            <div style="font-size: 12px; color: #64748b;">
+                                Price: <strong id="displayMedicinePrice"></strong> | Stock: <strong id="displayMedicineStock"></strong>
+                            </div>
+                        </div>
+                        <button onclick="clearMedicineSelection()" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 18px;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quantity-controls">
+                    <input type="number" class="form-input" id="medicineQuantity" placeholder="Quantity" min="1" value="1">
+                    <button class="btn-add-item" onclick="addItemToCart()">
+                        <i class="fas fa-plus"></i> Add to Cart
+                    </button>
+                </div>
+
+                <!-- Cart Items -->
+                <div style="margin-top: 30px;">
+                    <h6 class="mb-3">Cart Items</h6>
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th style="text-align: center;">Qty</th>
+                                <th style="text-align: right;">Price</th>
+                                <th style="text-align: right;">Total</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #64748b; padding: 40px;">
+                                    <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                                    <p>No items in cart</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals -->
+                <div class="totals-section">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">Rs. 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Discount:</span>
+                        <span id="discount">Rs. 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax (2%):</span>
+                        <span id="tax">Rs. 0.00</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Grand Total:</span>
+                        <span id="grandTotal">Rs. 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-action btn-save" onclick="saveBill()">
+                        <i class="fas fa-save"></i> Save Bill
+                    </button>
+                    <button class="btn-action btn-print" onclick="printReceipt()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-pdf" onclick="downloadPDF()">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Receipt Preview -->
+            <div class="receipt-preview" id="receiptPreview">
+                <div class="receipt-header">
+                    <div class="receipt-logo">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h2 class="company-name">Muneeb Drug House</h2>
+                    <p class="company-info">Medical Plaza, Main Boulevard<br>Phone: +92-300-1234567 | Email: info@waqardrughouse.com</p>
+                </div>
+
+                <div class="receipt-info">
+                    <div class="info-group">
+                        <div class="info-label">Invoice No:</div>
+                        <div class="info-value" id="previewInvoiceNo">-</div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Date:</div>
+                        <div class="info-value" id="previewDate">-</div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Customer:</div>
+                        <div class="info-value" id="previewCustomer">-</div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Phone:</div>
+                        <div class="info-value" id="previewPhone">-</div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Type:</div>
+                        <div class="info-value" id="previewType">Walk-in</div>
+                    </div>
+                </div>
+
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th style="text-align: center;">Qty</th>
+                            <th style="text-align: right;">Price</th>
+                            <th style="text-align: right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewItems">
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 30px; color: #64748b;">
+                                No items
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="totals-section" style="margin-top: 20px;">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="previewSubtotal">Rs. 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Discount:</span>
+                        <span id="previewDiscount">Rs. 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax (2%):</span>
+                        <span id="previewTax">Rs. 0.00</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total:</span>
+                        <span id="previewGrandTotal">Rs. 0.00</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #e2e8f0;">
+                    <p style="font-size: 13px; color: #64748b; margin: 0;">Thank you for choosing Muneeb Drug House!</p>
+                    <p style="font-size: 11px; color: #94a3b8; margin: 5px 0 0 0;">Your trusted healthcare partner</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../js/utils.js"></script>
+<script src="../../js/api-client.js"></script>
+<script src="../../js/crud-helpers.js"></script>
+
+<script>
+// Billing System Code
+const BILLING_PREFILL_KEY = 'billingPrefillOrder';
+let currentCustomerType = 'walk-in';
+let cartItems = [];
+let invoiceNumber = 'INV-' + Date.now().toString().slice(-8);
+let allMedicines = [];
+let allCustomers = [];
+
+function getApiBaseUrl() {
+    if (typeof api !== 'undefined' && api.baseURL) {
+        return api.baseURL;
+    }
+
+    const loc = window.location;
+    if (loc.port === '8000') {
+        return loc.origin;
+    }
+
+    if (loc.pathname.includes('/waqar/')) {
+        return loc.origin + '/waqar/public';
+    }
+
+    return loc.origin;
+}
+
+// Helper Functions - Define before initialization
+function showToast(message, type = 'info') {
+    const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6';
+    const toast = $(`
+        <div style="
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: ${bgColor};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        ">${message}</div>
+    `).appendTo('body');
+
+    setTimeout(() => {
+        toast.css({ opacity: 1, transform: 'translateY(0)' });
+    }, 100);
+
+    setTimeout(() => {
+        toast.css({ opacity: 0, transform: 'translateY(20px)' });
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function selectMedicine(med) {
+    console.log('Selecting medicine:', med);
+
+    // Store medicine data
+    $('#selectedMedicineId').val(med.id);
+    $('#selectedMedicineName').val(med.name);
+    $('#selectedMedicinePrice').val(med.price);
+    $('#selectedMedicineStock').val(med.quantity);
+    $('#medicineQuantity').attr('max', med.quantity);
+    $('#medicineQuantity').val(1);
+
+    // Clear and hide search box, show selected display
+    $('#medicineSearch').val('');
+
+    // Update and show selected medicine display
+    $('#displayMedicineName').text(med.name);
+    $('#displayMedicinePrice').text('Rs. ' + parseFloat(med.price).toFixed(2));
+    $('#displayMedicineStock').text(med.quantity + ' units');
+    $('#selectedMedicineDisplay').slideDown(300);
+
+    // Focus on quantity
+    setTimeout(() => {
+        $('#medicineQuantity').focus();
+        $('#medicineQuantity').select();
+    }, 100);
+
+    showToast(`✅ Selected: ${med.name} (Rs. ${med.price})`, 'success');
+}
+
+function clearMedicineSelection() {
+    $('#selectedMedicineId').val('');
+    $('#selectedMedicineName').val('');
+    $('#selectedMedicinePrice').val('');
+    $('#selectedMedicineStock').val('');
+    $('#medicineQuantity').val(1);
+    $('#medicineQuantity').removeAttr('max');
+    $('#selectedMedicineDisplay').slideUp(300);
+    $('#medicineSearch').focus();
+}
+
+function selectCustomer(cust) {
+    console.log('Selecting customer:', cust);
+    $('#selectedCustomerId').val(cust.id);
+    $('#customerDetailName').text(cust.name);
+    $('#customerDetailPhone').text(cust.phone || 'No phone');
+    $('#customerDetailAddress').text(cust.address || 'No address');
+    $('#customerDetailPoints').text((cust.points || 0) + ' points');
+    $('#customerDetails').slideDown(300);
+    updatePreview();
+
+    showToast(`Selected: ${cust.name}`, 'success');
+}
+
+$(document).ready(function() {
+    // Check authentication (commented out for testing)
+    // if (!sessionStorage.getItem('user_role')) {
+    //     window.location.href = '../auth/login.html';
+    //     return;
+    // }
+
+    // Initialize
+    initializePage();
+    loadMedicines();
+    loadCustomers();
+    updatePreviewDate();
+    updatePreviewInvoice();
+    loadBillingPrefill();
+});
+
+function initializePage() {
+    // Add search icons and loading spinners to inputs
+    $('.autocomplete-wrapper').each(function() {
+        if (!$(this).find('.search-icon').length) {
+            $(this).prepend('<i class="fas fa-search search-icon"></i>');
+            $(this).append('<i class="fas fa-spinner fa-spin loading-spinner"></i>');
+        }
+    });
+
+    // Enhanced Medicine Autocomplete with better UI
+    $('#medicineSearch').autocomplete({
+        minLength: 2,
+        delay: 300,
+        source: function(request, response) {
+            const wrapper = $('#medicineSearch').closest('.autocomplete-wrapper');
+            wrapper.addClass('loading');
+
+            $.ajax({
+                url: getApiBaseUrl() + '/api/medicines/suggestions/search',
+                method: 'GET',
+                dataType: 'json',
+                data: { term: request.term, limit: 20 },
+                success: function(data) {
+                    wrapper.removeClass('loading');
+                    console.log('Medicine API Response:', data);
+                    if (data.success && data.suggestions && data.suggestions.length > 0) {
+                        const items = data.suggestions.map(med => ({
+                            label: med.name,
+                            value: med.name,
+                            data: med
+                        }));
+                        response(items);
+                    } else {
+                        response([{ label: 'No medicines found', value: '', data: null }]);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    wrapper.removeClass('loading');
+                    console.error('Medicine API Error:', error);
+                    response([{ label: 'Error loading medicines', value: '', data: null }]);
+                }
+            });
+        },
+        select: function(event, ui) {
+            event.preventDefault(); // Prevent default autocomplete behavior
+            if (!ui.item.data) {
+                return false;
+            }
+            // Store the medicine name BEFORE clearing
+            const selectedMed = ui.item.data;
+            $('#medicineSearch').val(selectedMed.name); // Show selected medicine name
+            selectMedicine(selectedMed);
+            setTimeout(() => $('#medicineQuantity').focus(), 100);
+            return false;
+        },
+        focus: function(event, ui) {
+            return false;
+        }
+    }).data("ui-autocomplete")._renderItem = function(ul, item) {
+        if (!item.data) {
+            return $("<li class='no-results-message'>")
+                .append(`<div><i class="fas fa-capsules"></i><div style="margin-top: 8px;">${item.label}</div></div>`)
+                .appendTo(ul);
+        }
+
+        const med = item.data;
+        const stockBadge = med.quantity > 0
+            ? `<span class="autocomplete-item-badge badge-success"><i class="fas fa-check-circle"></i> Stock: ${med.quantity}</span>`
+            : `<span class="autocomplete-item-badge badge-danger"><i class="fas fa-times-circle"></i> Out of Stock</span>`;
+
+        const categoryBadge = med.category
+            ? `<span class="autocomplete-item-badge badge-info"><i class="fas fa-tag"></i> ${med.category}</span>`
+            : '';
+
+        const html = `
+            <div class="autocomplete-item">
+                <div class="autocomplete-item-main">
+                    <div class="autocomplete-item-title">${med.name}</div>
+                    <div class="autocomplete-item-subtitle">
+                        ${categoryBadge}
+                        ${stockBadge}
+                    </div>
+                </div>
+                <div class="autocomplete-item-price">Rs. ${parseFloat(med.price).toFixed(2)}</div>
+            </div>
+        `;
+
+        return $("<li>").append(html).appendTo(ul);
+    };
+
+    // Enhanced Customer Autocomplete
+    $('#customerSearch').autocomplete({
+        minLength: 2,
+        delay: 300,
+        source: function(request, response) {
+            const wrapper = $('#customerSearch').closest('.autocomplete-wrapper');
+            wrapper.addClass('loading');
+
+            $.ajax({
+                url: getApiBaseUrl() + '/api/customers',
+                method: 'GET',
+                dataType: 'json',
+                data: { search: request.term, limit: 20 },
+                success: function(data) {
+                    wrapper.removeClass('loading');
+                    console.log('Customer API Response:', data);
+                    if (data.success && data.customers && data.customers.length > 0) {
+                        const items = data.customers.map(cust => ({
+                            label: cust.name,
+                            value: cust.name,
+                            data: cust
+                        }));
+                        response(items);
+                    } else {
+                        response([{ label: 'No customers found', value: '', data: null }]);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    wrapper.removeClass('loading');
+                    console.error('Customer API Error:', error);
+                    response([{ label: 'Error loading customers', value: '', data: null }]);
+                }
+            });
+        },
+        select: function(event, ui) {
+            if (!ui.item.data) {
+                return false;
+            }
+            selectCustomer(ui.item.data);
+            return true;
+        },
+        focus: function(event, ui) {
+            return false;
+        }
+    }).data("ui-autocomplete")._renderItem = function(ul, item) {
+        if (!item.data) {
+            return $("<li class='no-results-message'>")
+                .append(`<div><i class="fas fa-user-search"></i><div style="margin-top: 8px;">${item.label}</div></div>`)
+                .appendTo(ul);
+        }
+
+        const cust = item.data;
+        const pointsBadge = `<span class="autocomplete-item-badge badge-info"><i class="fas fa-star"></i> ${cust.points || 0} points</span>`;
+        const phone = cust.phone ? `<span><i class="fas fa-phone"></i> ${cust.phone}</span>` : '';
+
+        const html = `
+            <div class="autocomplete-item">
+                <div class="autocomplete-item-main">
+                    <div class="autocomplete-item-title">${cust.name}</div>
+                    <div class="autocomplete-item-subtitle">
+                        ${phone}
+                        ${pointsBadge}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return $("<li>").append(html).appendTo(ul);
+    };
+
+    // Update preview on input changes
+    $('#walkinName, #walkinPhone').on('input', updatePreview);
+
+    // Add keyboard support for quantity input (Enter key to add to cart)
+    $('#medicineQuantity').on('keypress', function(e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            addItemToCart();
+        }
+    });
+}
+
+function formatMedicineLabel(med) {
+    const stock = med.quantity > 0 ? `<span style="color: #10b981;">In Stock (${med.quantity})</span>` : `<span style="color: #ef4444;">Out of Stock</span>`;
+    return `
+        <div class="medicine-info">
+            <div>
+                <div class="medicine-name">${med.name}</div>
+                <div class="medicine-details">${med.category} • ${stock}</div>
+            </div>
+            <div class="medicine-price">Rs. ${parseFloat(med.price).toFixed(2)}</div>
+        </div>
+    `;
+}
+
+function formatCustomerLabel(cust) {
+    return `
+        <div class="medicine-info">
+            <div>
+                <div class="medicine-name">${cust.name}</div>
+                <div class="medicine-details">${cust.phone || 'No phone'} • ${cust.points || 0} points</div>
+            </div>
+        </div>
+    `;
+}
+
+function loadMedicines() {
+    $.ajax({
+        url: getApiBaseUrl() + '/api/medicines',
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.medicines) {
+                allMedicines = response.medicines;
+            }
+        },
+        error: function(err) {
+            console.error('Failed to load medicines:', err);
+        }
+    });
+}
+
+function loadCustomers() {
+    $.ajax({
+        url: getApiBaseUrl() + '/api/customers',
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.customers) {
+                allCustomers = response.customers;
+            }
+        },
+        error: function(err) {
+            console.error('Failed to load customers:', err);
+        }
+    });
+}
+
+function setCustomerType(type) {
+    currentCustomerType = type;
+
+    // Update button states
+    $('.customer-type-btn').removeClass('active');
+    event.target.closest('.customer-type-btn').classList.add('active');
+
+    // Toggle forms
+    if (type === 'walk-in') {
+        $('#walkinForm').show();
+        $('#registeredForm').hide();
+        $('#previewType').text('Walk-in Customer');
+    } else {
+        $('#walkinForm').hide();
+        $('#registeredForm').show();
+        $('#previewType').text('Registered Customer');
+    }
+
+    updatePreview();
+}
+
+function addItemToCart() {
+    const medicineId = $('#selectedMedicineId').val();
+    const medicineName = $('#selectedMedicineName').val(); // Get from hidden field instead
+    const price = parseFloat($('#selectedMedicinePrice').val());
+    const stock = parseInt($('#selectedMedicineStock').val());
+    const quantity = parseInt($('#medicineQuantity').val());
+
+    console.log('Adding to cart:', { medicineId, medicineName, price, stock, quantity });
+
+    if (!medicineId || !medicineName) {
+        showToast('⚠️ Please select a medicine from the suggestions', 'error');
+        console.error('Missing medicine data:', { medicineId, medicineName });
+        return;
+    }
+
+    if (isNaN(price) || price <= 0) {
+        showToast('⚠️ Invalid medicine price', 'error');
+        console.error('Invalid price:', price);
+        return;
+    }
+
+    if (isNaN(quantity) || quantity < 1) {
+        showToast('⚠️ Please enter a valid quantity (minimum 1)', 'error');
+        return;
+    }
+
+    if (isNaN(stock) || stock < 1) {
+        showToast('❌ This medicine is out of stock!', 'error');
+        return;
+    }
+
+    // Check existing cart quantity
+    const existingIndex = cartItems.findIndex(item => item.id === medicineId);
+    let totalRequestedQty = quantity;
+
+    if (existingIndex >= 0) {
+        totalRequestedQty = cartItems[existingIndex].quantity + quantity;
+    }
+
+    // Validate against available stock
+    if (totalRequestedQty > stock) {
+        showToast(`❌ Insufficient stock! Available: ${stock}, In cart: ${existingIndex >= 0 ? cartItems[existingIndex].quantity : 0}`, 'error');
+        return;
+    }
+
+    // Add or update item in cart
+    if (existingIndex >= 0) {
+        cartItems[existingIndex].quantity = totalRequestedQty;
+        cartItems[existingIndex].total = totalRequestedQty * cartItems[existingIndex].price;
+        showToast(`✅ Updated ${medicineName} quantity to ${totalRequestedQty}`, 'success');
+    } else {
+        cartItems.push({
+            id: medicineId,
+            name: medicineName,
+            price: price,
+            quantity: quantity,
+            total: price * quantity,
+            maxStock: stock
+        });
+        showToast(`✅ Added ${quantity} × ${medicineName} to cart`, 'success');
+    }
+
+    // Reset inputs
+    $('#medicineSearch').val('');
+    $('#selectedMedicineId').val('');
+    $('#selectedMedicineName').val('');
+    $('#selectedMedicinePrice').val('');
+    $('#selectedMedicineStock').val('');
+    $('#medicineQuantity').val('1');
+    $('#medicineQuantity').removeAttr('max');
+    $('#selectedMedicineDisplay').slideUp(200);
+    $('#medicineSearch').focus();
+
+    updateCart();
+}
+
+function removeFromCart(index) {
+    const itemName = cartItems[index].name;
+    cartItems.splice(index, 1);
+    updateCart();
+    showToast(`Removed ${itemName} from cart`, 'info');
+}
+
+function updateCart() {
+    const tbody = $('#cartTableBody');
+    const previewBody = $('#previewItems');
+
+    if (cartItems.length === 0) {
+        tbody.html(`
+            <tr>
+                <td colspan="5" style="text-align: center; color: #64748b; padding: 40px;">
+                    <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                    <p>No items in cart</p>
+                </td>
+            </tr>
+        `);
+        previewBody.html(`
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 30px; color: #64748b;">No items</td>
+            </tr>
+        `);
+    } else {
+        tbody.empty();
+        previewBody.empty();
+
+        cartItems.forEach((item, index) => {
+            tbody.append(`
+                <tr>
+                    <td>${item.name}</td>
+                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: right;">Rs. ${item.price.toFixed(2)}</td>
+                    <td style="text-align: right;">Rs. ${item.total.toFixed(2)}</td>
+                    <td>
+                        <button class="remove-btn" onclick="removeFromCart(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            previewBody.append(`
+                <tr>
+                    <td>${item.name}</td>
+                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: right;">Rs. ${item.price.toFixed(2)}</td>
+                    <td style="text-align: right;">Rs. ${item.total.toFixed(2)}</td>
+                </tr>
+            `);
+        });
+    }
+
+    updateTotals();
+}
+
+function updateTotals() {
+    const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+    const discount = 0; // Can be calculated based on customer loyalty points
+    const tax = subtotal * 0.02; // 2% tax
+    const grandTotal = subtotal - discount + tax;
+
+    $('#subtotal').text(`Rs. ${subtotal.toFixed(2)}`);
+    $('#discount').text(`Rs. ${discount.toFixed(2)}`);
+    $('#tax').text(`Rs. ${tax.toFixed(2)}`);
+    $('#grandTotal').text(`Rs. ${grandTotal.toFixed(2)}`);
+
+    $('#previewSubtotal').text(`Rs. ${subtotal.toFixed(2)}`);
+    $('#previewDiscount').text(`Rs. ${discount.toFixed(2)}`);
+    $('#previewTax').text(`Rs. ${tax.toFixed(2)}`);
+    $('#previewGrandTotal').text(`Rs. ${grandTotal.toFixed(2)}`);
+}
+
+function updatePreview() {
+    if (currentCustomerType === 'walk-in') {
+        const name = $('#walkinName').val() || '-';
+        const phone = $('#walkinPhone').val() || '-';
+        $('#previewCustomer').text(name);
+        $('#previewPhone').text(phone);
+    } else {
+        const name = $('#customerDetailName').text() || '-';
+        const phone = $('#customerDetailPhone').text() || '-';
+        $('#previewCustomer').text(name);
+        $('#previewPhone').text(phone);
+    }
+}
+
+function updatePreviewDate() {
+    const now = new Date();
+    $('#previewDate').text(now.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    }));
+}
+
+function updatePreviewInvoice() {
+    $('#previewInvoiceNo').text(invoiceNumber);
+}
+
+function buildBillingPrefillFromOrder(order) {
+    const items = Array.isArray(order?.items)
+        ? order.items.map(item => {
+            const quantity = Number.parseInt(item?.quantity ?? item?.qty ?? 0, 10) || 0;
+            const price = Number.parseFloat(item?.price ?? item?.unit_price ?? 0) || 0;
+            const total = Number.parseFloat(item?.subtotal ?? item?.total ?? (quantity * price)) || 0;
+
+            return {
+                id: item?.medicine_id || item?.id || null,
+                name: item?.medicine_name || item?.name || 'N/A',
+                quantity,
+                price,
+                total
+            };
+        })
+        : [];
+
+    const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+
+    return {
+        source: 'online-order',
+        orderId: order?.id || null,
+        orderCode: order?.order_id || order?.order_number || String(order?.id || ''),
+        invoiceNumber: `INV-${String(order?.order_id || order?.order_number || Date.now()).replace(/[^a-zA-Z0-9_-]/g, '')}`,
+        customer: {
+            name: order?.customer_name || '',
+            phone: order?.phone || '',
+            address: order?.address || ''
+        },
+        items,
+        totals: {
+            subtotal,
+            total: Number.parseFloat(order?.total_amount || subtotal) || subtotal
+        }
+    };
+}
+
+function applyBillingPrefill(prefill) {
+    if (!prefill) {
+        return false;
+    }
+
+    invoiceNumber = prefill.invoiceNumber || invoiceNumber;
+    currentCustomerType = 'walk-in';
+
+    $('.customer-type-btn').removeClass('active');
+    $('.customer-type-btn').first().addClass('active');
+    $('#walkinForm').show();
+    $('#registeredForm').hide();
+
+    $('#walkinName').val(prefill.customer?.name || '');
+    $('#walkinPhone').val(prefill.customer?.phone || '');
+    $('#walkinAddress').val(prefill.customer?.address || '');
+    $('#saveAsCustomer').prop('checked', false);
+
+    cartItems = (prefill.items || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        price: Number.parseFloat(item.price) || 0,
+        quantity: Number.parseInt(item.quantity, 10) || 0,
+        total: Number.parseFloat(item.total) || 0
+    }));
+
+    updateCart();
+    updatePreview();
+    updatePreviewInvoice();
+
+    return true;
+}
+
+async function loadBillingPrefill() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoPrint = urlParams.get('autoprint') === '1';
+
+    let storedPrefill = null;
+    try {
+        storedPrefill = JSON.parse(sessionStorage.getItem(BILLING_PREFILL_KEY) || 'null');
+    } catch (error) {
+        console.warn('Unable to parse billing prefill from sessionStorage:', error);
+    }
+
+    if (storedPrefill) {
+        sessionStorage.removeItem(BILLING_PREFILL_KEY);
+        applyBillingPrefill(storedPrefill);
+
+        if (autoPrint) {
+            setTimeout(() => printReceipt(), 500);
+        }
+
+        return true;
+    }
+
+    const orderId = urlParams.get('orderId');
+    if (!orderId || typeof api === 'undefined') {
+        return false;
+    }
+
+    try {
+        const response = await api.getOrder(orderId);
+        const order = response?.data || response;
+        const prefill = buildBillingPrefillFromOrder(order);
+        applyBillingPrefill(prefill);
+
+        if (autoPrint) {
+            setTimeout(() => printReceipt(), 500);
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Failed to load order for billing prefill:', error);
+        return false;
+    }
+}
+
+function saveBill() {
+    if (cartItems.length === 0) {
+        showToast('⚠️ Please add items to the cart', 'error');
+        return;
+    }
+
+    let customerData = {};
+
+    if (currentCustomerType === 'walk-in') {
+        const name = $('#walkinName').val();
+        const phone = $('#walkinPhone').val();
+        const address = $('#walkinAddress').val();
+        const saveAsCustomer = $('#saveAsCustomer').is(':checked');
+
+        if (!name) {
+            showToast('⚠️ Please enter customer name', 'error');
+            return;
+        }
+
+        customerData = {
+            type: 'walk-in',
+            name: name,
+            phone: phone || '',
+            address: address || '',
+            save_as_customer: saveAsCustomer
+        };
+    } else {
+        const customerId = $('#selectedCustomerId').val();
+        if (!customerId) {
+            showToast('⚠️ Please select a customer', 'error');
+            return;
+        }
+
+        customerData = {
+            type: 'registered',
+            customer_id: customerId
+        };
+    }
+
+    const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+    const discount = 0;
+    const tax = subtotal * 0.02;
+    const total = subtotal - discount + tax;
+
+    const billData = {
+        invoice_number: invoiceNumber,
+        customer: customerData,
+        items: cartItems,
+        subtotal: subtotal,
+        discount: discount,
+        tax: tax,
+        total: total
+    };
+
+    // Show loading
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    btn.disabled = true;
+
+    $.ajax({
+        url: getApiBaseUrl() + '/api/bills',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(billData),
+        success: function(response) {
+            console.log('Save response:', response);
+            if (response.success) {
+                // Update success modal
+                $('#successInvoice').text('Invoice: ' + invoiceNumber);
+                $('#successTotal').text('Total: Rs. ' + total.toFixed(2));
+
+                // Show success modal
+                const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                modal.show();
+
+                showToast('✅ Bill saved successfully!', 'success');
+            } else {
+                showToast('❌ Error: ' + (response.message || 'Failed to save bill'), 'error');
+                console.error('Save failed:', response);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Save error:', xhr.responseText);
+            showToast('❌ Failed to save bill. Please check console for details.', 'error');
+        },
+        complete: function() {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    });
+}
+
+function closeSuccessModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
+    if (modal) {
+        modal.hide();
+    }
+    resetBill();
+}
+
+function printReceipt() {
+    if (cartItems.length === 0) {
+        showToast('⚠️ Please add items to print', 'warning');
+        return;
+    }
+    window.print();
+}
+
+function downloadPDF() {
+    if (cartItems.length === 0) {
+        showToast('⚠️ Please add items to generate PDF', 'warning');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Add logo/header
+    doc.setFillColor(102, 126, 234);
+    doc.rect(0, 0, 210, 40, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.text('MUNEEB DRUG HOUSE', 105, 20, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text('Medical Plaza, Main Boulevard', 105, 28, { align: 'center' });
+    doc.text('Phone: +92-300-1234567 | Email: info@waqardrughouse.com', 105, 34, { align: 'center' });
+
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+
+    // Bill details
+    doc.setFontSize(12);
+    doc.text('Invoice No: ' + invoiceNumber, 14, 50);
+    doc.text('Date: ' + new Date().toLocaleDateString(), 14, 57);
+    doc.text('Customer: ' + $('#previewCustomer').text(), 14, 64);
+    doc.text('Phone: ' + $('#previewPhone').text(), 14, 71);
+    doc.text('Type: ' + $('#previewType').text(), 14, 78);
+
+    // Items table
+    const tableData = cartItems.map(item => [
+        item.name,
+        item.quantity,
+        'Rs. ' + item.price.toFixed(2),
+        'Rs. ' + item.total.toFixed(2)
+    ]);
+
+    doc.autoTable({
+        head: [['Medicine', 'Qty', 'Price', 'Total']],
+        body: tableData,
+        startY: 85,
+        theme: 'grid',
+        headStyles: {
+            fillColor: [59, 130, 246],
+            fontSize: 11,
+            fontStyle: 'bold'
+        },
+        styles: {
+            fontSize: 10
+        }
+    });
+
+    // Totals
+    const finalY = doc.lastAutoTable.finalY + 10;
+    const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+    const tax = subtotal * 0.02;
+    const total = subtotal + tax;
+
+    doc.setFontSize(11);
+    doc.text('Subtotal:', 140, finalY);
+    doc.text('Rs. ' + subtotal.toFixed(2), 180, finalY, { align: 'right' });
+
+    doc.text('Tax (2%):', 140, finalY + 7);
+    doc.text('Rs. ' + tax.toFixed(2), 180, finalY + 7, { align: 'right' });
+
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('Grand Total:', 140, finalY + 17);
+    doc.text('Rs. ' + total.toFixed(2), 180, finalY + 17, { align: 'right' });
+
+    // Footer
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text('Thank you for choosing Muneeb Drug House!', 105, finalY + 30, { align: 'center' });
+    doc.text('Your trusted healthcare partner', 105, finalY + 36, { align: 'center' });
+
+    // Save
+    doc.save('Invoice_' + invoiceNumber + '.pdf');
+}
+
+function resetBill() {
+    cartItems = [];
+    invoiceNumber = 'INV-' + Date.now().toString().slice(-8);
+
+    $('#walkinName').val('');
+    $('#walkinPhone').val('');
+    $('#walkinAddress').val('');
+    $('#saveAsCustomer').prop('checked', false);
+    $('#customerSearch').val('');
+    $('#selectedCustomerId').val('');
+    $('#customerDetails').hide();
+    $('#medicineSearch').val('');
+    $('#selectedMedicineId').val('');
+    $('#selectedMedicineName').val('');
+    $('#selectedMedicinePrice').val('');
+    $('#selectedMedicineStock').val('');
+    $('#medicineQuantity').val('1');
+    $('#selectedMedicineDisplay').hide();
+
+    updateCart();
+    updatePreviewInvoice();
+    updatePreview();
+}
+</script>
+
+</body>
+</html>

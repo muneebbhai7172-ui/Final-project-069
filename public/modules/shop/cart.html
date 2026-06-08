@@ -1,0 +1,4957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="csrf-token" content="">
+    <title>Shopping Cart - Muneeb Drug House</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/medical-theme.css">
+    <link rel="stylesheet" href="../../css/style.css?v=5.0">
+
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #00b4d8;
+            --primary-dark: #023e8a;
+            --secondary: #48cae4;
+            --accent: #90e0ef;
+            --success: #2a9d8f;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --dark: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+        }
+
+        /* ============ COMPACT CART HERO ============ */
+        .cart-hero {
+            background: linear-gradient(135deg, #023e8a 0%, #0077b6 40%, #00b4d8 80%, #48cae4 100%);
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 75px 0 40px;
+            overflow: hidden;
+        }
+
+        .hero-bg-layers {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .hero-mesh {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(144, 224, 239, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(72, 202, 228, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 180, 216, 0.2) 0%, transparent 60%);
+            animation: meshMove 20s ease-in-out infinite;
+        }
+
+        @keyframes meshMove {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        /* Floating Medical Images - Hidden for compact layout */
+        .floating-med-images {
+            display: none;
+        }
+
+        .float-med-img {
+            position: absolute;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            animation: floatMed 10s ease-in-out infinite;
+        }
+
+        .float-med-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .float-med-img::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.3), transparent);
+            z-index: 1;
+        }
+
+        .float-med-img-1 { width: 130px; height: 130px; top: 8%; right: 10%; animation-delay: 0s; }
+        .float-med-img-2 { width: 100px; height: 100px; bottom: 25%; left: 5%; animation-delay: 3s; }
+        .float-med-img-3 { width: 90px; height: 90px; top: 45%; right: 5%; animation-delay: 5s; }
+
+        @keyframes floatMed {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-12px) rotate(2deg) scale(1.02); }
+            50% { transform: translateY(-5px) rotate(0deg) scale(1.03); }
+            75% { transform: translateY(-18px) rotate(-2deg) scale(1.02); }
+        }
+
+        /* Floating Icons - Hidden for compact layout */
+        .hero-float-icons {
+            display: none;
+        }
+
+        .hero-float-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: iconBob 6s ease-in-out infinite;
+        }
+
+        .hero-float-icon i { font-size: 1.5rem; color: white; }
+
+        .hero-float-icon:nth-child(1) { top: 15%; left: 8%; animation-delay: 0s; }
+        .hero-float-icon:nth-child(2) { top: 55%; left: 3%; animation-delay: 2s; }
+        .hero-float-icon:nth-child(3) { bottom: 15%; left: 12%; animation-delay: 4s; }
+        .hero-float-icon:nth-child(4) { bottom: 30%; right: 25%; animation-delay: 1s; }
+
+        @keyframes iconBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Glowing Orbs */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbPulse 12s ease-in-out infinite;
+        }
+
+        .glow-orb-1 { width: 350px; height: 350px; background: rgba(144, 224, 239, 0.35); top: -100px; right: -50px; }
+        .glow-orb-2 { width: 280px; height: 280px; background: rgba(0, 180, 216, 0.25); bottom: -80px; left: -80px; animation-delay: 6s; }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: none;
+        }
+
+        .hero-badge i { color: #fbbf24; }
+
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.2); }
+        }
+
+        .hero-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 900;
+            color: white;
+            margin-bottom: 10px;
+            line-height: 1.1;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--accent), #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 500px;
+            margin: 0 auto 15px;
+            line-height: 1.5;
+        }
+
+        .hero-features {
+            display: none;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .hero-feature:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .hero-feature i {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .hero-feature span {
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* ============ MAIN CART SECTION ============ */
+        .cart-main {
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 80px;
+        }
+
+        .cart-container {
+            background: white;
+            border-radius: 40px 40px 0 0;
+            padding: 50px 0;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.1);
+            overflow: visible !important;
+        }
+
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 40px;
+            align-items: start;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Cart Items Section */
+        .cart-items-section {
+            background: var(--gray-50);
+            border-radius: 28px;
+            padding: 35px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-icon i { color: white; font-size: 1.4rem; }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .section-title span {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .clear-cart-btn {
+            padding: 12px 24px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .clear-cart-btn:hover {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+
+        /* Cart Item Card */
+        .cart-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .cart-item-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 25px;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-100);
+            transition: all 0.3s;
+        }
+
+        .cart-item-card:hover {
+            box-shadow: 0 10px 40px rgba(0, 119, 182, 0.12);
+            border-color: var(--primary-light);
+        }
+
+        .item-icon-box {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-icon-box i { font-size: 2rem; color: white; }
+
+        .item-info h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .item-info .category {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .item-info .category i { color: var(--primary); }
+
+        .item-price {
+            text-align: center;
+        }
+
+        .item-price .label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .item-price .value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .item-qty {
+            display: flex;
+            align-items: center;
+            background: var(--gray-100);
+            border-radius: 14px;
+            padding: 6px;
+        }
+
+        .qty-btn-sm {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--primary);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn-sm:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .qty-value {
+            width: 50px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .item-total {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .item-total .label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .item-total .value {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .item-remove {
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: #fef2f2;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #dc2626;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-remove:hover {
+            background: #dc2626;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Empty Cart State */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-cart-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+        }
+
+        .empty-cart-icon i { font-size: 3rem; color: var(--gray-500); }
+
+        .empty-cart h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-cart p {
+            color: var(--gray-500);
+            margin-bottom: 25px;
+        }
+
+        .empty-cart .btn-shop {
+            padding: 16px 35px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .empty-cart .btn-shop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 119, 182, 0.3);
+        }
+
+        /* ============ CHECKOUT SIDEBAR ============ */
+        .checkout-sidebar {
+            position: sticky;
+            top: 100px;
+        }
+
+        .order-summary-card {
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-100);
+            margin-bottom: 25px;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .summary-header .icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .summary-header .icon i { color: white; font-size: 1.3rem; }
+
+        .summary-header h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .summary-rows {
+            margin-bottom: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .summary-row:last-child { border-bottom: none; }
+
+        .summary-row .label {
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .summary-row .value {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .summary-row.total {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.08), rgba(0, 180, 216, 0.08));
+            margin: 0 -35px;
+            padding: 20px 35px;
+            border-radius: 16px;
+        }
+
+        .summary-row.total .label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .summary-row.total .value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        /* Checkout Form */
+        .checkout-form-card {
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-100);
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .form-header .icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-header .icon i { color: white; font-size: 1.3rem; }
+
+        .form-header h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .form-label i { color: var(--primary); }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: 14px;
+            font-size: 1rem;
+            color: var(--dark);
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
+        }
+
+        .form-input::placeholder { color: var(--gray-500); }
+
+        textarea.form-input { resize: vertical; min-height: 100px; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Payment Options */
+        .payment-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid var(--gray-100);
+        }
+
+        .payment-section h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-section h4 i { color: var(--primary); }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .payment-option {
+            padding: 18px;
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-light);
+        }
+
+        .payment-option.active {
+            border-color: var(--primary);
+            background: rgba(0, 119, 182, 0.05);
+        }
+
+        .payment-option i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .payment-option .name {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .payment-option .desc {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* ============ PAYMENT DETAILS PANEL ============ */
+        .payment-details-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            border: 2px solid var(--primary-light);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-details-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed var(--gray-200);
+            margin-bottom: 15px;
+        }
+
+        .payment-details-header i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .payment-details-header span {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .account-detail-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.1);
+            border: 1px solid var(--gray-100);
+        }
+
+        .account-detail-card.easypaisa {
+            border-left: 4px solid #22c55e;
+        }
+
+        .account-detail-card.jazzcash {
+            border-left: 4px solid #dc2626;
+        }
+
+        .detail-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .detail-icon.bank {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .detail-icon.easypaisa {
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+        }
+
+        .detail-icon.jazzcash {
+            background: linear-gradient(135deg, #dc2626, #f87171);
+        }
+
+        .detail-icon i {
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-content h5 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0 0 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--gray-200);
+        }
+
+        .detail-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .detail-row .label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            font-weight: 600;
+        }
+
+        .detail-row .value {
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .detail-row .value.copyable {
+            cursor: pointer;
+            padding: 5px 10px;
+            background: var(--gray-100);
+            border-radius: 6px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row .value.copyable:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .detail-row .value.copyable i {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .payment-note {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(0, 119, 182, 0.08);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .payment-note i {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .transaction-id-section {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 2px dashed var(--gray-200);
+        }
+
+        .transaction-id-section .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .transaction-id-section .form-label i {
+            color: var(--primary);
+        }
+
+        .transaction-id-section .form-label .required {
+            color: var(--danger);
+            font-size: 1.1rem;
+        }
+
+        .transaction-id-section .form-input {
+            border: 2px solid var(--primary-light);
+            background: white;
+        }
+
+        .transaction-id-section .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.15);
+        }
+
+        .input-hint {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-hint i {
+            color: #f59e0b;
+        }
+
+        /* Submit Button */
+        .submit-order-btn {
+            width: 100%;
+            padding: 22px;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-order-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .submit-order-btn:hover::before { left: 100%; }
+
+        .submit-order-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(42, 157, 143, 0.4);
+        }
+
+        /* ============ QUICK ADD MEDICINE SECTION ============ */
+        .quick-add-section {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.03), rgba(0, 180, 216, 0.03));
+            border: 2px solid var(--gray-100);
+            border-radius: 28px;
+            padding: 30px;
+            margin-bottom: 40px;
+            overflow: visible !important;
+            position: relative;
+            z-index: 9999;
+        }
+
+        .quick-add-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .quick-add-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quick-add-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-add-icon i { color: white; font-size: 1.2rem; }
+
+        .quick-add-title h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .quick-add-title p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        /* Quick Search Box */
+        .quick-search-wrapper {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 99999;
+        }
+
+        .quick-search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 2px solid var(--gray-100);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 99999;
+        }
+
+        .quick-search-box:focus-within {
+            border-color: var(--primary-light);
+            box-shadow: 0 8px 30px rgba(0, 119, 182, 0.12);
+        }
+
+        .quick-search-box .search-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .quick-search-box .search-icon i { color: white; font-size: 1rem; }
+
+        .quick-search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            padding: 12px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .quick-search-box input::placeholder { color: var(--gray-500); }
+        .quick-search-box input:focus { outline: none; }
+
+        .quick-search-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 119, 182, 0.3);
+        }
+
+        /* Quick Filter Pills */
+        .quick-filter-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quick-filter-pill {
+            padding: 10px 18px;
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-filter-pill:hover {
+            border-color: var(--primary-light);
+            background: rgba(0, 119, 182, 0.05);
+        }
+
+        .quick-filter-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .quick-filter-pill i { font-size: 0.9rem; }
+
+        /* Quick Medicine Grid - Hidden by default, shown on search */
+        .quick-medicine-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .quick-medicine-grid.visible {
+            display: grid;
+        }
+
+        .quick-medicine-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .quick-medicine-grid::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 10px;
+        }
+
+        .quick-medicine-grid::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        /* Quick Medicine Card */
+        .quick-med-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--gray-100);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .quick-med-card:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 119, 182, 0.12);
+        }
+
+        .quick-med-card .med-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .quick-med-card .med-icon i { color: white; font-size: 1.1rem; }
+
+        .quick-med-card .med-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .quick-med-card .med-category {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+        }
+
+        .quick-med-card .med-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .quick-med-card .med-stock {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .quick-med-card .med-stock.in-stock {
+            background: rgba(42, 157, 143, 0.1);
+            color: var(--success);
+        }
+
+        .quick-med-card .med-stock.low-stock {
+            background: rgba(251, 191, 36, 0.1);
+            color: #d97706;
+        }
+
+        .quick-add-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .quick-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 157, 143, 0.3);
+        }
+
+        .quick-add-btn:disabled {
+            background: var(--gray-200);
+            color: var(--gray-500);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Medicine Card Buttons Container */
+        .med-card-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .med-card-buttons button {
+            flex: 1;
+        }
+
+        .quick-detail-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .quick-detail-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 119, 182, 0.3);
+        }
+
+        /* Quick Loading & Empty States */
+        .quick-loading, .quick-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+
+        .quick-loading i, .quick-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .quick-loading i { color: var(--primary); animation: spin 1s linear infinite; }
+        .quick-empty i { color: var(--gray-300); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1200px) {
+            .cart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-sidebar {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cart-hero {
+                min-height: auto;
+                padding: 75px 0 50px;
+            }
+
+            .float-med-img { display: none; }
+
+            .hero-title { font-size: 1.6rem; }
+
+            .hero-features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cart-item-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .item-icon-box {
+                margin: 0 auto;
+            }
+
+            .item-qty {
+                justify-content: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+
+            /* Quick Add Section Mobile */
+            .quick-add-section {
+                padding: 20px;
+            }
+
+            .quick-search-box {
+                flex-direction: column;
+            }
+
+            .quick-search-box .search-icon {
+                display: none;
+            }
+
+            .quick-search-box input {
+                text-align: center;
+            }
+
+            .quick-search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-filter-pills {
+                justify-content: center;
+            }
+
+            .quick-medicine-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- VERSION 7.0 - ADVANCED CART DESIGN -->
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg" id="mainNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="../frontend/index.html">
+            <div class="brand-logo"><i class="fas fa-plus-circle"></i></div>
+            <div class="brand-text">
+                <span class="brand-name">Muneeb Drug House</span>
+                <span class="brand-tagline">Your Health Partner</span>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="../frontend/index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="search.html"><i class="fas fa-capsules"></i><span>Medicines</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="../frontend/about.html"><i class="fas fa-info-circle"></i><span>About Us</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="track-order.html"><i class="fas fa-truck-medical"></i><span>Track Order</span></a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a class="btn btn-cart active" href="cart.html">
+                    <i class="fas fa-shopping-cart"></i><span class="cart-text">Cart</span>
+                    <span class="cart-badge" id="nav-cart-count">0</span>
+                </a>
+                <!-- Guest Actions (shown when not logged in) -->
+                <div class="guest-actions" id="guestActions" style="display: flex;">
+                    <a class="btn btn-login" href="../auth/login.html"><i class="fas fa-user-md"></i><span>Login</span></a>
+                </div>
+                <!-- User Actions (shown when logged in) -->
+                <div class="user-actions" id="userActions" style="display: none;">
+                    <div class="dropdown">
+                        <button class="btn btn-user dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="navUserName">Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="../customer/profile.html"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="../customer/orders.html"><i class="fas fa-box me-2"></i>My Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(event)"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Cart Hero Section -->
+<section class="cart-hero">
+    <div class="hero-bg-layers">
+        <div class="hero-mesh"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+    </div>
+
+    <div class="floating-med-images">
+        <div class="float-med-img float-med-img-1">
+            <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop" alt="Medicine">
+        </div>
+        <div class="float-med-img float-med-img-2">
+            <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=300&h=300&fit=crop" alt="Pills">
+        </div>
+        <div class="float-med-img float-med-img-3">
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=300&fit=crop" alt="Healthcare">
+        </div>
+    </div>
+
+    <div class="hero-float-icons">
+        <div class="hero-float-icon"><i class="fas fa-shopping-cart"></i></div>
+        <div class="hero-float-icon"><i class="fas fa-pills"></i></div>
+        <div class="hero-float-icon"><i class="fas fa-receipt"></i></div>
+        <div class="hero-float-icon"><i class="fas fa-truck-fast"></i></div>
+    </div>
+
+    <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                <span>Secure & Fast Checkout</span>
+            </div>
+            <h1 class="hero-title">Your <span>Shopping Cart</span></h1>
+            <p class="hero-subtitle">Review your selected medicines, adjust quantities, and complete your secure checkout. We deliver quality healthcare right to your doorstep.</p>
+
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Payment</span>
+                </div>
+                <div class="hero-feature">
+                    <i class="fas fa-truck-fast"></i>
+                    <span>Same Day Delivery</span>
+                </div>
+                <div class="hero-feature">
+                    <i class="fas fa-headset"></i>
+                    <span>24/7 Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Cart Section -->
+<main class="cart-main">
+    <div class="cart-container">
+        <div class="container">
+            <!-- Quick Add Medicine Section -->
+            <div class="quick-add-section" data-aos="fade-up">
+                <div class="quick-add-header">
+                    <div class="quick-add-title">
+                        <div class="quick-add-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div>
+                            <h3>Quick Add Medicines</h3>
+                            <p>Search and add medicines directly to your cart</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Search -->
+                <div class="quick-search-wrapper">
+                    <div class="quick-search-box">
+                        <div class="search-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <input type="text" id="quick-search-input" placeholder="Search medicines by name..." autocomplete="off">
+                        <button class="quick-search-btn" onclick="quickSearchMedicines()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                    </div>
+                    <!-- Search Suggestions Dropdown -->
+                    <div id="quick-search-suggestions" class="suggestions-dropdown" style="display: none;"></div>
+                </div>
+
+                <!-- Quick Filter Pills -->
+                <div class="quick-filter-pills">
+                    <button class="quick-filter-pill active" data-category="all" onclick="quickFilterByCategory('all', this)">
+                        <i class="fas fa-border-all"></i>
+                        All
+                    </button>
+                    <button class="quick-filter-pill" data-category="painkiller" onclick="quickFilterByCategory('painkiller', this)">
+                        <i class="fas fa-pills"></i>
+                        Painkillers
+                    </button>
+                    <button class="quick-filter-pill" data-category="antibiotic" onclick="quickFilterByCategory('antibiotic', this)">
+                        <i class="fas fa-capsules"></i>
+                        Antibiotics
+                    </button>
+                    <button class="quick-filter-pill" data-category="vitamin" onclick="quickFilterByCategory('vitamin', this)">
+                        <i class="fas fa-leaf"></i>
+                        Vitamins
+                    </button>
+                    <button class="quick-filter-pill" data-category="heart" onclick="quickFilterByCategory('heart', this)">
+                        <i class="fas fa-heart"></i>
+                        Heart Care
+                    </button>
+                    <button class="quick-filter-pill" data-category="diabetes" onclick="quickFilterByCategory('diabetes', this)">
+                        <i class="fas fa-tint"></i>
+                        Diabetes
+                    </button>
+                </div>
+
+                <!-- Quick Medicine Grid -->
+                <div class="quick-medicine-grid" id="quick-medicine-grid">
+                    <div class="quick-loading">
+                        <i class="fas fa-spinner"></i>
+                        <p>Loading medicines...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-grid">
+                <!-- Cart Items -->
+                <div class="cart-items-section" data-aos="fade-right">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <div class="section-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div>
+                                <h2>Cart Items</h2>
+                                <span id="items-count">0 items in your cart</span>
+                            </div>
+                        </div>
+                        <button class="clear-cart-btn" id="clear-cart-btn" onclick="showClearCartModal()">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+
+                    <div class="cart-items-list" id="cart-items">
+                        <!-- Cart items rendered by JS -->
+                    </div>
+
+                    <div class="empty-cart" id="empty-cart" style="display: none;">
+                        <div class="empty-cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3>Your Cart is Empty</h3>
+                        <p>Looks like you haven't added any medicines yet. Browse our collection and find what you need.</p>
+                        <a href="search.html" class="btn-shop">
+                            <i class="fas fa-pills"></i>
+                            Browse Medicines
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Checkout Sidebar -->
+                <div class="checkout-sidebar" data-aos="fade-left">
+                    <!-- Order Summary -->
+                    <div class="order-summary-card">
+                        <div class="summary-header">
+                            <div class="icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <h3>Order Summary</h3>
+                        </div>
+
+                        <div class="summary-rows">
+                            <div class="summary-row">
+                                <span class="label">Subtotal</span>
+                                <span class="value">Rs. <span id="subtotal">0</span></span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Delivery Fee</span>
+                                <span class="value" id="delivery-fee">Free</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Discount</span>
+                                <span class="value" style="color: var(--success);">-Rs. 0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span class="label">Total</span>
+                                <span class="value">Rs. <span id="cart-total">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Form -->
+                    <div class="checkout-form-card">
+                        <div class="form-header">
+                            <div class="icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>Delivery Details</h3>
+                        </div>
+
+                        <form id="checkout-form" novalidate>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-user"></i> Full Name
+                                    </label>
+                                    <input type="text" class="form-input" id="customer_name" name="customer_name" placeholder="John Doe" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-phone"></i> Phone
+                                    </label>
+                                    <input type="tel" class="form-input" id="phone" name="phone" placeholder="03211532010" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope"></i> Email
+                                </label>
+                                <input type="email" class="form-input" id="email" name="email" placeholder="your@email.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Delivery Address
+                                </label>
+                                <textarea class="form-input" id="address" name="address" placeholder="Enter your complete delivery address" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-sticky-note"></i> Order Notes (Optional)
+                                </label>
+                                <input type="text" class="form-input" id="notes" name="notes" placeholder="Any special instructions">
+                            </div>
+
+                            <div class="payment-section">
+                                <h4><i class="fas fa-credit-card"></i> Payment Method</h4>
+                                <div class="payment-options">
+                                    <label class="payment-option active">
+                                        <input type="radio" name="payment_method" value="cash_on_delivery" checked hidden>
+                                        <i class="fas fa-money-bill-wave" style="color: #16a34a;"></i>
+                                        <div class="name">Cash on Delivery</div>
+                                        <div class="desc">Pay when you receive</div>
+                                    </label>
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="bank_transfer" hidden>
+                                        <i class="fas fa-university" style="color: var(--primary);"></i>
+                                        <div class="name">Bank Transfer</div>
+                                        <div class="desc">Direct transfer</div>
+                                    </label>
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="easypaisa" hidden>
+                                        <i class="fas fa-mobile-alt" style="color: #22c55e;"></i>
+                                        <div class="name">EasyPaisa</div>
+                                        <div class="desc">Mobile banking</div>
+                                    </label>
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="jazzcash" hidden>
+                                        <i class="fas fa-mobile-alt" style="color: #dc2626;"></i>
+                                        <div class="name">JazzCash</div>
+                                        <div class="desc">Mobile banking</div>
+                                    </label>
+                                </div>
+
+                                <!-- Payment Details Panel - Shows for non-COD payments -->
+                                <div id="payment-details-panel" class="payment-details-panel" style="display: none;">
+                                    <div class="payment-details-header">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Payment Account Details</span>
+                                    </div>
+
+                                    <!-- Bank Transfer Details -->
+                                    <div id="bank-details" class="account-details" style="display: none;">
+                                        <div class="account-detail-card">
+                                            <div class="detail-icon bank">
+                                                <i class="fas fa-university"></i>
+                                            </div>
+                                            <div class="detail-content">
+                                                <h5>Bank Account Details</h5>
+                                                <div class="detail-row">
+                                                    <span class="label">Bank Name:</span>
+                                                    <span class="value">Allied Bank Limited (ABL)</span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <span class="label">Account Title:</span>
+                                                    <span class="value">Muneeb Drug House</span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <span class="label">Account Number:</span>
+                                                    <span class="value copyable" onclick="copyToClipboard('0010087654321234')">0010087654321234 <i class="fas fa-copy"></i></span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <span class="label">IBAN:</span>
+                                                    <span class="value copyable" onclick="copyToClipboard('PK36ABPL0010087654321234')">PK36ABPL0010087654321234 <i class="fas fa-copy"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- EasyPaisa Details -->
+                                    <div id="easypaisa-details" class="account-details" style="display: none;">
+                                        <div class="account-detail-card easypaisa">
+                                            <div class="detail-icon easypaisa">
+                                                <i class="fas fa-mobile-alt"></i>
+                                            </div>
+                                            <div class="detail-content">
+                                                <h5>EasyPaisa Account</h5>
+                                                <div class="detail-row">
+                                                    <span class="label">Account Title:</span>
+                                                    <span class="value">Muneeb Drug House</span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <span class="label">Mobile Number:</span>
+                                                    <span class="value copyable" onclick="copyToClipboard('03211532010')">0321-1532010 <i class="fas fa-copy"></i></span>
+                                                </div>
+                                                <p class="payment-note"><i class="fas fa-info-circle"></i> Send payment to the above EasyPaisa account and enter the transaction ID below.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- JazzCash Details -->
+                                    <div id="jazzcash-details" class="account-details" style="display: none;">
+                                        <div class="account-detail-card jazzcash">
+                                            <div class="detail-icon jazzcash">
+                                                <i class="fas fa-mobile-alt"></i>
+                                            </div>
+                                            <div class="detail-content">
+                                                <h5>JazzCash Account</h5>
+                                                <div class="detail-row">
+                                                    <span class="label">Account Title:</span>
+                                                    <span class="value">Muneeb Drug House</span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <span class="label">Mobile Number:</span>
+                                                    <span class="value copyable" onclick="copyToClipboard('03001234567')">0300-1234567 <i class="fas fa-copy"></i></span>
+                                                </div>
+                                                <p class="payment-note"><i class="fas fa-info-circle"></i> Send payment to the above JazzCash account and enter the transaction ID below.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Transaction ID Input -->
+                                    <div class="transaction-id-section">
+                                        <label class="form-label" for="transaction_id">
+                                            <i class="fas fa-receipt"></i> Transaction ID / Reference Number <span class="required">*</span>
+                                        </label>
+                                        <input type="text" class="form-input" id="transaction_id" name="transaction_id" placeholder="Enter your payment transaction ID">
+                                        <p class="input-hint"><i class="fas fa-lightbulb"></i> Enter the transaction ID from your payment receipt for verification.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" id="submit-order" class="submit-order-btn" onclick="processOrderWithDatabase()">
+                                <i class="fas fa-check-circle"></i>
+                                Place Order Now
+                            </button>
+                        </form>
+
+                        <div id="order-success-message" class="alert alert-success mt-4" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand">
+                    <div class="footer-logo"><i class="fas fa-plus-circle"></i></div>
+                    <span class="footer-name">Muneeb Drug House</span>
+                </div>
+                <p class="footer-description">Your trusted partner in health and wellness since 2010.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-heading">Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="../frontend/index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="search.html"><i class="fas fa-chevron-right"></i> Medicines</a></li>
+                    <li><a href="../frontend/about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="track-order.html"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-heading">Contact Info</h5>
+                <ul class="footer-links footer-contact">
+                    <li><i class="fas fa-phone-alt"></i><a href="tel:03211532010">0321-1532010</a></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:info@waqardrughouse.com">info@waqardrughouse.com</a></li>
+                    <li><i class="fas fa-clock"></i><span>24/7 Emergency Service</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Muneeb Drug House. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button class="btn-floating" id="backToTop" style="display: none;">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Empty Cart Modal -->
+<div class="modal fade" id="emptyCartModal" tabindex="-1" aria-labelledby="emptyCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="emptyCartModalLabel">
+                    <i class="fas fa-shopping-cart text-warning me-2"></i>Cart is Empty
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                <h6 class="mb-3">Your cart is currently empty</h6>
+                <p class="text-muted mb-4">Please add some medicines to your cart before proceeding to checkout.</p>
+                <a href="../shop/search.html" class="btn btn-primary">
+                    <i class="fas fa-pills me-2"></i>Browse Medicines
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Required Modal -->
+<div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-body text-center py-5 px-4">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #0077b6, #00b4d8); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                    <i class="fas fa-user-lock fa-2x text-white"></i>
+                </div>
+                <h4 style="font-weight: 700; color: #1e293b; margin-bottom: 15px;">Login Required</h4>
+                <p class="text-muted mb-4">Please login or create an account to place your order. Your cart items will be saved.</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="../auth/login.html" class="btn btn-primary px-4 py-2" style="border-radius: 12px; font-weight: 600;">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    <a href="../auth/register.html" class="btn btn-outline-primary px-4 py-2" style="border-radius: 12px; font-weight: 600;">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                </div>
+                <button type="button" class="btn btn-link text-muted mt-3" data-bs-dismiss="modal">
+                    Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Item Confirmation Modal -->
+<div class="modal fade" id="removeItemModal" tabindex="-1" aria-labelledby="removeItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="removeItemModalLabel">
+                    <i class="fas fa-exclamation-circle text-warning me-2"></i>Remove Item
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-trash fa-4x text-danger mb-3"></i>
+                <h6 class="mb-3">Remove this item from cart?</h6>
+                <p class="text-muted mb-4" id="removeItemName">Are you sure you want to remove this item?</p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmRemoveItem()">
+                        <i class="fas fa-trash me-2"></i>Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clear Cart Confirmation Modal -->
+<div class="modal fade" id="clearCartModal" tabindex="-1" aria-labelledby="clearCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="clearCartModalLabel">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>Clear Cart
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-trash-alt fa-4x text-danger mb-3"></i>
+                <h6 class="mb-3">Are you sure you want to clear your cart?</h6>
+                <p class="text-muted mb-4">This action cannot be undone. All items will be removed from your cart.</p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmClearCart()">
+                        <i class="fas fa-trash-alt me-2"></i>Clear Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Success Modal -->
+<div class="modal fade" id="orderSuccessModal" tabindex="-1" aria-labelledby="orderSuccessModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border: none; border-radius: 20px; overflow: hidden;">
+            <div class="modal-body text-center" style="padding: 50px 30px;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                    <i class="fas fa-check" style="font-size: 50px; color: white;"></i>
+                </div>
+                <h3 style="color: #1e293b; font-weight: 700; margin-bottom: 15px;">Order Placed Successfully!</h3>
+                <p style="color: #64748b; margin-bottom: 25px;">Your order has been received and is being processed.</p>
+
+                <!-- Order ID Section -->
+                <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">YOUR ORDER ID</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 12px;" id="successOrderId">ORD-12345678</div>
+                    <button class="btn btn-sm" style="background: white; border: 2px solid #e2e8f0; padding: 8px 20px; border-radius: 8px; font-weight: 600;" onclick="copyOrderIdToClipboard()">
+                        <i class="fas fa-copy me-2"></i><span id="copyBtnText">Copy Order ID</span>
+                    </button>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 12px; margin-bottom: 0;">
+                        <i class="fas fa-info-circle"></i> Save this Order ID to track your order
+                    </p>
+                </div>
+
+                <!-- Order Summary -->
+                <div style="background: #eff6ff; border-radius: 12px; padding: 15px; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #64748b;">Order Total:</span>
+                        <strong style="color: #1e293b;" id="successOrderTotal">Rs. 0.00</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #64748b;">Payment Method:</span>
+                        <strong style="color: #1e293b;" id="successPaymentMethod">Cash on Delivery</strong>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <a href="../shop/track-order.html" class="btn" style="flex: 1; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px; border: none; border-radius: 10px; font-weight: 600;">
+                        <i class="fas fa-shipping-fast me-2"></i>Track Order
+                    </a>
+                    <a href="../frontend/index.html" class="btn" style="flex: 1; background: white; color: #1e293b; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 600;">
+                        <i class="fas fa-home me-2"></i>Go Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header border-0" id="notificationHeader">
+                <h5 class="modal-title" id="notificationModalLabel">
+                    <i id="notificationIcon" class="me-2"></i><span id="notificationTitle">Notification</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i id="notificationBodyIcon" class="fa-4x mb-3"></i>
+                <h6 id="notificationMessage" class="mb-3">Message</h6>
+                <p id="notificationDescription" class="text-muted mb-4">Description</p>
+                <button type="button" class="btn" id="notificationOkBtn" data-bs-dismiss="modal">
+                    <i class="fas fa-check me-2"></i>OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AOS Animation -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- Laravel API Client & Utilities -->
+<script src="../../js/api-client.js"></script>
+<script src="../../js/script.js?v=5.0"></script>
+
+<script>
+// Check login status and update navbar
+function updateNavbarAuth() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const guestActions = document.getElementById('guestActions');
+    const userActions = document.getElementById('userActions');
+    const navUserName = document.getElementById('navUserName');
+
+    if (!guestActions || !userActions) return;
+
+    if (user) {
+        guestActions.style.display = 'none';
+        userActions.style.display = 'flex';
+        if (navUserName) {
+            navUserName.textContent = user.first_name || user.username || 'Account';
+        }
+    } else {
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+    }
+}
+
+// Logout function
+function logout(e) {
+    if (e) e.preventDefault();
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    window.location.href = '../frontend/index.html';
+}
+
+// Initialize navbar auth on load
+document.addEventListener('DOMContentLoaded', updateNavbarAuth);
+if (document.readyState !== 'loading') updateNavbarAuth();
+
+// Initialize AOS
+AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 50 });
+
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Initialize payment options interactivity
+document.addEventListener('DOMContentLoaded', function() {
+    // Payment option click handling
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    paymentOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active from all
+            paymentOptions.forEach(opt => opt.classList.remove('active'));
+            // Add active to clicked
+            this.classList.add('active');
+            // Check the radio
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                // Handle payment details panel visibility
+                handlePaymentMethodChange(radio.value);
+            }
+        });
+    });
+
+    // Pre-fill form if user is logged in
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user) {
+        const nameInput = document.getElementById('customer_name');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+
+        if (nameInput) {
+            const fullName = (user.first_name || '') + ' ' + (user.last_name || user.username || '');
+            nameInput.value = fullName.trim();
+        }
+        if (emailInput && user.email) {
+            emailInput.value = user.email;
+        }
+        if (phoneInput && user.phone) {
+            phoneInput.value = user.phone;
+        }
+    }
+
+    // Initial cart display
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+    }
+
+    // Initialize payment method visibility
+    handlePaymentMethodChange('cash_on_delivery');
+});
+
+// Handle payment method change - show/hide payment details panel
+function handlePaymentMethodChange(paymentMethod) {
+    const detailsPanel = document.getElementById('payment-details-panel');
+    const bankDetails = document.getElementById('bank-details');
+    const easypaisaDetails = document.getElementById('easypaisa-details');
+    const jazzcashDetails = document.getElementById('jazzcash-details');
+    const transactionInput = document.getElementById('transaction_id');
+
+    if (!detailsPanel) return;
+
+    // Hide all account details first
+    if (bankDetails) bankDetails.style.display = 'none';
+    if (easypaisaDetails) easypaisaDetails.style.display = 'none';
+    if (jazzcashDetails) jazzcashDetails.style.display = 'none';
+
+    // Show/hide panel based on payment method
+    if (paymentMethod === 'cash_on_delivery') {
+        detailsPanel.style.display = 'none';
+        if (transactionInput) {
+            transactionInput.removeAttribute('required');
+            transactionInput.value = '';
+        }
+    } else {
+        detailsPanel.style.display = 'block';
+        if (transactionInput) {
+            transactionInput.setAttribute('required', 'required');
+        }
+
+        // Show appropriate account details
+        if (paymentMethod === 'bank_transfer' && bankDetails) {
+            bankDetails.style.display = 'block';
+        } else if (paymentMethod === 'easypaisa' && easypaisaDetails) {
+            easypaisaDetails.style.display = 'block';
+        } else if (paymentMethod === 'jazzcash' && jazzcashDetails) {
+            jazzcashDetails.style.display = 'block';
+        }
+    }
+}
+
+// Copy to clipboard function
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied to clipboard!', 'success');
+    }).catch(err => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('Copied to clipboard!', 'success');
+    });
+}
+</script>
+
+<style>
+/* Payment option styling */
+.payment-option {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-option:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.payment-option input[type="radio"]:checked ~ label {
+    color: var(--primary-color);
+}
+
+.payment-option:has(input[type="radio"]:checked) {
+    border-color: var(--primary-color) !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+}
+
+/* Enhanced scrollbar for better UX */
+body::-webkit-scrollbar {
+    width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+
+body::-webkit-scrollbar-thumb {
+    background: var(--primary-gradient);
+    border-radius: 6px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Enhanced Modal Styling */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.modal-header {
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-header.bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+}
+
+.modal-header.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #e74c3c) !important;
+}
+
+.modal-header.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+}
+
+.modal-header.bg-info {
+    background: linear-gradient(135deg, #17a2b8, #6f42c1) !important;
+}
+
+.modal-body .fa-4x, .modal-body .fa-5x {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Clear cart button styling */
+#clear-cart-btn {
+    display: none;
+    transition: all 0.3s ease;
+}
+
+#clear-cart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
+/* Advanced notification modal animations */
+.modal.fade .modal-dialog {
+    transform: translate(0, -50px);
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+/* Order success modal enhancements */
+#orderSuccessModal .card {
+    transition: none;
+}
+
+/* Disable all hover effects that cause jumping */
+.form-control:hover,
+.btn:hover,
+.card:hover,
+.table tr:hover,
+.form-group:hover,
+.input-group:hover,
+.row:hover,
+.col:hover,
+.card-body:hover,
+.form-section:hover {
+    transform: none !important;
+    scale: none !important;
+}
+
+/* Ensure stable layout */
+* {
+    box-sizing: border-box;
+}
+
+.form-control,
+.btn,
+.card,
+.input-group {
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Autocomplete suggestions dropdown */
+.suggestions-dropdown {
+    position: absolute !important;
+    background: white;
+    border: 2px solid var(--primary-light);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 9999999 !important;
+    width: calc(100% - 12px);
+    left: 6px;
+    top: calc(100% + 2px);
+}
+
+@media (max-width: 768px) {
+    .suggestions-dropdown {
+        width: 100%;
+        left: 0;
+    }
+}
+
+.suggestions-dropdown.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure dropdown is always visible */
+.suggestions-dropdown * {
+    pointer-events: auto;
+}
+
+/* Quick Add Section - ensure dropdown visibility */
+.quick-add-section {
+    overflow: visible !important;
+    position: relative;
+}
+
+/* Alternative approach for better browser support */
+.quick-add-card {
+    overflow: visible !important;
+    position: relative;
+    z-index: 100 !important;
+}
+
+.quick-add-card .card-body {
+    overflow: visible !important;
+    position: relative;
+    z-index: 100 !important;
+}
+
+/* Ensure search input wrapper has proper z-index */
+.position-relative:has(#quick-search-suggestions) {
+    z-index: 999999 !important;
+    position: relative !important;
+}
+
+/* Make sure checkout section doesn't overlap */
+.row:has(.quick-add-card) {
+    position: relative;
+    z-index: 100;
+    overflow: visible !important;
+}
+
+.row:has(#checkout-form) {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure all card elements allow overflow */
+.card.quick-add-card,
+.card.quick-add-card *:not(.suggestions-dropdown):not(.suggestions-dropdown *) {
+    overflow: visible !important;
+}
+
+.suggestion-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.suggestion-item:hover {
+    background: linear-gradient(135deg, rgba(0, 119, 182, 0.08), rgba(0, 180, 216, 0.05));
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 14px 14px;
+}
+
+.suggestion-main {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.suggestion-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.suggestion-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.suggestion-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.suggestion-category {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+}
+
+.suggestion-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.suggestion-price {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.suggestion-add-btn,
+.suggestion-detail-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.suggestion-add-btn {
+    background: linear-gradient(135deg, var(--success), #34d399);
+    color: white;
+}
+
+.suggestion-add-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.4);
+}
+
+.suggestion-add-btn:disabled {
+    background: var(--gray-200);
+    color: var(--gray-500);
+    cursor: not-allowed;
+}
+
+.suggestion-detail-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+}
+
+.suggestion-detail-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.4);
+    color: white;
+}
+
+.suggestion-no-results {
+    padding: 20px;
+    text-align: center;
+    color: var(--gray-500);
+}
+
+.suggestion-no-results i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--gray-300);
+}
+
+.suggestion-price {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.suggestion-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.suggestion-qty-input {
+    width: 50px;
+    padding: 4px 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.suggestion-qty-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.suggestion-add-btn {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.suggestion-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.suggestion-add-btn:active {
+    transform: translateY(0);
+}
+
+.suggestion-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Loading indicator for suggestions */
+.suggestions-loading {
+    padding: 16px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* No results message */
+.suggestions-no-results {
+    padding: 16px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.suggestions-loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Add typing indicator to input */
+.form-control.typing {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Clear search button */
+#clear-quick-search:hover {
+    color: #ef4444;
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.2s ease;
+}
+
+/* No results state */
+.suggestions-no-results {
+    padding: 16px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Quick search results improvements */
+.quick-medicine-card {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.quick-medicine-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.quick-medicine-placeholder {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-gradient);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 24px;
+}
+
+/* Toast Notifications */
+.toast-notification {
+    min-width: 250px;
+    max-width: 350px;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.toast-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+</style>
+
+<script>
+const CART_PAGE_VERSION = 'v7.0-' + Date.now();
+console.log('📦 CART.HTML JAVASCRIPT LOADED - VERSION:', CART_PAGE_VERSION);
+console.log('⏰ Script loaded at:', new Date().toLocaleTimeString());
+console.log('🌐 Current URL:', window.location.href);
+
+// ==================== CUSTOM CART DISPLAY FOR NEW DESIGN ====================
+
+// Override updateCartDisplay to use new card-based layout
+window.updateCartDisplay = function() {
+    console.log('🔄 Custom updateCartDisplay for new card design');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const emptyCart = document.getElementById('empty-cart');
+    const itemsCount = document.getElementById('items-count');
+    const subtotalEl = document.getElementById('subtotal');
+    const cartTotalEl = document.getElementById('cart-total');
+    const clearBtn = document.getElementById('clear-cart-btn');
+
+    // Get cart from localStorage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    if (cart.length === 0) {
+        // Show empty cart state
+        cartItemsContainer.innerHTML = '';
+        if (emptyCart) emptyCart.style.display = 'block';
+        if (itemsCount) itemsCount.textContent = '0 items in your cart';
+        if (subtotalEl) subtotalEl.textContent = '0';
+        if (cartTotalEl) cartTotalEl.textContent = '0';
+        if (clearBtn) clearBtn.style.display = 'none';
+        return;
+    }
+
+    // Hide empty cart state
+    if (emptyCart) emptyCart.style.display = 'none';
+    if (clearBtn) clearBtn.style.display = 'block';
+
+    // Update items count
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    if (itemsCount) itemsCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''} in your cart`;
+
+    // Build cart items HTML with new card design
+    let html = '';
+    let subtotal = 0;
+
+    cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+
+        html += `
+            <div class="cart-item-card" data-index="${index}">
+                <div class="item-icon-box">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="item-info">
+                    <h3>${escapeHtml(item.name)}</h3>
+                    <div class="category"><i class="fas fa-tag"></i> Medicine</div>
+                </div>
+                <div class="item-price">
+                    <div class="label">Unit Price</div>
+                    <div class="value">Rs. ${parseFloat(item.price).toFixed(2)}</div>
+                </div>
+                <div class="item-qty">
+                    <button class="qty-btn-sm" onclick="updateItemQuantity(${index}, -1)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="qty-value">${item.quantity}</span>
+                    <button class="qty-btn-sm" onclick="updateItemQuantity(${index}, 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="item-total">
+                    <div class="label">Total</div>
+                    <div class="value">Rs. ${itemTotal.toFixed(2)}</div>
+                </div>
+                <button class="item-remove" onclick="showRemoveItemModal(${index}, '${escapeHtml(item.name).replace(/'/g, "\\'")}')">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+    });
+
+    cartItemsContainer.innerHTML = html;
+
+    // Update totals
+    if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2);
+    if (cartTotalEl) cartTotalEl.textContent = subtotal.toFixed(2);
+
+    // Update navbar cart count
+    updateNavCartCount(totalItems);
+};
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
+}
+
+// Update navbar cart count
+function updateNavCartCount(count) {
+    const badge = document.getElementById('nav-cart-count');
+    if (badge) {
+        badge.textContent = count;
+    }
+}
+
+// Update item quantity
+window.updateItemQuantity = function(index, change) {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    if (index >= 0 && index < cart.length) {
+        const newQty = cart[index].quantity + change;
+
+        if (newQty <= 0) {
+            // Show remove confirmation
+            showRemoveItemModal(index, cart[index].name);
+            return;
+        }
+
+        // Check stock limit if available
+        if (cart[index].stock && newQty > cart[index].stock) {
+            showToast(`Only ${cart[index].stock} units available in stock`, 'warning');
+            return;
+        }
+
+        cart[index].quantity = newQty;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+    }
+};
+
+// Show remove item modal
+window.showRemoveItemModal = function(index, itemName) {
+    window.itemToRemove = index;
+    document.getElementById('removeItemName').textContent = `Are you sure you want to remove "${itemName}" from your cart?`;
+    const modal = new bootstrap.Modal(document.getElementById('removeItemModal'));
+    modal.show();
+};
+
+// Confirm remove item
+window.confirmRemoveItem = function() {
+    const index = window.itemToRemove;
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    if (index >= 0 && index < cart.length) {
+        const removedItem = cart.splice(index, 1)[0];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        showToast(`${removedItem.name} removed from cart`, 'info');
+    }
+
+    // Hide modal
+    const modalEl = document.getElementById('removeItemModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+};
+
+// ==================== QUICK ADD MEDICINE FUNCTIONS ====================
+
+let allQuickMedicines = [];
+let currentQuickCategory = 'all';
+
+// Load medicines for quick add section
+async function loadQuickAddMedicines() {
+    console.log('📦 Loading quick add medicines...');
+    const grid = document.getElementById('quick-medicine-grid');
+
+    if (!grid) return;
+
+    try {
+        // Try API first
+        const response = await fetch('/api/medicines');
+        if (response.ok) {
+            const data = await response.json();
+            allQuickMedicines = data.data || data || [];
+            console.log('✅ Loaded', allQuickMedicines.length, 'medicines from API');
+        } else {
+            throw new Error('API failed');
+        }
+    } catch (error) {
+        console.log('⚠️ API failed, using sample data');
+        // Fallback sample data
+        allQuickMedicines = [
+            { id: 1, medicine_name: 'Panadol 500mg', category: 'painkiller', price: 45, stock: 150 },
+            { id: 2, medicine_name: 'Brufen 400mg', category: 'painkiller', price: 60, stock: 120 },
+            { id: 3, medicine_name: 'Disprin', category: 'painkiller', price: 25, stock: 200 },
+            { id: 4, medicine_name: 'Amoxil 500mg', category: 'antibiotic', price: 180, stock: 80 },
+            { id: 5, medicine_name: 'Augmentin 625mg', category: 'antibiotic', price: 350, stock: 45 },
+            { id: 6, medicine_name: 'Ciprofloxacin', category: 'antibiotic', price: 120, stock: 90 },
+            { id: 7, medicine_name: 'Vitamin C 1000mg', category: 'vitamin', price: 150, stock: 200 },
+            { id: 8, medicine_name: 'Vitamin D3', category: 'vitamin', price: 280, stock: 150 },
+            { id: 9, medicine_name: 'Multivitamin', category: 'vitamin', price: 450, stock: 100 },
+            { id: 10, medicine_name: 'Aspirin 75mg', category: 'heart', price: 85, stock: 180 },
+            { id: 11, medicine_name: 'Clopidogrel', category: 'heart', price: 220, stock: 60 },
+            { id: 12, medicine_name: 'Metformin 500mg', category: 'diabetes', price: 95, stock: 140 },
+            { id: 13, medicine_name: 'Glucophage', category: 'diabetes', price: 180, stock: 90 },
+            { id: 14, medicine_name: 'Glimepiride', category: 'diabetes', price: 150, stock: 75 },
+            { id: 15, medicine_name: 'Amlodipine', category: 'heart', price: 120, stock: 110 }
+        ];
+    }
+
+    // Don't show medicines by default - only show on search
+    grid.innerHTML = `
+        <div class="quick-empty" style="grid-column: 1/-1;">
+            <i class="fas fa-search" style="color: var(--primary);"></i>
+            <p>Search or select a category to find medicines</p>
+        </div>
+    `;
+}
+
+// Render quick medicine cards
+function renderQuickMedicines(medicines) {
+    const grid = document.getElementById('quick-medicine-grid');
+    if (!grid) return;
+
+    if (medicines.length === 0) {
+        grid.innerHTML = `
+            <div class="quick-empty">
+                <i class="fas fa-search"></i>
+                <p>No medicines found</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    medicines.forEach(med => {
+        const name = med.medicine_name || med.name || 'Unknown';
+        const category = med.category || 'General';
+        const price = med.price || 0;
+        const stock = med.stock || med.quantity || 0;
+        const isLowStock = stock > 0 && stock < 20;
+        const inStock = stock > 0;
+
+        html += `
+            <div class="quick-med-card">
+                <div class="med-icon">
+                    <i class="fas fa-${getCategoryIcon(category)}"></i>
+                </div>
+                <div class="med-name" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+                <div class="med-category">${escapeHtml(category)}</div>
+                <div class="med-price">Rs. ${price}</div>
+                <span class="med-stock ${isLowStock ? 'low-stock' : 'in-stock'}">
+                    ${inStock ? (isLowStock ? 'Low Stock' : 'In Stock') : 'Out of Stock'}
+                </span>
+                <div class="med-card-buttons">
+                    <button class="quick-add-btn" onclick="quickAddToCart(${med.id}, '${escapeHtml(name)}', ${price}, ${stock})" ${!inStock ? 'disabled' : ''}>
+                        <i class="fas fa-plus"></i>
+                        ${inStock ? 'Add' : 'N/A'}
+                    </button>
+                    <a href="medicine-detail.html?id=${med.id}" class="quick-detail-btn">
+                        <i class="fas fa-info-circle"></i>
+                        Details
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+
+    grid.innerHTML = html;
+}
+
+// Get category icon
+function getCategoryIcon(category) {
+    const icons = {
+        'painkiller': 'pills',
+        'antibiotic': 'capsules',
+        'vitamin': 'leaf',
+        'heart': 'heart',
+        'diabetes': 'tint',
+        'general': 'prescription-bottle-alt'
+    };
+    return icons[category?.toLowerCase()] || 'pills';
+}
+
+// Quick search medicines
+window.quickSearchMedicines = function() {
+    const searchInput = document.getElementById('quick-search-input');
+    const query = searchInput?.value?.toLowerCase().trim() || '';
+    const grid = document.getElementById('quick-medicine-grid');
+
+    // Show grid only when searching
+    if (query || currentQuickCategory !== 'all') {
+        grid?.classList.add('visible');
+    } else {
+        grid?.classList.remove('visible');
+        return;
+    }
+
+    let filtered = allQuickMedicines;
+
+    // Apply category filter
+    if (currentQuickCategory !== 'all') {
+        filtered = filtered.filter(med =>
+            (med.category || '').toLowerCase() === currentQuickCategory.toLowerCase()
+        );
+    }
+
+    // Apply search filter
+    if (query) {
+        filtered = filtered.filter(med => {
+            const name = (med.medicine_name || med.name || '').toLowerCase();
+            return name.includes(query);
+        });
+    }
+
+    renderQuickMedicines(filtered);
+};
+
+// Filter by category
+window.quickFilterByCategory = function(category, btn) {
+    // Update active state
+    document.querySelectorAll('.quick-filter-pill').forEach(pill => pill.classList.remove('active'));
+    btn.classList.add('active');
+
+    currentQuickCategory = category;
+    quickSearchMedicines();
+};
+
+// Quick add to cart
+window.quickAddToCart = function(id, name, price, stock) {
+    console.log('🛒 Quick adding to cart:', name);
+
+    if (stock <= 0) {
+        showToast('This item is out of stock', 'warning');
+        return;
+    }
+
+    // Get current cart
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Check if item already exists
+    const existingIndex = cart.findIndex(item => item.id === id || item.medicine_id === id);
+
+    if (existingIndex >= 0) {
+        // Increment quantity
+        cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
+        showToast(`${name} quantity increased`, 'success');
+    } else {
+        // Add new item
+        cart.push({
+            id: id,
+            medicine_id: id,
+            name: name,
+            price: price,
+            quantity: 1
+        });
+        showToast(`${name} added to cart`, 'success');
+    }
+
+    // Save cart
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update displays
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+    }
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+    }
+};
+
+// Add enter key listener for quick search and autocomplete
+document.addEventListener('DOMContentLoaded', function() {
+    const quickSearchInput = document.getElementById('quick-search-input');
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    let searchTimeout;
+
+    if (quickSearchInput && suggestionsContainer) {
+        // Enter key to search
+        quickSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                suggestionsContainer.style.display = 'none';
+                quickSearchMedicines();
+            }
+        });
+
+        // Autocomplete suggestions on input
+        quickSearchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetchQuickSuggestions(query);
+            }, 300);
+        });
+
+        // Hide suggestions on click outside
+        document.addEventListener('click', function(e) {
+            if (!quickSearchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+
+        // Show suggestions on focus if there's text
+        quickSearchInput.addEventListener('focus', function() {
+            if (this.value.length >= 2 && suggestionsContainer.innerHTML) {
+                suggestionsContainer.style.display = 'block';
+            }
+        });
+    }
+
+    // Load quick add medicines
+    loadQuickAddMedicines();
+});
+
+// Fetch suggestions for autocomplete
+function fetchQuickSuggestions(query) {
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    if (!suggestionsContainer) return;
+
+    // Use already loaded medicines for faster response
+    let matches = allQuickMedicines.filter(med => {
+        const name = (med.medicine_name || med.name || '').toLowerCase();
+        return name.includes(query.toLowerCase());
+    }).slice(0, 8);
+
+    if (matches.length > 0) {
+        displayQuickSuggestions(matches);
+    } else {
+        // Try API if no local matches
+        api.searchMedicines(query)
+            .then(data => {
+                const suggestions = data.data || data.medicines || [];
+                if (suggestions.length > 0) {
+                    displayQuickSuggestions(suggestions.slice(0, 8));
+                } else {
+                    suggestionsContainer.innerHTML = `
+                        <div class="suggestion-no-results">
+                            <i class="fas fa-search"></i>
+                            <span>No medicines found for "${escapeHtml(query)}"</span>
+                        </div>
+                    `;
+                    suggestionsContainer.style.display = 'block';
+                }
+            })
+            .catch(err => {
+                console.error('Suggestions error:', err);
+                suggestionsContainer.style.display = 'none';
+            });
+    }
+}
+
+// Display suggestions dropdown
+function displayQuickSuggestions(suggestions) {
+    const container = document.getElementById('quick-search-suggestions');
+    if (!container) return;
+
+    container.innerHTML = suggestions.map(med => {
+        const name = med.medicine_name || med.name || 'Unknown';
+        const category = med.category || 'General';
+        const price = med.price || 0;
+        const stock = med.stock || med.quantity || 0;
+        const inStock = stock > 0;
+
+        return `
+            <div class="suggestion-item">
+                <div class="suggestion-main" onclick="selectQuickSuggestion('${escapeHtml(name).replace(/'/g, "\\'")}')">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-${getCategoryIcon(category)}"></i>
+                    </div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-name">${escapeHtml(name)}</div>
+                        <div class="suggestion-category">${escapeHtml(category)}</div>
+                    </div>
+                </div>
+                <div class="suggestion-actions">
+                    <span class="suggestion-price">Rs. ${price}</span>
+                    <button class="suggestion-add-btn" onclick="event.stopPropagation(); quickAddToCart(${med.id}, '${escapeHtml(name).replace(/'/g, "\\'")}', ${price}, ${stock})" ${!inStock ? 'disabled' : ''}>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <a href="medicine-detail.html?id=${med.id}" class="suggestion-detail-btn" onclick="event.stopPropagation();">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.style.display = 'block';
+}
+
+// Select suggestion and search
+function selectQuickSuggestion(name) {
+    const input = document.getElementById('quick-search-input');
+    const container = document.getElementById('quick-search-suggestions');
+    if (input) input.value = name;
+    if (container) container.style.display = 'none';
+    quickSearchMedicines();
+}
+
+// ==================== GLOBAL FUNCTIONS (Must be defined first for onclick handlers) ====================
+
+// Show clear cart modal - Make it globally available
+window.showClearCartModal = function() {
+    console.log('🔔 showClearCartModal called');
+
+    // Check if cart is empty
+    const cart = initCart();
+    if (cart.length === 0) {
+        showAdvancedNotification(
+            'Your cart is already empty!',
+            'info',
+            'Cart Empty',
+            'There are no items to clear.'
+        );
+        return;
+    }
+
+    // Ensure any existing modal is closed first
+    const existingModal = bootstrap.Modal.getInstance(document.getElementById('clearCartModal'));
+    if (existingModal) {
+        existingModal.hide();
+    }
+
+    // Show the modal after a short delay
+    setTimeout(() => {
+        const modal = new bootstrap.Modal(document.getElementById('clearCartModal'), {
+            keyboard: true,
+            backdrop: true
+        });
+        modal.show();
+        console.log('✅ Clear cart modal shown');
+    }, 100);
+}
+
+// Confirm clear cart - Make it globally available
+window.confirmClearCart = function() {
+    console.log('🗑️ confirmClearCart called');
+
+    // Hide the modal first
+    const modalElement = document.getElementById('clearCartModal');
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+        modal.hide();
+        console.log('✅ Modal hidden');
+    }
+
+    // Clear the cart using forceClearCart if available, otherwise do it manually
+    if (typeof forceClearCart === 'function') {
+        console.log('📞 Calling forceClearCart()');
+        forceClearCart();
+    } else {
+        console.log('⚠️ forceClearCart not found, clearing manually');
+        localStorage.removeItem('cart');
+        console.log('💾 Cart removed from localStorage');
+    }
+
+    // Update cart display immediately
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+        console.log('🔄 Cart display updated');
+    }
+
+    // Update cart count
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+        console.log('🔢 Cart count updated');
+    }
+
+    // Hide the clear cart button
+    const clearBtn = document.getElementById('clear-cart-btn');
+    if (clearBtn) {
+        clearBtn.style.display = 'none';
+        console.log('👁️ Clear cart button hidden');
+    }
+
+    // Show success notification after a short delay to ensure modal is hidden
+    setTimeout(() => {
+        if (typeof showAdvancedNotification === 'function') {
+            showAdvancedNotification(
+                'Cart cleared successfully!',
+                'success',
+                'Cart Cleared',
+                'All items have been removed from your cart.'
+            );
+        } else if (typeof showToast === 'function') {
+            showToast('Cart cleared successfully!', 'success');
+        } else {
+            alert('Cart cleared successfully!');
+        }
+        console.log('✅ confirmClearCart completed');
+    }, 300);
+}
+
+// ==================== DOM READY EVENT LISTENERS ====================
+
+// Clean cart items with invalid medicine IDs (e.g., Date.now() timestamps)
+function cleanInvalidCartItems() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    if (cart.length === 0) {
+        return; // No items to clean
+    }
+
+    // Medicine IDs in the database start from 508 (as seen in pharmacy_db.sql)
+    // Date.now() generates timestamps like 1732170000000 (13 digits)
+    // We'll consider any ID > 100000 as invalid (likely a timestamp)
+    const validCart = cart.filter(item => {
+        if (!item.id || item.id <= 0 || item.id > 100000) {
+            console.warn('🗑️ Removing invalid cart item with ID:', item.id, item);
+            return false;
+        }
+        return true;
+    });
+
+    // If items were removed, update localStorage
+    if (validCart.length !== cart.length) {
+        console.log(`🧹 Cleaned cart: Removed ${cart.length - validCart.length} invalid item(s)`);
+        localStorage.setItem('cart', JSON.stringify(validCart));
+
+        // Update display if function exists
+        if (typeof updateCartDisplay === 'function') {
+            updateCartDisplay();
+        }
+    } else {
+        console.log('✅ Cart is clean - all items have valid IDs');
+    }
+}
+
+// Back to top button functionality
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - cart.html');
+    console.log('Testing quick search element:', document.getElementById('quick-search'));
+    console.log('Testing suggestions container:', document.getElementById('quick-search-suggestions'));
+
+    // Clean cart of any invalid items (items with Date.now() timestamps as IDs)
+    cleanInvalidCartItems();
+
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTop.style.display = 'flex';
+        } else {
+            backToTop.style.display = 'none';
+        }
+    });
+
+    backToTop.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Payment method change handler
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const paymentDetails = document.getElementById('payment-details');
+            const paymentInstructions = document.getElementById('payment-instructions');
+            const accountDetails = document.getElementById('account-details');
+            const accountHolder = document.getElementById('account-holder');
+            const accountNumber = document.getElementById('account-number');
+
+            if (this.value === 'cash_on_delivery') {
+                paymentDetails.style.display = 'none';
+            } else {
+                paymentDetails.style.display = 'block';
+                accountDetails.style.display = 'block';
+
+                switch(this.value) {
+                    case 'bank_account':
+                        paymentInstructions.textContent = 'Please transfer the total amount to our bank account and enter the transaction ID below.';
+                        accountHolder.textContent = 'Muneeb Drug House';
+                        accountNumber.textContent = '0123456789 (Allied Bank Limited)';
+                        break;
+                    case 'easypaisa':
+                        paymentInstructions.textContent = 'Send payment via EasyPaisa to our account and enter the transaction ID below.';
+                        accountHolder.textContent = 'Muhammad Waqar';
+                        accountNumber.textContent = '03001234567';
+                        break;
+                    case 'jazzcash':
+                        paymentInstructions.textContent = 'Send payment via JazzCash to our account and enter the transaction ID below.';
+                        accountHolder.textContent = 'Muhammad Waqar';
+                        accountNumber.textContent = '03009876543';
+                        break;
+                    default:
+                        accountDetails.style.display = 'none';
+                }
+            }
+        });
+    });
+
+    // Update cart display and show/hide clear cart button
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+    }
+
+    // Clear old cached data on page load
+    console.log('🔄 Clearing old cache data...');
+    const currentVersion = '3.0';
+    const storedVersion = localStorage.getItem('app-version');
+
+    if (storedVersion !== currentVersion) {
+        console.log('Version mismatch detected. Clearing cache...');
+        // Clear specific cache items but preserve cart
+        const cart = localStorage.getItem('cart');
+        localStorage.clear();
+        sessionStorage.clear();
+        if (cart) {
+            localStorage.setItem('cart', cart);
+        }
+        localStorage.setItem('app-version', currentVersion);
+        console.log('✅ Cache cleared. New version:', currentVersion);
+    }
+
+    // Initialize autocomplete for quick search
+    console.log('🔧 About to initialize quick search autocomplete...');
+    console.log('Quick search element exists:', !!document.getElementById('quick-search'));
+    console.log('Suggestions container exists:', !!document.getElementById('quick-search-suggestions'));
+
+    initializeQuickSearchAutocomplete();
+
+    console.log('✅ Quick search autocomplete initialization called');
+
+    // Initialize modal event handlers
+    initializeModalEventHandlers();
+});
+
+// Initialize modal event handlers
+function initializeModalEventHandlers() {
+    // Clear cart modal event handlers
+    const clearCartModal = document.getElementById('clearCartModal');
+    if (clearCartModal) {
+        // Handle modal close events
+        clearCartModal.addEventListener('hidden.bs.modal', function() {
+            // Reset modal state when closed
+            console.log('Clear cart modal closed');
+        });
+
+        // Handle cancel button click (additional safety)
+        const cancelBtn = clearCartModal.querySelector('[data-bs-dismiss="modal"]');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                const modal = bootstrap.Modal.getInstance(clearCartModal);
+                if (modal) {
+                    modal.hide();
+                }
+            });
+        }
+    }
+}
+
+// Autocomplete functionality for quick search
+function initializeQuickSearchAutocomplete() {
+    const searchInput = document.getElementById('quick-search');
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    let searchTimeout;
+    let currentFocus = -1;
+    let cache = {}; // Cache for faster repeated searches
+    let lastQuery = '';
+
+    console.log('🔍 Initializing autocomplete...');
+    console.log('Search input found:', !!searchInput);
+    console.log('Suggestions container found:', !!suggestionsContainer);
+
+    if (!searchInput || !suggestionsContainer) {
+        console.error('❌ Search input or suggestions container not found!');
+        console.error('searchInput:', searchInput);
+        console.error('suggestionsContainer:', suggestionsContainer);
+        return;
+    }
+
+    console.log('✅ Autocomplete initialized successfully');
+    console.log('Search input element:', searchInput);
+    console.log('Suggestions container:', suggestionsContainer);
+
+    // Test with a simple click event
+    searchInput.addEventListener('focus', function() {
+        console.log('Search input focused');
+        const query = this.value.trim();
+
+        if (query.length > 0) {
+            // If there's text, check cache or fetch suggestions
+            if (cache[query]) {
+                displaySuggestions(cache[query]);
+            } else {
+                showLoadingSuggestions();
+                fetchSuggestions(query);
+            }
+        }
+    });
+
+    // Clear search button functionality
+    const clearBtn = document.getElementById('clear-quick-search');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            hideSuggestions();
+
+            // Also clear the results section
+            const resultsContainer = document.getElementById('quick-results');
+            if (resultsContainer) {
+                resultsContainer.innerHTML = '';
+                resultsContainer.style.display = 'none';
+            }
+
+            searchInput.focus();
+        });
+    }
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+
+        console.log('🔍 Input event fired! Query:', query, 'Length:', query.length);
+
+        // Toggle clear button visibility
+        if (clearBtn) {
+            clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+        }
+
+        clearTimeout(searchTimeout);
+
+        if (query.length === 0) {
+            hideSuggestions();
+            lastQuery = '';
+            return;
+        }
+
+        // Add typing indicator
+        this.classList.add('typing');
+
+        if (query.length >= 1) {
+            if (query === lastQuery) {
+                console.log('Same query, skipping fetch');
+                return;
+            }
+
+            lastQuery = query;
+
+            searchTimeout = setTimeout(() => {
+                console.log('⏰ Search timeout triggered for:', query);
+
+                if (cache[query]) {
+                    console.log('📦 Using cached results for:', query);
+                    displaySuggestions(cache[query]);
+                } else {
+                    console.log('🌐 Fetching new suggestions for:', query);
+                    showLoadingSuggestions();
+                    fetchSuggestions(query);
+                }
+            }, 300);
+        } else {
+            hideSuggestions();
+            lastQuery = '';
+        }
+    });
+
+    searchInput.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            if (currentFocus >= suggestions.length) currentFocus = 0;
+            setActiveItem(suggestions);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = suggestions.length - 1;
+            setActiveItem(suggestions);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (currentFocus >= 0 && suggestions[currentFocus]) {
+                suggestions[currentFocus].click();
+            } else {
+                quickSearch();
+            }
+        } else if (e.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+
+    function fetchSuggestions(query) {
+        // Always show loading for user feedback
+        showLoadingSuggestions();
+
+        // Use AbortController for cancelling previous requests
+        if (window.currentSuggestionRequest) {
+            window.currentSuggestionRequest.abort();
+        }
+
+        window.currentSuggestionRequest = new AbortController();
+
+        // Increase limit for single character searches to show more results
+        const limit = query.length === 1 ? 15 : 10;
+        const baseURL = getBaseURL();
+        const apiURL = `${baseURL}/api/medicines/suggestions/search?q=${encodeURIComponent(query)}&type=both&limit=${limit}`;
+
+        console.log('🔍 Fetching suggestions for:', query, 'with limit:', limit);
+        console.log('📍 Base URL:', baseURL);
+        console.log('🌐 Full API URL:', apiURL);
+
+        fetch(apiURL, {
+            signal: window.currentSuggestionRequest.signal
+        })
+            .then(response => {
+                console.log('Response status:', response.status); // Debug
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API Response:', data); // Debug
+                if (data.success && data.suggestions && data.suggestions.length > 0) {
+                    // Cache the result for faster future access
+                    cache[query] = data.suggestions;
+                    displaySuggestions(data.suggestions);
+                } else {
+                    console.log('No suggestions found for:', query); // Debug
+                    // Try fallback to main medicines API
+                    fallbackSearch(query);
+                }
+            })
+            .catch(error => {
+                if (error.name !== 'AbortError') {
+                    console.error('Error fetching suggestions:', error);
+                    // Try fallback to main medicines API
+                    fallbackSearch(query);
+                }
+            });
+    }
+
+    // Fallback search function using main medicines API
+    function fallbackSearch(query) {
+        console.log('📌 Using fallback search for:', query);
+        fetch(`${getBaseURL()}/api/medicines?search=${encodeURIComponent(query)}&limit=15`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('📊 Fallback API response:', data);
+                if (data.success && data.medicines && data.medicines.length > 0) {
+                    // Convert medicines to suggestions format
+                    const suggestions = data.medicines.map(med => ({
+                        type: 'medicine',
+                        id: med.id,
+                        name: med.name,
+                        category: med.category || 'Medicine',
+                        price: parseFloat(med.price) || 0,
+                        quantity: parseInt(med.quantity) || 0,
+                        image: med.image || ''
+                    }));
+                    cache[query] = suggestions;
+                    displaySuggestions(suggestions);
+                    console.log('✅ Showing', suggestions.length, 'results from fallback');
+                } else {
+                    cache[query] = [];
+                    showNoResults();
+                }
+            })
+            .catch(error => {
+                console.error('❌ Fallback search also failed:', error);
+                showNoResults();
+            });
+    }
+
+    function displaySuggestions(suggestions) {
+        console.log('📋 displaySuggestions called with:', suggestions.length, 'items');
+        console.log('Suggestions data:', suggestions);
+        console.log('Container element:', suggestionsContainer);
+
+        // Clear existing content
+        suggestionsContainer.innerHTML = '';
+
+        if (!suggestions || suggestions.length === 0) {
+            showNoResults();
+            return;
+        }
+
+        // Use document fragment for faster DOM manipulation
+        const fragment = document.createDocumentFragment();
+
+        suggestions.forEach((suggestion, index) => {
+            const suggestionDiv = document.createElement('div');
+            suggestionDiv.className = 'suggestion-item';
+            suggestionDiv.setAttribute('data-type', suggestion.type);
+            suggestionDiv.setAttribute('data-name', suggestion.name);
+            suggestionDiv.setAttribute('data-id', suggestion.id || '');
+            suggestionDiv.setAttribute('data-index', index);
+
+            const iconClass = suggestion.type === 'medicine' ? 'fas fa-pills' : 'fas fa-tags';
+
+            // Safely handle values
+            const price = parseFloat(suggestion.price || 0);
+            const quantity = parseInt(suggestion.quantity || 0);
+            const category = suggestion.category || 'Medicine';
+            const name = suggestion.name || 'Unknown';
+            const medicineId = suggestion.id || 0;
+
+            let rightContent = '';
+            if (suggestion.type === 'medicine') {
+                // For medicine suggestions, show price and add to cart controls
+                const stockInfo = quantity > 0 ? `max="${quantity}"` : 'max="0" disabled';
+                const addBtnDisabled = quantity <= 0 ? 'disabled' : '';
+
+                rightContent = `
+                    <span class="suggestion-price">Rs. ${price.toFixed(2)}</span>
+                    <div class="suggestion-actions" onclick="event.stopPropagation();">
+                        <input type="number"
+                               class="suggestion-qty-input"
+                               value="1"
+                               min="1"
+                               ${stockInfo}
+                               data-medicine-id="${medicineId}"
+                               onclick="event.stopPropagation();"
+                               ${quantity <= 0 ? 'disabled' : ''}>
+                        <button class="suggestion-add-btn"
+                                onclick="addToCartFromSuggestion(${medicineId}, '${name.replace(/'/g, "\\'")}', ${price}, ${quantity}, this); event.stopPropagation();"
+                                ${addBtnDisabled}>
+                            <i class="fas fa-cart-plus"></i> ${quantity > 0 ? 'Add' : 'Out of Stock'}
+                        </button>
+                    </div>
+                `;
+            } else {
+                // For category suggestions, show count
+                rightContent = `<span class="suggestion-count">${suggestion.count || 0} items</span>`;
+            }
+
+            suggestionDiv.innerHTML = `
+                <div class="suggestion-main">
+                    <div class="suggestion-icon">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <div class="suggestion-text">
+                        <div class="suggestion-name">${name}</div>
+                        <div class="suggestion-category">${suggestion.type === 'medicine' ? category : 'Category'}</div>
+                    </div>
+                </div>
+                ${rightContent}
+            `;
+
+            // Add click handler for the main area (to search)
+            const mainArea = suggestionDiv.querySelector('.suggestion-main');
+            mainArea.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const type = suggestionDiv.dataset.type;
+                const name = suggestionDiv.dataset.name;
+
+                console.log('Suggestion clicked:', type, name);
+
+                searchInput.value = name;
+                hideSuggestions();
+
+                if (type === 'medicine') {
+                    quickSearchByName(name);
+                } else {
+                    quickSearchByCategory(name);
+                }
+            });
+
+            fragment.appendChild(suggestionDiv);
+        });
+
+        // Append all at once for better performance
+        suggestionsContainer.appendChild(fragment);
+
+        // Show the dropdown with multiple methods to ensure visibility
+        suggestionsContainer.style.display = 'block';
+        suggestionsContainer.style.visibility = 'visible';
+        suggestionsContainer.style.opacity = '1';
+        suggestionsContainer.classList.add('show');
+
+        console.log('✅ Dropdown should now be visible!');
+        console.log('Container display:', suggestionsContainer.style.display);
+        console.log('Container classes:', suggestionsContainer.className);
+        console.log('Container HTML length:', suggestionsContainer.innerHTML.length);
+
+        // Remove typing indicator when suggestions are shown
+        searchInput.classList.remove('typing');
+
+        console.log('Suggestions dropdown displayed with', suggestions.length, 'items');
+
+        currentFocus = -1;
+    }
+
+    function showLoadingSuggestions() {
+        suggestionsContainer.innerHTML = `
+            <div class="suggestions-loading">
+                <i class="fas fa-spinner fa-spin me-2"></i>Searching medicines...
+            </div>
+        `;
+
+        // Show the dropdown
+        suggestionsContainer.style.display = 'block';
+        suggestionsContainer.classList.add('show');
+
+        console.log('Loading suggestions displayed');
+    }
+
+    function showNoResults() {
+        suggestionsContainer.innerHTML = `
+            <div class="suggestions-no-results">
+                <i class="fas fa-search me-2"></i>No medicines found
+            </div>
+        `;
+
+        // Show the dropdown
+        suggestionsContainer.style.display = 'block';
+        suggestionsContainer.classList.add('show');
+
+        console.log('No results message displayed');
+    }
+
+    function hideSuggestions() {
+        suggestionsContainer.classList.remove('show');
+        suggestionsContainer.style.display = 'none';
+        searchInput.classList.remove('typing');
+        currentFocus = -1;
+        console.log('Suggestions hidden');
+    }
+
+    function setActiveItem(suggestions) {
+        suggestions.forEach((item, index) => {
+            item.classList.toggle('active', index === currentFocus);
+        });
+    }
+}
+
+// Enhanced quick search functions
+function quickSearch() {
+    const searchInput = document.getElementById('quick-search');
+    const searchTerm = searchInput.value.trim();
+
+    if (searchTerm.length < 2) {
+        showAdvancedNotification('Please enter at least 2 characters', 'warning', 'Search Too Short', 'Type more characters to search for medicines.');
+        return;
+    }
+
+    // Hide suggestions dropdown
+    document.getElementById('quick-search-suggestions').style.display = 'none';
+
+    // Perform search
+    quickSearchByName(searchTerm);
+}
+
+function quickSearchByName(medicineName) {
+    fetch(`${getBaseURL()}/api/medicines?search=${encodeURIComponent(medicineName)}&limit=10`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.medicines.length > 0) {
+                displayQuickResults(data.medicines, `Results for "${medicineName}"`);
+            } else {
+                showQuickSearchNoResults(medicineName);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAdvancedNotification('Search failed', 'danger', 'Search Error', 'Please try again later.');
+        });
+}
+
+function quickSearchByCategory(category) {
+    fetch(`${getBaseURL()}/api/medicines?category=${encodeURIComponent(category)}&limit=20`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.medicines.length > 0) {
+                displayQuickResults(data.medicines, `${category} medicines`);
+            } else {
+                showQuickSearchNoResults(category);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAdvancedNotification('Search failed', 'danger', 'Search Error', 'Please try again later.');
+        });
+}
+
+function displayQuickResults(medicines, title) {
+    const resultsContainer = document.getElementById('quick-results');
+
+    let html = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0 text-primary">
+                <i class="fas fa-search-plus me-2"></i>${title}
+            </h6>
+            <small class="text-muted">${medicines.length} result(s) found</small>
+        </div>
+        <div class="row g-3">
+    `;
+
+    medicines.forEach(medicine => {
+        const imageUrl = medicine.image ? `images/${medicine.image}` : null;
+        const stockStatus = medicine.quantity > 0 ?
+            `<span class="badge bg-success">In Stock</span>` :
+            `<span class="badge bg-danger">Out of Stock</span>`;
+
+        // Safely escape data for HTML attributes
+        const safeName = String(medicine.name || 'Unknown').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const safeImage = String(medicine.image || '').replace(/"/g, '&quot;');
+
+        html += `
+            <div class="col-md-6 col-lg-4">
+                <div class="card quick-medicine-card h-100"
+                     data-medicine-id="${medicine.id}"
+                     data-medicine-name="${safeName}"
+                     data-medicine-price="${medicine.price}"
+                     data-medicine-image="${safeImage}"
+                     data-medicine-stock="${medicine.quantity}">
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-4">
+                                ${imageUrl ?
+                                    `<img src="${imageUrl}" alt="${safeName}" class="quick-medicine-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                     <div class="quick-medicine-placeholder" style="display: none;">
+                                         <i class="fas fa-pills"></i>
+                                     </div>` :
+                                    `<div class="quick-medicine-placeholder">
+                                         <i class="fas fa-pills"></i>
+                                     </div>`
+                                }
+                            </div>
+                            <div class="col-8">
+                                <h6 class="mb-1 text-truncate" title="${safeName}">${medicine.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h6>
+                                <p class="text-muted small mb-1">${(medicine.category || 'General').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-primary">Rs. ${parseFloat(medicine.price).toFixed(2)}</span>
+                                    ${stockStatus}
+                                </div>
+                                ${medicine.quantity > 0 ?
+                                    `<button class="btn btn-sm btn-primary w-100"
+                                            onclick="addToCartFromQuickSearch(${medicine.id}, ${medicine.quantity}); return false;">
+                                         <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                                     </button>` :
+                                    `<button class="btn btn-sm btn-outline-secondary w-100" disabled>
+                                         <i class="fas fa-times me-1"></i>Out of Stock
+                                     </button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    resultsContainer.innerHTML = html;
+    resultsContainer.style.display = 'block';
+}
+
+function showQuickSearchNoResults(query) {
+    const resultsContainer = document.getElementById('quick-results');
+    resultsContainer.innerHTML = `
+        <div class="text-center py-4">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h6 class="text-muted">No medicines found for "${query}"</h6>
+            <p class="text-muted mb-3">Try searching with different keywords or browse our categories.</p>
+            <a href="../shop/search.html" class="btn btn-primary">
+                <i class="fas fa-pills me-2"></i>Browse All Medicines
+            </a>
+        </div>
+    `;
+    resultsContainer.style.display = 'block';
+}
+
+// Advanced notification function
+function showAdvancedNotification(message, type, title, description) {
+    type = type || 'info';
+    title = title || 'Notification';
+    description = description || '';
+
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const icon = document.getElementById('notificationIcon');
+    const bodyIcon = document.getElementById('notificationBodyIcon');
+    const titleEl = document.getElementById('notificationTitle');
+    const messageEl = document.getElementById('notificationMessage');
+    const descriptionEl = document.getElementById('notificationDescription');
+    const okBtn = document.getElementById('notificationOkBtn');
+
+    // Reset classes
+    header.className = 'modal-header border-0';
+    icon.className = 'me-2';
+    bodyIcon.className = 'fa-4x mb-3';
+    okBtn.className = 'btn';
+
+    // Set content based on type
+    switch(type) {
+        case 'success':
+            header.classList.add('bg-success', 'text-white');
+            icon.classList.add('fas', 'fa-check-circle');
+            bodyIcon.classList.add('fas', 'fa-check-circle', 'text-success');
+            okBtn.classList.add('btn-success');
+            break;
+        case 'danger':
+        case 'error':
+            header.classList.add('bg-danger', 'text-white');
+            icon.classList.add('fas', 'fa-exclamation-circle');
+            bodyIcon.classList.add('fas', 'fa-exclamation-circle', 'text-danger');
+            okBtn.classList.add('btn-danger');
+            break;
+        case 'warning':
+            header.classList.add('bg-warning', 'text-white');
+            icon.classList.add('fas', 'fa-exclamation-triangle');
+            bodyIcon.classList.add('fas', 'fa-exclamation-triangle', 'text-warning');
+            okBtn.classList.add('btn-warning');
+            break;
+        default:
+            header.classList.add('bg-info', 'text-white');
+            icon.classList.add('fas', 'fa-info-circle');
+            bodyIcon.classList.add('fas', 'fa-info-circle', 'text-info');
+            okBtn.classList.add('btn-info');
+    }
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    descriptionEl.textContent = description;
+    descriptionEl.style.display = description ? 'block' : 'none';
+
+    modal.show();
+}
+
+// Show order success modal
+function displayOrderSuccessModal(orderData) {
+    const modal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
+
+    // Update order details
+    document.getElementById('successOrderId').textContent = orderData.order_id || 'N/A';
+    document.getElementById('successOrderTotal').textContent = 'Rs. ' + (orderData.total_amount || 0).toFixed(2);
+    document.getElementById('successPaymentMethod').textContent = orderData.payment_method || 'Cash on Delivery';
+
+    modal.show();
+}
+
+// Copy Order ID to clipboard
+function copyOrderIdToClipboard() {
+    const orderId = document.getElementById('successOrderId').textContent;
+
+    navigator.clipboard.writeText(orderId).then(() => {
+        const copyBtn = document.getElementById('copyBtnText');
+        const originalText = copyBtn.innerHTML;
+
+        copyBtn.innerHTML = 'Copied!';
+        copyBtn.parentElement.style.background = '#10b981';
+        copyBtn.parentElement.style.color = 'white';
+        copyBtn.parentElement.style.borderColor = '#10b981';
+
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.parentElement.style.background = '';
+            copyBtn.parentElement.style.color = '';
+            copyBtn.parentElement.style.borderColor = '';
+        }, 2000);
+    }).catch(err => {
+        alert('Failed to copy Order ID. Please copy it manually: ' + orderId);
+    });
+}
+
+// Override the default cart display function to show/hide clear button
+if (typeof updateCartDisplay === 'function') {
+    const originalUpdateCartDisplay = updateCartDisplay;
+    window.updateCartDisplay = function() {
+        originalUpdateCartDisplay();
+
+        // Show/hide clear cart button based on cart contents
+        const clearBtn = document.getElementById('clear-cart-btn');
+        if (clearBtn && typeof initCart === 'function') {
+            const cartData = initCart();
+            if (cartData && cartData.length > 0) {
+                clearBtn.style.display = 'block';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+        }
+    };
+}
+
+// Helper function to add medicine to cart from quick search - Make it globally accessible
+window.addToCartFromQuickSearch = function(medicineId, stockQuantity) {
+    console.log('🛒 addToCartFromQuickSearch called:', { medicineId, stockQuantity });
+
+    // Find the medicine card specifically in the quick-results container
+    const quickResults = document.getElementById('quick-results');
+    if (!quickResults) {
+        console.error('Quick results container not found');
+        showToast('Search results not found', 'error');
+        return;
+    }
+
+    const medicineCard = quickResults.querySelector(`.quick-medicine-card[data-medicine-id="${medicineId}"]`);
+    if (!medicineCard) {
+        console.error('Medicine card not found for ID:', medicineId);
+        showToast('Medicine not found', 'error');
+        return;
+    }
+
+    console.log('Found medicine card:', medicineCard);
+
+    // Get medicine data from the card's data attributes
+    // Use textContent trick to decode HTML entities
+    const tempDiv = document.createElement('div');
+
+    const rawName = medicineCard.getAttribute('data-medicine-name');
+    tempDiv.innerHTML = rawName;
+    const medicineName = tempDiv.textContent || tempDiv.innerText || rawName;
+
+    const medicinePrice = parseFloat(medicineCard.getAttribute('data-medicine-price') || 0);
+    const medicineImage = medicineCard.getAttribute('data-medicine-image') || '';
+    const medicineStock = parseInt(medicineCard.getAttribute('data-medicine-stock') || stockQuantity);
+
+    console.log('Extracted data:', {
+        medicineName,
+        medicinePrice,
+        medicineImage,
+        medicineStock,
+        rawName
+    });
+
+    // Validate data
+    if (!medicineName || isNaN(medicinePrice) || medicinePrice <= 0) {
+        console.error('❌ Invalid medicine data:', {
+            id: medicineId,
+            name: medicineName,
+            price: medicinePrice,
+            stock: medicineStock
+        });
+        showToast('Invalid medicine data. Please refresh and try again.', 'error');
+        return;
+    }
+
+    // Validate medicine ID
+    if (!medicineId || medicineId <= 0) {
+        console.error('❌ Invalid medicine ID:', medicineId);
+        showToast('Invalid medicine. Please try again.', 'error');
+        return;
+    }    // Get cart from localStorage
+    const cart = initCart();
+
+    // Check if medicine already exists in cart
+    const existingItem = cart.find(item => item.id == medicineId);
+
+    if (existingItem) {
+        const newQuantity = existingItem.quantity + 1;
+        if (newQuantity > medicineStock) {
+            showToast(`Only ${medicineStock} units available in stock!`, 'warning');
+            return;
+        }
+        existingItem.quantity = newQuantity;
+        showToast(`${medicineName} quantity updated to ${newQuantity}`, 'success');
+    } else {
+        // Add new item to cart
+        cart.push({
+            id: medicineId,
+            name: medicineName,
+            price: medicinePrice,
+            quantity: 1,
+            image: medicineImage,
+            stock: medicineStock
+        });
+        showToast(`${medicineName} added to cart!`, 'success');
+    }
+
+    // Save cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update cart display
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+    }
+
+    // Update navbar cart count
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+    }
+}
+
+// Simple function to add medicine from quick search
+function addMedicineFromQuickSearch(medicineId, medicineName, price, maxQuantity) {
+    console.log('Adding medicine:', medicineId, medicineName, price, maxQuantity);
+
+    // Validate medicine ID
+    if (!medicineId || medicineId <= 0) {
+        console.error('Invalid medicine ID:', medicineId);
+        showToast('Invalid medicine. Please try again.', 'error');
+        return;
+    }
+
+    // Get quantity from the quick search input or browse input
+    let qtyInput = document.getElementById('quick-qty-' + medicineId);
+    if (!qtyInput) {
+        qtyInput = document.getElementById('browse-qty-' + medicineId);
+    }
+    const quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+
+    // Validate quantity
+    if (quantity > maxQuantity) {
+        showToast(`Only ${maxQuantity} units available in stock!`, 'warning');
+        if (qtyInput) qtyInput.value = maxQuantity;
+        return;
+    }
+
+    if (maxQuantity <= 0) {
+        showToast('This medicine is out of stock!', 'error');
+        return;
+    }
+
+    // Get cart from localStorage
+    const cart = initCart();
+
+    // Check if medicine already exists (match by ID)
+    const existingItem = cart.find(item => item.id == medicineId);
+
+    if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        if (newQuantity > maxQuantity) {
+            showToast(`Cannot add ${quantity} more units. Only ${maxQuantity - existingItem.quantity} available!`, 'warning');
+            return;
+        }
+        existingItem.quantity = newQuantity;
+        console.log('Updated existing item to quantity:', newQuantity);
+    } else {
+        cart.push({
+            id: medicineId,
+            name: medicineName,
+            price: parseFloat(price),
+            quantity: quantity
+        });
+        console.log('Added new item with quantity:', quantity);
+    }
+
+    // Save cart
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update display
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+    }
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+    }
+
+    // Show success message
+    const message = quantity > 1 ?
+        `${quantity} x ${medicineName} added to cart!` :
+        `${medicineName} added to cart!`;
+
+    // Use notification if available, otherwise alert
+    if (typeof showNotification === 'function') {
+        showNotification(message, 'success');
+    } else {
+        alert(message);
+    }
+
+    // Reset quantity input to 1
+    if (qtyInput) {
+        qtyInput.value = 1;
+    }
+
+    // Hide suggestions
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.style.display = 'none';
+    }
+
+    // Clear search input
+    const searchInput = document.getElementById('quick-search');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+}
+
+// Get base URL dynamically (same logic as API client)
+function getBaseURL() {
+    const currentLocation = window.location;
+    const currentPath = currentLocation.pathname;
+
+    // If we're running on Laravel development server (port 8000)
+    if (currentLocation.port === '8000') {
+        return currentLocation.origin;
+    }
+
+    // If we're in XAMPP and the path includes /waqar/
+    if (currentPath.includes('/waqar/')) {
+        return currentLocation.origin + '/waqar';
+    }
+
+    // If we're at the root of XAMPP
+    if (currentLocation.hostname === 'localhost' && !currentLocation.port) {
+        return currentLocation.origin + '/waqar';
+    }
+
+    // Fallback to current origin
+    return currentLocation.origin;
+}
+
+// Show all medicines in quick results section
+function showAllMedicines() {
+    console.log('Loading all medicines...');
+    const quickResults = document.getElementById('quick-results');
+
+    // Show loading
+    quickResults.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading medicines...</p></div>';
+    quickResults.style.display = 'block';
+
+    // Fetch all medicines using Laravel API
+    const baseURL = getBaseURL();
+    fetch(`${baseURL}/api/medicines?limit=50`)
+        .then(response => response.json())
+        .then(result => {
+            // Handle Laravel API response format
+            const medicines = result.success ? result.data : (result.medicines || result);
+
+            if (medicines && medicines.length > 0) {
+                let html = '<div class="row g-3">';
+
+                medicines.forEach(medicine => {
+                    const stockClass = medicine.quantity > 0 ? 'text-success' : 'text-danger';
+                    const stockText = medicine.quantity > 0 ? `Stock: ${medicine.quantity}` : 'Out of Stock';
+                    html += `
+                        <div class="col-md-4 col-sm-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">${medicine.name}</h6>
+                                    <p class="text-muted mb-1 small">${medicine.category}</p>
+                                    <p class="text-primary mb-2"><strong>Rs. ${parseFloat(medicine.price).toFixed(2)}</strong></p>
+                                    <p class="${stockClass} small mb-2">${stockText}</p>
+                                    <div class="d-flex gap-2 align-items-center mb-2">
+                                        <input type="number" class="form-control form-control-sm" id="browse-qty-${medicine.id}" value="1" min="1" max="${medicine.quantity}" style="width: 70px;" ${medicine.quantity <= 0 ? 'disabled' : ''}>
+                                        <button class="btn btn-sm btn-success flex-grow-1"
+                                                onclick="addMedicineFromQuickSearch(${medicine.id}, '${medicine.name.replace(/'/g, "\\'")}', ${medicine.price}, ${medicine.quantity})"
+                                                ${medicine.quantity <= 0 ? 'disabled' : ''}>
+                                            <i class="fas fa-cart-plus me-1"></i>${medicine.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                quickResults.innerHTML = html;
+            } else {
+                quickResults.innerHTML = '<div class="alert alert-info">No medicines found</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            quickResults.innerHTML = '<div class="alert alert-danger">Error loading medicines</div>';
+        });
+}
+
+// Add to cart from autocomplete suggestion - Make it globally accessible
+window.addToCartFromSuggestion = function(medicineId, medicineName, price, stockQuantity, button) {
+    console.log('🛒 addToCartFromSuggestion called:', { medicineId, medicineName, price, stockQuantity });
+
+    // Validate medicine ID
+    if (!medicineId || medicineId <= 0) {
+        console.error('❌ Invalid medicine ID:', medicineId);
+        showToast('Invalid medicine. Please try again.', 'error');
+        return;
+    }
+
+    // Get the quantity input - it's the previous sibling of the button
+    const qtyInput = button.previousElementSibling;
+
+    if (!qtyInput) {
+        console.error('❌ Quantity input not found!');
+        showToast('Error finding quantity input', 'error');
+        return;
+    }
+
+    const quantity = parseInt(qtyInput.value) || 1;
+
+    console.log('📊 Quantity from input:', quantity);
+
+    // Validate quantity
+    if (quantity < 1) {
+        showToast('Please enter a valid quantity', 'warning');
+        return;
+    }
+
+    if (stockQuantity <= 0) {
+        showToast('This item is out of stock', 'warning');
+        return;
+    }
+
+    if (quantity > stockQuantity) {
+        showToast(`Only ${stockQuantity} units available in stock`, 'warning');
+        return;
+    }
+
+    // Get cart from localStorage
+    const cart = initCart();
+
+    // Create medicine object with REAL medicine ID
+    const medicine = {
+        id: medicineId, // Use the real medicine ID from database
+        name: medicineName,
+        price: parseFloat(price),
+        quantity: quantity,
+        stock: stockQuantity
+    };
+
+    // Check if medicine already exists in cart (by ID)
+    const existingItem = cart.find(item => item.id === medicineId);
+
+    if (existingItem) {
+        // Update existing quantity
+        const newQuantity = existingItem.quantity + quantity;
+
+        if (newQuantity > stockQuantity) {
+            showToast(
+                `Cannot add more. Maximum ${stockQuantity} units available. You already have ${existingItem.quantity} in cart`,
+                'warning'
+            );
+            return;
+        }
+
+        existingItem.quantity = newQuantity;
+        console.log('✅ Updated existing cart item:', existingItem);
+    } else {
+        // Add new item to cart
+        cart.push(medicine);
+        console.log('✅ Added new item to cart:', medicine);
+    }
+
+    // Save cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    console.log('💾 Cart saved to localStorage');
+
+    // Update cart display
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+        console.log('🔄 Cart display updated');
+    }
+
+    // Update navbar cart count
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+        console.log('🔢 Cart count updated');
+    }
+
+    // Show success feedback on button
+    button.innerHTML = '<i class="fas fa-check"></i> Added';
+    button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    button.disabled = true;
+
+    // Reset button after 2 seconds
+    setTimeout(() => {
+        button.innerHTML = '<i class="fas fa-cart-plus"></i> Add';
+        button.style.background = '';
+        button.disabled = false;
+    }, 2000);
+
+    // Reset quantity to 1
+    qtyInput.value = 1;
+
+    // Show success toast notification (simple and non-intrusive)
+    const totalPrice = (quantity * price).toFixed(2);
+    showToast(`${quantity} x ${medicineName} added to cart - Rs. ${totalPrice}`, 'success');
+
+    console.log('✅ addToCartFromSuggestion completed successfully');
+}
+
+// Show login required modal
+function showLoginRequiredModal() {
+    const modal = new bootstrap.Modal(document.getElementById('loginRequiredModal'));
+    modal.show();
+}
+
+// Toast notification function - simple and non-intrusive
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 99999; max-width: 350px;';
+        document.body.appendChild(toastContainer);
+    }
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+
+    // Set icon based on type
+    let icon = 'fa-info-circle';
+    let bgColor = '#3b82f6';
+    switch(type) {
+        case 'success':
+            icon = 'fa-check-circle';
+            bgColor = '#10b981';
+            break;
+        case 'error':
+        case 'danger':
+            icon = 'fa-exclamation-circle';
+            bgColor = '#ef4444';
+            break;
+        case 'warning':
+            icon = 'fa-exclamation-triangle';
+            bgColor = '#f59e0b';
+            break;
+    }
+
+    toast.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    `;
+
+    toast.style.cssText = `
+        background: ${bgColor};
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        animation: slideInRight 0.3s ease-out;
+        font-size: 14px;
+        font-weight: 500;
+    `;
+
+    // Add to container
+    toastContainer.appendChild(toast);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Show notification function (alias for showToast)
+function showNotification(message, type = 'info') {
+    showToast(message, type);
+}
+
+// Search by category function
+function searchByCategory(categoryName) {
+    console.log('Searching by category:', categoryName);
+    const quickResults = document.getElementById('quick-results');
+    const searchInput = document.getElementById('quick-search');
+
+    // Update search input
+    if (searchInput) {
+        searchInput.value = categoryName;
+    }
+
+    // Show loading
+    quickResults.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading medicines...</p></div>';
+    quickResults.style.display = 'block';
+
+    // Fetch medicines by category using Laravel API
+    const baseURL = getBaseURL();
+    fetch(`${baseURL}/api/medicines?category=${encodeURIComponent(categoryName)}&limit=50`)
+        .then(response => response.json())
+        .then(result => {
+            // Handle Laravel API response format
+            const medicines = result.success ? result.data : (result.medicines || result);
+
+            if (medicines && medicines.length > 0) {
+                let html = '<h5 class="mb-3">Category: ' + categoryName + ' (' + medicines.length + ' items)</h5>';
+                html += '<div class="row g-3">';
+
+                medicines.forEach(medicine => {
+                    const stockClass = medicine.quantity > 0 ? 'text-success' : 'text-danger';
+                    const stockText = medicine.quantity > 0 ? `Stock: ${medicine.quantity}` : 'Out of Stock';
+                    html += `
+                        <div class="col-md-4 col-sm-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">${medicine.name}</h6>
+                                    <p class="text-muted mb-1 small">${medicine.category}</p>
+                                    <p class="text-primary mb-2"><strong>Rs. ${parseFloat(medicine.price).toFixed(2)}</strong></p>
+                                    <p class="${stockClass} small mb-2">${stockText}</p>
+                                    <div class="d-flex gap-2 align-items-center mb-2">
+                                        <input type="number" class="form-control form-control-sm" id="browse-qty-${medicine.id}" value="1" min="1" max="${medicine.quantity}" style="width: 70px;" ${medicine.quantity <= 0 ? 'disabled' : ''}>
+                                        <button class="btn btn-sm btn-success flex-grow-1"
+                                                onclick="addMedicineFromQuickSearch(${medicine.id}, '${medicine.name.replace(/'/g, "\\'")}', ${medicine.price}, ${medicine.quantity})"
+                                                ${medicine.quantity <= 0 ? 'disabled' : ''}>
+                                            <i class="fas fa-cart-plus me-1"></i>${medicine.quantity > 0 ? 'Add' : 'Out of Stock'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                quickResults.innerHTML = html;
+            } else {
+                quickResults.innerHTML = '<div class="alert alert-info">No medicines found in this category</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            quickResults.innerHTML = '<div class="alert alert-danger">Error loading medicines</div>';
+        });
+
+    // Hide suggestions dropdown
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.style.display = 'none';
+    }
+}
+
+// Increase quantity in dropdown suggestion
+function increaseDropdownQty(medicineId, maxQty) {
+    const input = document.getElementById('quick-qty-' + medicineId);
+    if (input) {
+        let currentQty = parseInt(input.value) || 1;
+        if (currentQty < maxQty) {
+            input.value = currentQty + 1;
+        } else {
+            showToast(`Maximum stock is ${maxQty} units`, 'warning');
+        }
+    }
+}
+
+// Decrease quantity in dropdown suggestion
+function decreaseDropdownQty(medicineId) {
+    const input = document.getElementById('quick-qty-' + medicineId);
+    if (input) {
+        let currentQty = parseInt(input.value) || 1;
+        if (currentQty > 1) {
+            input.value = currentQty - 1;
+        }
+    }
+}
+
+// Process order with database
+function processOrderWithDatabase() {
+    console.log('Processing order...');
+
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!user) {
+        showLoginRequiredModal();
+        return;
+    }
+
+    // Get cart items
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    if (cart.length === 0) {
+        showToast('Your cart is empty!', 'warning');
+        return;
+    }
+
+    // Get form data
+    const form = document.getElementById('checkout-form');
+    const customerName = document.getElementById('customer_name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    const transactionId = document.getElementById('transaction_id')?.value.trim() || '';
+
+    // Validate form
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        showToast('Please fill in all required fields correctly', 'error');
+        return;
+    }
+
+    // Validate email
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+
+    // Validate phone
+    const phonePattern = /^\d{11}$/;
+    if (!phonePattern.test(phone)) {
+        showToast('Please enter a valid 11-digit phone number', 'error');
+        return;
+    }
+
+    // Validate transaction ID for non-COD payment methods
+    if (paymentMethod !== 'cash_on_delivery' && !transactionId) {
+        showToast('Please enter the transaction ID for your payment', 'error');
+        const transactionInput = document.getElementById('transaction_id');
+        if (transactionInput) {
+            transactionInput.focus();
+            transactionInput.classList.add('is-invalid');
+        }
+        return;
+    }
+
+    // Log cart contents for debugging
+    console.log('Cart contents:', cart);
+    console.log('Cart item IDs:', cart.map(item => ({ id: item.id, name: item.name })));
+
+    // Prepare order data
+    const orderData = {
+        customer_name: customerName,
+        email: email,
+        phone: phone,
+        address: address,
+        notes: notes,
+        payment_method: paymentMethod,
+        transaction_id: transactionId,
+        cart_items: cart.map(item => {
+            const medicineId = parseInt(item.id);
+            if (!medicineId || medicineId <= 0 || medicineId > 100000) {
+                console.error('❌ Invalid medicine ID detected:', item.id, 'Item:', item);
+            }
+            return {
+                medicine_id: medicineId,
+                quantity: item.quantity,
+                price: item.price
+            };
+        }).filter(item => {
+            // Only filter out truly invalid items
+            if (!item.medicine_id || item.medicine_id <= 0 || item.medicine_id > 100000) {
+                console.warn('Filtered out invalid medicine ID:', item.medicine_id);
+                return false;
+            }
+            return true;
+        })
+    };
+
+    console.log('Prepared order data:', orderData);
+
+    // Check if any valid items remain
+    if (orderData.cart_items.length === 0) {
+        console.error('No valid cart items after filtering');
+        showToast('No valid items in cart. Please refresh and try again.', 'error');
+        return;
+    }
+
+    console.log('Order data:', orderData);
+
+    // Disable submit button
+    const submitBtn = document.getElementById('submit-order');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+
+    // Send order to Laravel API
+    const baseURL = getBaseURL();
+    console.log('Sending order to:', `${baseURL}/api/orders`);
+    console.log('Full order payload:', JSON.stringify(orderData, null, 2));
+    console.log('First cart item:', orderData.cart_items[0]);
+
+    fetch(`${baseURL}/api/orders`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || 'Failed to place order');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Order response:', data);
+
+        if (data.success) {
+            // Extract order details
+            const orderDetails = {
+                order_id: data.order_id || data.order_number || 'Unknown',
+                total_amount: orderData.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                payment_method: paymentMethod
+            };
+
+            console.log('Order details:', orderDetails);
+
+            // Store last order ID for tracking
+            localStorage.setItem('last_order_id', orderDetails.order_id);
+            localStorage.setItem('last_order_data', JSON.stringify({
+                order_id: orderDetails.order_id,
+                total_amount: orderDetails.total_amount,
+                payment_method: orderDetails.payment_method,
+                customer_name: customerName,
+                phone: phone,
+                date: new Date().toISOString()
+            }));
+
+            // Clear cart
+            localStorage.removeItem('cart');
+
+            // Update cart display immediately
+            if (typeof updateCartDisplay === 'function') {
+                updateCartDisplay();
+            }
+            if (typeof updateCartCount === 'function') {
+                updateCartCount();
+            }
+
+            // Show success modal
+            displayOrderSuccessModal(orderDetails);
+
+            // Reset form
+            form.reset();
+            form.classList.remove('was-validated');
+
+            // Re-enable submit button for next order
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order Now';
+            }, 1000);
+
+        } else {
+            throw new Error(data.message || 'Failed to place order');
+        }
+    })
+    .catch(error => {
+        console.error('Error placing order:', error);
+        showToast(error.message || 'An error occurred. Please try again.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order Now';
+    });
+}
+
+// Helper function for selecting suggestions
+function selectSuggestion(type, name) {
+    const searchInput = document.getElementById('quick-search');
+    searchInput.value = name;
+
+    // Hide suggestions
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.style.display = 'none';
+    }
+
+    // Perform search based on type
+    if (type === 'medicine') {
+        quickSearchByName(name);
+    } else {
+        searchByCategory(name);
+    }
+}
+
+// Helper function to add medicine to cart from suggestions
+function addMedicineToCart(medicineName, price, quantity) {
+    console.log('⚠️ WARNING: addMedicineToCart called without medicine ID!');
+    console.log('This function should not be used. Use addToCartFromSuggestion instead.');
+    console.log('Parameters:', medicineName, price, quantity);
+
+    showToast('Unable to add item. Please try again or use Browse All.', 'error');
+    return;
+
+    // DEPRECATED - DO NOT USE
+    // Get cart
+    const cart = initCart();
+
+    // Create medicine object
+    const medicine = {
+        id: 0, // INVALID - This will fail validation
+        name: medicineName,
+        price: parseFloat(price),
+        quantity: 1
+    };
+
+    // Check if medicine already exists
+    const existingItem = cart.find(item => item.name === medicineName);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push(medicine);
+    }
+
+    // Save cart
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update display
+    if (typeof updateCartDisplay === 'function') {
+        updateCartDisplay();
+    }
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+    }
+
+    // Show success message
+    showToast(`${medicineName} added to cart!`, 'success');
+
+    // Hide suggestions
+    const suggestionsContainer = document.getElementById('quick-search-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.style.display = 'none';
+    }
+
+    // Clear search input
+    const searchInput = document.getElementById('quick-search');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+}
+</script>
+
+</body>
+</html>

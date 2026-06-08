@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Theme System Test</h1>
+    
+    <div class="test-box">
+        <h3>Clear Theme Cache</h3>
+        <button onclick="clearTheme()">Clear Saved Theme</button>
+        <button onclick="setDefaultTheme()">Set Default Theme</button>
+        <button onclick="testDashboard()">Test Dashboard</button>
+    </div>
+    
+    <script>
+        function clearTheme() {
+            localStorage.removeItem('adminTheme');
+            alert('Theme cache cleared!');
+        }
+        
+        function setDefaultTheme() {
+            localStorage.setItem('adminTheme', 'default');
+            alert('Default theme set!');
+        }
+        
+        function testDashboard() {
+            window.open('modules/dashboard/index.html', '_blank');
+        }
+    </script>
+</body>
+</html>

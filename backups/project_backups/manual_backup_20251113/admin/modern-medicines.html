@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Management - Waqar Drug House</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components/_modern-sidebar.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .modern-sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        /* Search Container */
+        .search-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .search-input-group {
+            position: relative;
+        }
+        
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1040;
+            display: none;
+            margin-top: 0;
+        }
+        
+        .search-suggestions.show {
+            display: block;
+        }
+        
+        .suggestion-item {
+            padding: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background: #f8f9ff;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+        
+        .suggestion-details {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .suggestion-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+        
+        /* Advanced Search */
+        .advanced-search {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .advanced-search.show {
+            display: block;
+        }
+        
+        /* Medicine Cards */
+        .medicine-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .medicine-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .medicine-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .medicine-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .medicine-category {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .medicine-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        
+        .stock-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .stock-high {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .stock-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .stock-low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Action Buttons */
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        /* Progress Bar for Excel Import */
+        .import-progress {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .progress {
+            height: 30px;
+            border-radius: 15px;
+            background: #f0f0f0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            font-weight: 600;
+            line-height: 30px;
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .custom-toast {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid;
+            min-width: 300px;
+        }
+        
+        .toast-success {
+            border-left-color: #10b981;
+        }
+        
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+        
+        .toast-warning {
+            border-left-color: #f59e0b;
+        }
+        
+        .toast-info {
+            border-left-color: #3b82f6;
+        }
+        
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Table Styling */
+        .table-modern {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .table-modern thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .table-modern tbody tr:hover {
+            background: #f8f9ff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="modern-sidebar">
+    <button class="sidebar-toggle">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-pills"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <h4>Waqar Drug House</h4>
+            <p>Admin Panel</p>
+        </div>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=Admin+User&background=667eea&color=fff&bold=true" alt="Admin">
+            <span class="user-status"></span>
+        </div>
+        <div class="user-info">
+            <p class="user-name">Admin User</p>
+            <p class="user-role">Administrator</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Main Menu</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard">
+                    <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-medicines.html" class="nav-link active" data-tooltip="Medicines">
+                    <span class="nav-icon"><i class="fas fa-pills"></i></span>
+                    <span class="nav-text">Medicines</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="orders.html" class="nav-link" data-tooltip="Orders">
+                    <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <span class="nav-text">Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-customers.html" class="nav-link" data-tooltip="Customers">
+                    <span class="nav-icon"><i class="fas fa-users"></i></span>
+                    <span class="nav-text">Customers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="stock-check.html" class="nav-link" data-tooltip="Stock">
+                    <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+                    <span class="nav-text">Stock</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="modern-billing.html" class="nav-link" data-tooltip="Billing">
+                    <span class="nav-icon"><i class="fas fa-receipt"></i></span>
+                    <span class="nav-text">Billing</span>
+                </a>
+            </li>
+        </ul>
+        <div class="nav-section-title">Reports & Settings</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="modern-reports.html" class="nav-link" data-tooltip="Reports">
+                    <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                    <span class="nav-text">Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="backup.html" class="nav-link" data-tooltip="Backup">
+                    <span class="nav-icon"><i class="fas fa-database"></i></span>
+                    <span class="nav-text">Backup</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link" data-tooltip="Settings">
+                    <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout(); return false;" class="nav-link" data-tooltip="Logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; margin: 10px; border-radius: 10px;">
+            <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+            <span class="nav-text">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to logout?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-0 fw-bold">
+                    <i class="fas fa-pills me-2" style="color: #667eea;"></i>Medicine Management
+                </h1>
+                <p class="text-muted mb-0">Search, manage, and import medicines</p>
+            </div>
+            <div>
+                <button class="btn btn-gradient me-2" onclick="showAddMedicineModal()">
+                    <i class="fas fa-plus me-2"></i>Add Medicine
+                </button>
+                <button class="btn btn-gradient me-2" onclick="showImportModal()">
+                    <i class="fas fa-file-excel me-2"></i>Import Excel
+                </button>
+                <button class="btn btn-danger" onclick="confirmDeleteAllMedicines()">
+                    <i class="fas fa-trash-alt me-2"></i>Delete All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Card -->
+    <div class="search-card">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="search-input-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="medicineSearch" 
+                               placeholder="Search by name, description, or category..." 
+                               autocomplete="off">
+                    </div>
+                    <!-- Search Suggestions -->
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100 h-100" onclick="toggleAdvancedSearch()">
+                    <i class="fas fa-filter me-2"></i>Advanced
+                </button>
+            </div>
+        </div>
+        
+        <!-- Advanced Search Panel -->
+        <div id="advancedSearch" class="advanced-search">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Category</label>
+                    <select class="form-select" id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option value="Antibiotics">Antibiotics</option>
+                        <option value="Pain Relief">Pain Relief</option>
+                        <option value="Vitamins">Vitamins</option>
+                        <option value="Supplements">Supplements</option>
+                        <option value="Heart">Heart</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Stock Status</label>
+                    <select class="form-select" id="filterStock">
+                        <option value="">All Stock</option>
+                        <option value="high">High Stock (>100)</option>
+                        <option value="medium">Medium Stock (20-100)</option>
+                        <option value="low">Low Stock (<20)</option>
+                        <option value="out">Out of Stock</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Price Range</label>
+                    <select class="form-select" id="filterPrice">
+                        <option value="">All Prices</option>
+                        <option value="0-50">Rs. 0 - 50</option>
+                        <option value="51-200">Rs. 51 - 200</option>
+                        <option value="201-500">Rs. 201 - 500</option>
+                        <option value="501+">Rs. 501+</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Sort By</label>
+                    <select class="form-select" id="sortBy">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="price">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                        <option value="stock">Stock (Low to High)</option>
+                        <option value="stock-desc">Stock (High to Low)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-3 text-end">
+                <button class="btn btn-secondary me-2" onclick="clearFilters()">
+                    <i class="fas fa-redo me-2"></i>Clear Filters
+                </button>
+                <button class="btn btn-gradient" onclick="applyFilters()">
+                    <i class="fas fa-check me-2"></i>Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <span class="text-white fw-bold" id="resultCount">Loading...</span>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-light active" id="cardViewBtn" onclick="switchView('card')">
+                <i class="fas fa-th-large me-1"></i>Cards
+            </button>
+            <button type="button" class="btn btn-light" id="tableViewBtn" onclick="switchView('table')">
+                <i class="fas fa-table me-1"></i>Table
+            </button>
+        </div>
+    </div>
+
+    <!-- Card View -->
+    <div id="cardView" class="row g-4">
+        <!-- Loading -->
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-white mt-3 fw-bold">Loading medicines...</p>
+        </div>
+    </div>
+
+    <!-- Table View (Hidden by default) -->
+    <div id="tableView" style="display: none;">
+        <div class="table-modern">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Expiry</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="medicineTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Medicine Modal -->
+<div class="modal fade" id="addMedicineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Medicine
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMedicineForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Medicine Name *</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Category *</label>
+                            <select class="form-select" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Antibiotics">Antibiotics</option>
+                                <option value="Pain Relief">Pain Relief</option>
+                                <option value="Vitamins">Vitamins</option>
+                                <option value="Supplements">Supplements</option>
+                                <option value="Heart">Heart</option>
+                                <option value="Diabetes">Diabetes</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Price (Rs.) *</label>
+                            <input type="number" class="form-control" name="price" step="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Stock Quantity *</label>
+                            <input type="number" class="form-control" name="quantity" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Expiry Date</label>
+                            <input type="date" class="form-control" name="expiry_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Manufacturer</label>
+                            <input type="text" class="form-control" name="manufacturer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Batch Number</label>
+                            <input type="text" class="form-control" name="batch_number">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-gradient" onclick="saveMedicine()">
+                    <i class="fas fa-save me-2"></i>Save Medicine
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Excel Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-excel me-2"></i>Import Medicines from Excel
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Excel Format:</strong> Your Excel file should contain columns: Name, Category, Description, Price, Quantity, Expiry_Date, Manufacturer, Batch_Number
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Select Excel File</label>
+                    <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
+                </div>
+                
+                <div id="filePreview" style="display: none;">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span id="fileName"></span> - <span id="rowCount"></span> rows detected
+                    </div>
+                </div>
+                
+                <div class="import-progress" id="importProgress">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-bold">Importing...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%">
+                            <span id="progressLabel">0 / 0</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted" id="progressStatus">Preparing import...</small>
+                    </div>
+                </div>
+                
+                <div id="importResults" style="display: none;" class="mt-3">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Import Complete!</strong>
+                        <div class="mt-2">
+                            <div><i class="fas fa-check text-success me-2"></i>Success: <span id="successCount">0</span></div>
+                            <div><i class="fas fa-times text-danger me-2"></i>Failed: <span id="failCount">0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeImportBtn">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-gradient" id="startImportBtn" onclick="startImport()" disabled>
+                    <i class="fas fa-upload me-2"></i>Start Import
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-question-circle me-2"></i>Confirm Action
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmActionBtn">
+                    <i class="fas fa-check me-2"></i>Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Global variables
+let allMedicines = [];
+let currentView = 'card';
+let excelData = null;
+
+// Load sidebar and check authentication
+document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication first
+    if (!sessionStorage.getItem('user_role')) {
+        window.location.href = '../login.html';
+        return;
+    }
+    
+    loadSidebar();
+    loadMedicines();
+    setupSearchListener();
+    setupFilterListeners();
+});
+
+function loadSidebar() {
+    fetch('../includes/admin-sidebar.php')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('sidebar-container').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+}
+
+// Load medicines from API
+function loadMedicines() {
+    fetch('../api/medicines.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showToast('Error loading medicines: ' + data.error, 'error');
+                return;
+            }
+            allMedicines = data;
+            displayMedicines(allMedicines);
+            updateResultCount(allMedicines.length);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Failed to load medicines', 'error');
+        });
+}
+
+// Search with suggestions
+function setupSearchListener() {
+    const searchInput = document.getElementById('medicineSearch');
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+        
+        if (query.length >= 2) {
+            searchTimeout = setTimeout(() => {
+                searchMedicines(query);
+            }, 300);
+        } else {
+            hideSuggestions();
+            displayMedicines(allMedicines);
+        }
+    });
+    
+    searchInput.addEventListener('blur', function() {
+        setTimeout(hideSuggestions, 200);
+    });
+}
+
+// Search medicines with fuzzy matching
+function searchMedicines(query) {
+    const lowerQuery = query.toLowerCase();
+    
+    // Fuzzy match function
+    const fuzzyMatch = (str, query) => {
+        str = str.toLowerCase();
+        let queryIndex = 0;
+        
+        for (let i = 0; i < str.length && queryIndex < query.length; i++) {
+            if (str[i] === query[queryIndex]) {
+                queryIndex++;
+            }
+        }
+        
+        return queryIndex === query.length;
+    };
+    
+    // Search and score results
+    const results = allMedicines.filter(med => {
+        const name = (med.name || '').toLowerCase();
+        const desc = (med.description || '').toLowerCase();
+        const cat = (med.category || '').toLowerCase();
+        
+        // Exact match
+        if (name.includes(lowerQuery) || desc.includes(lowerQuery) || cat.includes(lowerQuery)) {
+            return true;
+        }
+        
+        // Fuzzy match on name
+        if (fuzzyMatch(name, lowerQuery)) {
+            return true;
+        }
+        
+        return false;
+    });
+    
+    displayMedicines(results);
+    showSuggestions(results.slice(0, 5));
+    updateResultCount(results.length);
+}
+
+// Show search suggestions
+function showSuggestions(medicines) {
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    
+    if (medicines.length === 0) {
+        suggestionsBox.innerHTML = '<div class="suggestion-item">No medicines found</div>';
+        suggestionsBox.classList.add('show');
+        return;
+    }
+    
+    let html = '';
+    medicines.forEach(med => {
+        const stockClass = getStockClass(med.quantity);
+        html += `
+            <div class="suggestion-item" onclick="selectMedicine('${med.id}')">
+                <div class="suggestion-name">${med.name}</div>
+                <div class="suggestion-details">
+                    <span class="badge bg-primary suggestion-badge">${med.category || 'N/A'}</span>
+                    <span class="badge ${stockClass} suggestion-badge">Stock: ${med.quantity || 0}</span>
+                    <span class="ms-2">Rs. ${parseFloat(med.price || 0).toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    suggestionsBox.innerHTML = html;
+    suggestionsBox.classList.add('show');
+}
+
+function hideSuggestions() {
+    document.getElementById('searchSuggestions').classList.remove('show');
+}
+
+function selectMedicine(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (medicine) {
+        displayMedicines([medicine]);
+        document.getElementById('medicineSearch').value = medicine.name;
+        hideSuggestions();
+    }
+}
+
+// Display medicines (card or table view)
+function displayMedicines(medicines) {
+    if (currentView === 'card') {
+        displayCardView(medicines);
+    } else {
+        displayTableView(medicines);
+    }
+}
+
+function displayCardView(medicines) {
+    const cardView = document.getElementById('cardView');
+    
+    if (medicines.length === 0) {
+        cardView.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-pills fa-4x mb-3" style="color: rgba(255,255,255,0.7);"></i>
+                <h3 class="text-white fw-bold mb-2">No Medicines Found</h3>
+                <p class="text-white opacity-75">Try adjusting your search or filters</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    medicines.forEach(med => {
+        const stockClass = getStockClass(med.quantity);
+        const stockLabel = getStockLabel(med.quantity);
+        
+        html += `
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="medicine-card">
+                    <span class="medicine-category">${med.category || 'N/A'}</span>
+                    <div class="medicine-name">${med.name}</div>
+                    <p class="text-muted small mb-2">${(med.description || 'No description').substring(0, 80)}...</p>
+                    <div class="medicine-price">Rs. ${parseFloat(med.price || 0).toFixed(2)}</div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="stock-badge ${stockClass}">${stockLabel}</span>
+                        <small class="text-muted">Expires: ${formatDate(med.expiry_date)}</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary flex-fill" onclick="editMedicine(${med.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger flex-fill" onclick="deleteMedicine(${med.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    cardView.innerHTML = html;
+}
+
+function displayTableView(medicines) {
+    const tbody = document.getElementById('medicineTableBody');
+    
+    if (medicines.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5">
+                    <i class="fas fa-pills fa-3x mb-3" style="color: #667eea;"></i>
+                    <h5 class="fw-bold mb-2">No Medicines Found</h5>
+                    <p class="text-muted">Try adjusting your search or filters</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    let html = '';
+    medicines.forEach(med => {
+        const stockClass = getStockClass(med.quantity);
+        const stockLabel = getStockLabel(med.quantity);
+        
+        html += `
+            <tr>
+                <td><strong>${med.name}</strong></td>
+                <td><span class="badge bg-primary">${med.category || 'N/A'}</span></td>
+                <td>${(med.description || 'N/A').substring(0, 60)}...</td>
+                <td><strong class="text-primary">Rs. ${parseFloat(med.price || 0).toFixed(2)}</strong></td>
+                <td><span class="stock-badge ${stockClass}">${stockLabel}</span></td>
+                <td>${formatDate(med.expiry_date)}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editMedicine(${med.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMedicine(${med.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+}
+
+// View switching
+function switchView(view) {
+    currentView = view;
+    
+    document.getElementById('cardView').style.display = view === 'card' ? 'flex' : 'none';
+    document.getElementById('tableView').style.display = view === 'table' ? 'block' : 'none';
+    
+    document.getElementById('cardViewBtn').classList.toggle('active', view === 'card');
+    document.getElementById('tableViewBtn').classList.toggle('active', view === 'table');
+    
+    displayMedicines(allMedicines);
+}
+
+// Advanced search
+function toggleAdvancedSearch() {
+    document.getElementById('advancedSearch').classList.toggle('show');
+}
+
+function setupFilterListeners() {
+    ['filterCategory', 'filterStock', 'filterPrice', 'sortBy'].forEach(id => {
+        document.getElementById(id).addEventListener('change', applyFilters);
+    });
+}
+
+function applyFilters() {
+    let filtered = [...allMedicines];
+    
+    // Category filter
+    const category = document.getElementById('filterCategory').value;
+    if (category) {
+        filtered = filtered.filter(m => m.category === category);
+    }
+    
+    // Stock filter
+    const stock = document.getElementById('filterStock').value;
+    if (stock) {
+        filtered = filtered.filter(m => {
+            const qty = parseInt(m.quantity) || 0;
+            if (stock === 'high') return qty > 100;
+            if (stock === 'medium') return qty >= 20 && qty <= 100;
+            if (stock === 'low') return qty > 0 && qty < 20;
+            if (stock === 'out') return qty === 0;
+            return true;
+        });
+    }
+    
+    // Price filter
+    const price = document.getElementById('filterPrice').value;
+    if (price) {
+        filtered = filtered.filter(m => {
+            const p = parseFloat(m.price) || 0;
+            if (price === '0-50') return p <= 50;
+            if (price === '51-200') return p > 50 && p <= 200;
+            if (price === '201-500') return p > 200 && p <= 500;
+            if (price === '501+') return p > 500;
+            return true;
+        });
+    }
+    
+    // Sort
+    const sortBy = document.getElementById('sortBy').value;
+    filtered.sort((a, b) => {
+        if (sortBy === 'name') return (a.name || '').localeCompare(b.name || '');
+        if (sortBy === 'name-desc') return (b.name || '').localeCompare(a.name || '');
+        if (sortBy === 'price') return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+        if (sortBy === 'price-desc') return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+        if (sortBy === 'stock') return (parseInt(a.quantity) || 0) - (parseInt(b.quantity) || 0);
+        if (sortBy === 'stock-desc') return (parseInt(b.quantity) || 0) - (parseInt(a.quantity) || 0);
+        return 0;
+    });
+    
+    displayMedicines(filtered);
+    updateResultCount(filtered.length);
+}
+
+function clearFilters() {
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterStock').value = '';
+    document.getElementById('filterPrice').value = '';
+    document.getElementById('sortBy').value = 'name';
+    displayMedicines(allMedicines);
+    updateResultCount(allMedicines.length);
+}
+
+// Helper functions
+function getStockClass(quantity) {
+    const qty = parseInt(quantity) || 0;
+    if (qty > 100) return 'stock-high';
+    if (qty >= 20) return 'stock-medium';
+    if (qty > 0) return 'stock-low';
+    return 'stock-low';
+}
+
+function getStockLabel(quantity) {
+    const qty = parseInt(quantity) || 0;
+    if (qty === 0) return 'Out of Stock';
+    if (qty < 20) return `Low: ${qty}`;
+    return `Stock: ${qty}`;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function updateResultCount(count) {
+    document.getElementById('resultCount').textContent = `${count} medicine${count !== 1 ? 's' : ''} found`;
+}
+
+// Add Medicine
+function showAddMedicineModal() {
+    document.getElementById('addMedicineForm').reset();
+    const modal = new bootstrap.Modal(document.getElementById('addMedicineModal'));
+    modal.show();
+}
+
+function saveMedicine() {
+    const form = document.getElementById('addMedicineForm');
+    const formData = new FormData(form);
+    
+    const medicineData = {};
+    formData.forEach((value, key) => {
+        medicineData[key] = value;
+    });
+    
+    fetch('../api/medicines.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(medicineData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Medicine added successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addMedicineModal')).hide();
+            loadMedicines();
+        } else {
+            showToast('Error: ' + (data.message || 'Failed to add medicine'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Failed to save medicine', 'error');
+    });
+}
+
+// Edit Medicine
+function editMedicine(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (!medicine) return;
+    
+    // Populate form with medicine data
+    const form = document.getElementById('addMedicineForm');
+    Object.keys(medicine).forEach(key => {
+        const input = form.elements[key];
+        if (input) {
+            input.value = medicine[key] || '';
+        }
+    });
+    
+    const modal = new bootstrap.Modal(document.getElementById('addMedicineModal'));
+    document.querySelector('#addMedicineModal .modal-title').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Medicine';
+    modal.show();
+    
+    // Change save function to update
+    document.querySelector('#addMedicineModal .btn-gradient').onclick = function() {
+        updateMedicine(id);
+    };
+}
+
+function updateMedicine(id) {
+    const form = document.getElementById('addMedicineForm');
+    const formData = new FormData(form);
+    
+    const medicineData = { id: id };
+    formData.forEach((value, key) => {
+        medicineData[key] = value;
+    });
+    
+    fetch('../api/medicines.php', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(medicineData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Medicine updated successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addMedicineModal')).hide();
+            loadMedicines();
+        } else {
+            showToast('Error: ' + (data.message || 'Failed to update medicine'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Failed to update medicine', 'error');
+    });
+}
+
+// Delete Medicine
+function deleteMedicine(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (!medicine) return;
+    
+    showConfirmModal(
+        `Are you sure you want to delete "${medicine.name}"? This action cannot be undone.`,
+        () => {
+            fetch('../api/medicines.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Medicine deleted successfully!', 'success');
+                    loadMedicines();
+                } else {
+                    showToast('Error: ' + (data.message || 'Failed to delete medicine'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Failed to delete medicine', 'error');
+            });
+        }
+    );
+}
+
+// Excel Import
+function showImportModal() {
+    document.getElementById('excelFile').value = '';
+    document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('importProgress').style.display = 'none';
+    document.getElementById('importResults').style.display = 'none';
+    document.getElementById('startImportBtn').disabled = true;
+    excelData = null;
+    
+    const modal = new bootstrap.Modal(document.getElementById('importModal'));
+    modal.show();
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+            
+            excelData = jsonData;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('rowCount').textContent = jsonData.length;
+            document.getElementById('filePreview').style.display = 'block';
+            document.getElementById('startImportBtn').disabled = false;
+            
+        } catch (error) {
+            showToast('Error reading Excel file: ' + error.message, 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+async function startImport() {
+    if (!excelData || excelData.length === 0) {
+        showToast('No data to import', 'error');
+        return;
+    }
+    
+    document.getElementById('startImportBtn').disabled = true;
+    document.getElementById('closeImportBtn').disabled = true;
+    document.getElementById('importProgress').style.display = 'block';
+    
+    let successCount = 0;
+    let failCount = 0;
+    const total = excelData.length;
+    
+    for (let i = 0; i < excelData.length; i++) {
+        const row = excelData[i];
+        
+        // Map Excel columns to database fields
+        const medicineData = {
+            name: row.Name || row.name || '',
+            category: row.Category || row.category || 'Other',
+            description: row.Description || row.description || '',
+            price: parseFloat(row.Price || row.price || 0),
+            quantity: parseInt(row.Quantity || row.quantity || row.Stock || row.stock || 0),
+            expiry_date: row.Expiry_Date || row.expiry_date || row.ExpiryDate || null,
+            manufacturer: row.Manufacturer || row.manufacturer || '',
+            batch_number: row.Batch_Number || row.batch_number || row.BatchNumber || ''
+        };
+        
+        // Update progress
+        const progress = Math.round(((i + 1) / total) * 100);
+        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('progressText').textContent = progress + '%';
+        document.getElementById('progressLabel').textContent = `${i + 1} / ${total}`;
+        document.getElementById('progressStatus').textContent = `Importing: ${medicineData.name || 'Row ' + (i + 1)}`;
+        
+        try {
+            const response = await fetch('../api/medicines.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(medicineData)
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                successCount++;
+            } else {
+                failCount++;
+            }
+        } catch (error) {
+            failCount++;
+        }
+        
+        // Small delay to show progress
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
+    // Show results
+    document.getElementById('successCount').textContent = successCount;
+    document.getElementById('failCount').textContent = failCount;
+    document.getElementById('importResults').style.display = 'block';
+    document.getElementById('closeImportBtn').disabled = false;
+    
+    showToast(`Import complete! ${successCount} succeeded, ${failCount} failed`, successCount > 0 ? 'success' : 'warning');
+    loadMedicines();
+}
+
+// Toast Notifications
+function showToast(message, type = 'info') {
+    const container = document.querySelector('.toast-container');
+    const toastId = 'toast-' + Date.now();
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    const colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
+    
+    const toastHTML = `
+        <div id="${toastId}" class="toast custom-toast toast-${type}" role="alert">
+            <div class="toast-body d-flex align-items-center p-3">
+                <i class="fas ${icons[type]} fa-2x me-3" style="color: ${colors[type]}"></i>
+                <div class="flex-grow-1">${message}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', toastHTML);
+    
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, { delay: 4000 });
+    toast.show();
+    
+    toastElement.addEventListener('hidden.bs.toast', function() {
+        this.remove();
+    });
+}
+
+// Confirmation Modal
+function showConfirmModal(message, onConfirm) {
+    document.getElementById('confirmMessage').textContent = message;
+    
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modal.show();
+    
+    document.getElementById('confirmActionBtn').onclick = function() {
+        onConfirm();
+        modal.hide();
+    };
+}
+
+// Delete All Medicines with Confirmation
+function confirmDeleteAllMedicines() {
+    showConfirmModal('⚠️ WARNING: Are you absolutely sure you want to delete ALL medicines? This action CANNOT be undone!', () => {
+        deleteAllMedicines();
+    });
+}
+
+async function deleteAllMedicines() {
+    try {
+        const response = await fetch('../api/medicines.php?action=delete_all', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('All medicines deleted successfully!', 'success');
+            loadMedicines();
+        } else {
+            showToast('Error: ' + (data.message || 'Failed to delete medicines'), 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Failed to delete medicines', 'error');
+    }
+}
+</script>
+
+<!-- Sidebar JS -->
+<script src="../js/modern-sidebar.js"></script>
+
+<script>
+// Logout functions
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+    <title>Medicine Management - Muneeb Drug House</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SheetJS for Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../shared/css/advanced-sidebar.css?v=clean-light-v2">
+    <link rel="stylesheet" href="../../css/admin-premium.css?v=2.0">
+
+    <style>
+        body {
+            background: var(--admin-bg);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .modern-sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+
+        /* Search Container - Premium */
+        .search-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 100;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input-group {
+            position: relative;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg, var(--card-background-color, #ffffff));
+            border: 2px solid var(--primary);
+            border-top: none;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1040;
+            display: none;
+            margin-top: 0;
+            opacity: 1;
+        }
+
+        .search-suggestions.show {
+            display: block;
+            animation: fadeInUp 0.2s ease;
+        }
+
+        .suggestion-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: var(--primary-soft);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        .suggestion-details {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .highlight-match {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .suggestion-item.no-results {
+            background: #fff3cd;
+            color: #856404;
+            text-align: center;
+            cursor: default;
+        }
+
+        /* Advanced Search */
+        .advanced-search {
+            background: var(--primary-soft);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            margin-top: 16px;
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .advanced-search.show {
+            display: block;
+        }
+
+        /* Medicine Cards - Premium */
+        .medicine-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicine-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary);
+        }
+
+        .medicine-card:hover::before {
+            opacity: 1;
+        }
+
+        .medicine-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+        }
+
+        .medicine-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .medicine-category {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .medicine-price {
+            font-size: 22px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+        }
+
+        .stock-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stock-high {
+            background: var(--success-soft);
+            color: var(--success);
+        }
+
+        .stock-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stock-low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Action Buttons */
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Progress Bar for Excel Import */
+        .import-progress {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress {
+            height: 30px;
+            border-radius: 15px;
+            background: #f0f0f0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            font-weight: 600;
+            line-height: 30px;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .custom-toast {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid;
+            min-width: 300px;
+        }
+
+        .toast-success {
+            border-left-color: #10b981;
+        }
+
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-info {
+            border-left-color: #3b82f6;
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Table Styling */
+        .table-modern {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .table-modern thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .table-modern tbody tr:hover {
+            background: #f8f9ff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar will be loaded here -->
+<div id="sidebar-container"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-0 fw-bold">
+                    <i class="fas fa-pills me-2" style="color: #667eea;"></i>Medicine Management
+                </h1>
+                <p class="text-muted mb-0">Search, manage, and import medicines</p>
+            </div>
+            <div>
+                <button class="btn btn-gradient me-2" onclick="showAddMedicineModal()">
+                    <i class="fas fa-plus me-2"></i>Add Medicine
+                </button>
+                <button class="btn btn-gradient me-2" onclick="showImportModal()">
+                    <i class="fas fa-file-excel me-2"></i>Import Excel
+                </button>
+                <button class="btn btn-danger" onclick="confirmDeleteAllMedicines()">
+                    <i class="fas fa-trash-alt me-2"></i>Delete All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Card -->
+    <div class="search-card">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="search-input-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="medicineSearch"
+                               placeholder="Search by name, description, or category..."
+                               autocomplete="off">
+                    </div>
+                    <!-- Search Suggestions -->
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100 h-100" onclick="toggleAdvancedSearch()">
+                    <i class="fas fa-filter me-2"></i>Advanced
+                </button>
+            </div>
+        </div>
+
+        <!-- Advanced Search Panel -->
+        <div id="advancedSearch" class="advanced-search">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Category</label>
+                    <select class="form-select" id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option value="Antibiotics">Antibiotics</option>
+                        <option value="Pain Relief">Pain Relief</option>
+                        <option value="Vitamins">Vitamins</option>
+                        <option value="Supplements">Supplements</option>
+                        <option value="Heart">Heart</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Stock Status</label>
+                    <select class="form-select" id="filterStock">
+                        <option value="">All Stock</option>
+                        <option value="high">High Stock (>100)</option>
+                        <option value="medium">Medium Stock (20-100)</option>
+                        <option value="low">Low Stock (<20)</option>
+                        <option value="out">Out of Stock</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Price Range</label>
+                    <select class="form-select" id="filterPrice">
+                        <option value="">All Prices</option>
+                        <option value="0-50">Rs. 0 - 50</option>
+                        <option value="51-200">Rs. 51 - 200</option>
+                        <option value="201-500">Rs. 201 - 500</option>
+                        <option value="501+">Rs. 501+</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Sort By</label>
+                    <select class="form-select" id="sortBy">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="price">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                        <option value="stock">Stock (Low to High)</option>
+                        <option value="stock-desc">Stock (High to Low)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-3 text-end">
+                <button class="btn btn-secondary me-2" onclick="clearFilters()">
+                    <i class="fas fa-redo me-2"></i>Clear Filters
+                </button>
+                <button class="btn btn-gradient" onclick="applyFilters()">
+                    <i class="fas fa-check me-2"></i>Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <span class="fw-bold" id="resultCount" style="color: #ffffff;">Loading...</span>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-light active" id="cardViewBtn" onclick="switchView('card')">
+                <i class="fas fa-th-large me-1"></i>Cards
+            </button>
+            <button type="button" class="btn btn-light" id="tableViewBtn" onclick="switchView('table')">
+                <i class="fas fa-table me-1"></i>Table
+            </button>
+        </div>
+    </div>
+
+    <!-- Card View -->
+    <div id="cardView" class="row g-4">
+        <!-- Loading -->
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-white mt-3 fw-bold">Loading medicines...</p>
+        </div>
+    </div>
+
+    <!-- Table View (Hidden by default) -->
+    <div id="tableView" style="display: none;">
+        <div class="table-modern">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Expiry</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="medicineTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Medicine Modal -->
+<div class="modal fade" id="addMedicineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Medicine
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMedicineForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Medicine Name *</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Category *</label>
+                            <select class="form-select" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Antibiotics">Antibiotics</option>
+                                <option value="Pain Relief">Pain Relief</option>
+                                <option value="Vitamins">Vitamins</option>
+                                <option value="Supplements">Supplements</option>
+                                <option value="Heart">Heart</option>
+                                <option value="Diabetes">Diabetes</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Price (Rs.) *</label>
+                            <input type="number" class="form-control" name="price" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Stock Quantity *</label>
+                            <input type="number" class="form-control" name="quantity" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Expiry Date</label>
+                            <input type="date" class="form-control" name="expiry_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Manufacturer</label>
+                            <input type="text" class="form-control" name="manufacturer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Batch Number</label>
+                            <input type="text" class="form-control" name="batch_number">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-gradient" onclick="saveMedicine()">
+                    <i class="fas fa-save me-2"></i>Save Medicine
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Excel Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-excel me-2"></i>Import Medicines from Excel
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Excel Format:</strong> Your Excel file should contain columns: Name, Category, Description, Price, Quantity, Expiry_Date, Manufacturer, Batch_Number
+                    <button class="btn btn-sm btn-success float-end" onclick="downloadTemplate()">
+                        <i class="fas fa-download me-2"></i>Download Template
+                    </button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Select Excel File</label>
+                    <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
+                </div>
+
+                <div id="filePreview" style="display: none;">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span id="fileName"></span> - <span id="rowCount"></span> rows detected
+                    </div>
+                </div>
+
+                <div class="import-progress" id="importProgress">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-bold">Importing...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%">
+                            <span id="progressLabel">0 / 0</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted" id="progressStatus">Preparing import...</small>
+                    </div>
+                </div>
+
+                <div id="importResults" style="display: none;" class="mt-3">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Import Complete!</strong>
+                        <div class="mt-2">
+                            <div><i class="fas fa-check text-success me-2"></i>Success: <span id="successCount">0</span></div>
+                            <div><i class="fas fa-times text-danger me-2"></i>Failed: <span id="failCount">0</span></div>
+                        </div>
+                        <div id="failedItemsList" class="mt-3" style="display: none;">
+                            <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="collapse" data-bs-target="#failedDetails">
+                                <i class="fas fa-exclamation-triangle me-2"></i>View Failed Items
+                            </button>
+                            <div class="collapse mt-2" id="failedDetails">
+                                <div class="card card-body" style="max-height: 300px; overflow-y: auto;">
+                                    <ul id="failedList" class="list-unstyled mb-0"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeImportBtn">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-danger" id="cancelImportBtn" onclick="cancelImport()" style="display: none;">
+                    <i class="fas fa-stop me-2"></i>Cancel Import
+                </button>
+                <button type="button" class="btn btn-gradient" id="startImportBtn" onclick="startImport()" disabled>
+                    <i class="fas fa-upload me-2"></i>Start Import
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-question-circle me-2"></i>Confirm Action
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmActionBtn">
+                    <i class="fas fa-check me-2"></i>Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Medicine Details Modal -->
+<div class="modal fade" id="medicineDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem;">
+                <div class="w-100">
+                    <h3 class="modal-title text-white mb-2">
+                        <i class="fas fa-pills me-3"></i><span id="detailMedicineName">Medicine Details</span>
+                    </h3>
+                    <p class="text-white-50 mb-0 small">Complete medicine information</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Quick Stats Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <small class="text-white-50">Price</small>
+                                <h4 class="text-white mb-0" id="detailPrice">Rs. 0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <div class="stat-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <div class="stat-info">
+                                <small class="text-white-50">Stock</small>
+                                <h4 class="text-white mb-0" id="detailQuantity">0</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <div class="stat-icon">
+                                <i class="fas fa-signal"></i>
+                            </div>
+                            <div class="stat-info">
+                                <small class="text-white-50">Status</small>
+                                <h5 class="mb-0"><span id="detailStockBadge" class="badge bg-white text-dark">-</span></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="detail-card">
+                            <div class="detail-header">
+                                <i class="fas fa-pills text-primary me-2"></i>
+                                <span class="fw-bold">Basic Information</span>
+                            </div>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-8">
+                                    <label class="detail-label">Medicine Name</label>
+                                    <div class="detail-value" id="detailName">-</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="detail-label">Category</label>
+                                    <div><span class="badge bg-primary fs-6" id="detailCategory">-</span></div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="detail-label">Description</label>
+                                    <div class="detail-value" id="detailDescription">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="detail-card">
+                            <div class="detail-header">
+                                <i class="fas fa-industry text-success me-2"></i>
+                                <span class="fw-bold">Manufacturing Details</span>
+                            </div>
+                            <div class="mt-3">
+                                <label class="detail-label">Manufacturer</label>
+                                <div class="detail-value" id="detailManufacturer">-</div>
+                                <label class="detail-label mt-3">Batch Number</label>
+                                <div class="detail-value" id="detailBatch">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="detail-card">
+                            <div class="detail-header">
+                                <i class="fas fa-calendar-alt text-danger me-2"></i>
+                                <span class="fw-bold">Date Information</span>
+                            </div>
+                            <div class="mt-3">
+                                <label class="detail-label">Expiry Date</label>
+                                <div class="detail-value" id="detailExpiry">-</div>
+                                <label class="detail-label mt-3">Medicine ID</label>
+                                <div class="detail-value text-muted" id="detailId">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light p-4">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-primary px-4" id="detailEditBtn">
+                    <i class="fas fa-edit me-2"></i>Edit Medicine
+                </button>
+                <button type="button" class="btn btn-danger px-4" id="detailDeleteBtn">
+                    <i class="fas fa-trash-alt me-2"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-body text-center p-5">
+                <div class="delete-icon-wrapper mb-4">
+                    <div class="delete-icon-circle">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-3">Delete Medicine?</h3>
+                <p class="text-muted mb-1">You are about to delete:</p>
+                <h5 class="text-primary mb-4" id="deleteConfirmName">Medicine Name</h5>
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <small>This action cannot be undone. All data will be permanently deleted.</small>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light justify-content-center p-4">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger px-4" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt me-2"></i>Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card {
+    padding: 1.5rem;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.detail-card {
+    padding: 1.5rem;
+    background: #f8f9ff;
+    border-radius: 15px;
+    border: 1px solid #e0e7ff;
+    height: 100%;
+}
+
+.detail-header {
+    font-size: 1.1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #667eea;
+    margin-bottom: 1rem;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.delete-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.delete-icon-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
+    animation: pulse-danger 2s infinite;
+}
+
+.delete-icon-circle i {
+    font-size: 3rem;
+    color: white;
+}
+
+@keyframes pulse-danger {
+    0%, 100% {
+        box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
+    }
+    50% {
+        box-shadow: 0 10px 60px rgba(255, 107, 107, 0.5);
+    }
+}
+</style>
+
+<!-- Toast Container -->
+<div class="toast-container"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../js/utils.js"></script>
+<script src="../../js/api-client.js"></script>
+<script src="../../js/crud-helpers.js"></script>
+<script src="../../js/admin-common.js"></script>
+
+<!-- Advanced Sidebar Loader -->
+<script src="../../shared/js/sidebar-loader.js"></script>
+
+<script>
+// Global variables
+let allMedicines = [];
+let currentView = 'card';
+let excelData = null;
+
+// Declare functions early to make them available for onclick handlers
+// These will be properly defined later in the script
+window.showAddMedicineModal = function() { console.log('Function not loaded yet'); };
+window.showImportModal = function() { console.log('Function not loaded yet'); };
+window.confirmDeleteAllMedicines = function() { console.log('Function not loaded yet'); };
+window.toggleAdvancedSearch = function() { console.log('Function not loaded yet'); };
+window.switchView = function() { console.log('Function not loaded yet'); };
+window.editMedicine = function() { console.log('Function not loaded yet'); };
+window.deleteMedicine = function() { console.log('Function not loaded yet'); };
+window.selectMedicine = function() { console.log('Function not loaded yet'); };
+window.cancelImport = function() { console.log('Function not loaded yet'); };
+window.downloadTemplate = function() { console.log('Function not loaded yet'); };
+
+// Load sidebar and check authentication
+document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication first (commented out for testing)
+    // if (!sessionStorage.getItem('user_role')) {
+    //     window.location.href = '../auth/login.html';
+    //     return;
+    // }
+
+    // Sidebar is now loaded by sidebar-loader.js
+    // loadSidebar(); // Removed - handled by sidebar-loader.js
+    loadMedicines();
+    setupSearchListener();
+    setupFilterListeners();
+});
+
+// Removed old loadSidebar function - now handled by sidebar-loader.js
+
+// Load medicines from API
+async function loadMedicines() {
+    try {
+        const data = await api.getMedicines();
+        allMedicines = Array.isArray(data) ? data : (data.data || []);
+        displayMedicines(allMedicines);
+        updateResultCount(allMedicines.length);
+    } catch (error) {
+        console.error('Error loading medicines:', error);
+        showToast('Failed to load medicines: ' + error.message, 'error');
+        allMedicines = [];
+        displayMedicines([]);
+        updateResultCount(0);
+    }
+}
+
+// Search with suggestions
+function setupSearchListener() {
+    const searchInput = document.getElementById('medicineSearch');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+
+        if (query.length >= 2) {
+            searchTimeout = setTimeout(() => {
+                searchMedicines(query);
+            }, 300);
+        } else {
+            hideSuggestions();
+            displayMedicines(allMedicines);
+        }
+    });
+
+    searchInput.addEventListener('blur', function() {
+        setTimeout(hideSuggestions, 200);
+    });
+}
+
+// Search medicines with API call
+async function searchMedicines(query) {
+    try {
+        // Call Laravel API for search
+        const response = await api.searchMedicines(query);
+
+        if (response.success) {
+            const medicines = response.medicines || response.data || [];
+            displayMedicines(medicines);
+
+            // Show suggestions with highlighting
+            showSuggestions(medicines.slice(0, 8), query);
+            updateResultCount(medicines.length);
+        }
+    } catch (error) {
+        console.error('Search error:', error);
+
+        // Fallback to client-side search
+        searchMedicinesClientSide(query);
+    }
+}
+
+// Fallback client-side search
+function searchMedicinesClientSide(query) {
+    const lowerQuery = query.toLowerCase();
+
+    const results = allMedicines.filter(med => {
+        const name = (med.name || '').toLowerCase();
+        const desc = (med.description || '').toLowerCase();
+        const cat = (med.category || '').toLowerCase();
+        const manufacturer = (med.manufacturer || '').toLowerCase();
+
+        return name.includes(lowerQuery) ||
+               desc.includes(lowerQuery) ||
+               cat.includes(lowerQuery) ||
+               manufacturer.includes(lowerQuery);
+    });
+
+    displayMedicines(results);
+    showSuggestions(results.slice(0, 8), query);
+    updateResultCount(results.length);
+}
+
+// Show search suggestions
+function showSuggestions(medicines, query = '') {
+    const suggestionsBox = document.getElementById('searchSuggestions');
+
+    if (!medicines || medicines.length === 0) {
+        suggestionsBox.innerHTML = '<div class="suggestion-item no-results"><i class="fas fa-search me-2"></i>No medicines found matching your search</div>';
+        suggestionsBox.classList.add('show');
+        return;
+    }
+
+    // Function to highlight matching text
+    function highlightMatch(text, query) {
+        if (!query || !text) return text;
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<span class="highlight-match">$1</span>');
+    }
+
+    let html = '';
+    medicines.forEach(med => {
+        const quantity = med.quantity || 0;
+        const stockClass = getStockClass(quantity);
+        const price = parseFloat(med.price || 0).toFixed(2);
+        const category = med.category || 'N/A';
+        const manufacturer = med.manufacturer || '';
+
+        // Highlight matches in name and manufacturer
+        const highlightedName = highlightMatch(med.name, query);
+        const highlightedManufacturer = manufacturer ? highlightMatch(manufacturer, query) : '';
+        const highlightedCategory = highlightMatch(category, query);
+
+        html += `
+            <div class="suggestion-item" onclick="selectMedicine('${med.id}')">
+                <div class="suggestion-name">
+                    ${highlightedName}${highlightedManufacturer ? ' - ' + highlightedManufacturer : ''}
+                </div>
+                <div class="suggestion-details">
+                    <span class="badge bg-primary suggestion-badge">${highlightedCategory}</span>
+                    <span class="badge ${stockClass} suggestion-badge">Stock: ${quantity}</span>
+                    <span class="ms-2">Rs. ${price}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    suggestionsBox.innerHTML = html;
+    suggestionsBox.classList.add('show');
+}
+
+function hideSuggestions() {
+    document.getElementById('searchSuggestions').classList.remove('show');
+}
+
+window.selectMedicine = function selectMedicine(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (medicine) {
+        displayMedicines([medicine]);
+        document.getElementById('medicineSearch').value = medicine.name;
+        hideSuggestions();
+    }
+}
+
+// Display medicines (card or table view)
+function displayMedicines(medicines) {
+    if (currentView === 'card') {
+        displayCardView(medicines);
+    } else {
+        displayTableView(medicines);
+    }
+}
+
+function displayCardView(medicines) {
+    const cardView = document.getElementById('cardView');
+
+    if (medicines.length === 0) {
+        cardView.innerHTML = `
+            <div class="col-12 text-center py-5" style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 40px;">
+                <i class="fas fa-pills fa-4x mb-3" style="color: #000000;"></i>
+                <h3 class="fw-bold mb-2" style="color: #000000;">No Medicines Found</h3>
+                <p class="mb-0" style="color: #000000; opacity: 0.8;">Try adjusting your search or filters</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    medicines.forEach(med => {
+        const stockClass = getStockClass(med.quantity);
+        const stockLabel = getStockLabel(med.quantity);
+
+        html += `
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="medicine-card" onclick="showMedicineDetails(${med.id})" style="cursor: pointer;">
+                    <span class="medicine-category">${med.category || 'N/A'}</span>
+                    <div class="medicine-name">${med.name}</div>
+                    <p class="text-muted small mb-2">${(med.description || 'No description').substring(0, 80)}...</p>
+                    <div class="medicine-price">Rs. ${parseFloat(med.price || 0).toFixed(2)}</div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="stock-badge ${stockClass}">${stockLabel}</span>
+                        <small class="text-muted">Expires: ${formatDate(med.expiry_date)}</small>
+                    </div>
+                    <div class="d-flex gap-2" onclick="event.stopPropagation();">
+                        <button class="btn btn-sm btn-outline-primary flex-fill" onclick="editMedicine(${med.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger flex-fill" onclick="deleteMedicine(${med.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    cardView.innerHTML = html;
+}
+
+function displayTableView(medicines) {
+    const tbody = document.getElementById('medicineTableBody');
+
+    if (medicines.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5" style="background: #f8f9ff;">
+                    <i class="fas fa-pills fa-3x mb-3" style="color: #667eea;"></i>
+                    <h5 class="fw-bold mb-2" style="color: #667eea;">No Medicines Found</h5>
+                    <p class="text-muted mb-0">Try adjusting your search or filters</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    let html = '';
+    medicines.forEach(med => {
+        const stockClass = getStockClass(med.quantity);
+        const stockLabel = getStockLabel(med.quantity);
+
+        html += `
+            <tr style="cursor: pointer;" onclick="showMedicineDetails(${med.id})">
+                <td><strong>${med.name}</strong></td>
+                <td><span class="badge bg-primary">${med.category || 'N/A'}</span></td>
+                <td>${(med.description || 'N/A').substring(0, 60)}...</td>
+                <td><strong class="text-primary">Rs. ${parseFloat(med.price || 0).toFixed(2)}</strong></td>
+                <td><span class="stock-badge ${stockClass}">${stockLabel}</span></td>
+                <td>${formatDate(med.expiry_date)}</td>
+                <td onclick="event.stopPropagation();">
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editMedicine(${med.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMedicine(${med.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+// View switching
+window.switchView = function switchView(view) {
+    currentView = view;
+
+    document.getElementById('cardView').style.display = view === 'card' ? 'flex' : 'none';
+    document.getElementById('tableView').style.display = view === 'table' ? 'block' : 'none';
+
+    document.getElementById('cardViewBtn').classList.toggle('active', view === 'card');
+    document.getElementById('tableViewBtn').classList.toggle('active', view === 'table');
+
+    displayMedicines(allMedicines);
+}
+
+// Advanced search
+window.toggleAdvancedSearch = function toggleAdvancedSearch() {
+    document.getElementById('advancedSearch').classList.toggle('show');
+}
+
+function setupFilterListeners() {
+    ['filterCategory', 'filterStock', 'filterPrice', 'sortBy'].forEach(id => {
+        document.getElementById(id).addEventListener('change', applyFilters);
+    });
+}
+
+function applyFilters() {
+    let filtered = [...allMedicines];
+
+    // Category filter
+    const category = document.getElementById('filterCategory').value;
+    if (category) {
+        filtered = filtered.filter(m => m.category === category);
+    }
+
+    // Stock filter
+    const stock = document.getElementById('filterStock').value;
+    if (stock) {
+        filtered = filtered.filter(m => {
+            const qty = parseInt(m.quantity) || 0;
+            if (stock === 'high') return qty > 100;
+            if (stock === 'medium') return qty >= 20 && qty <= 100;
+            if (stock === 'low') return qty > 0 && qty < 20;
+            if (stock === 'out') return qty === 0;
+            return true;
+        });
+    }
+
+    // Price filter
+    const price = document.getElementById('filterPrice').value;
+    if (price) {
+        filtered = filtered.filter(m => {
+            const p = parseFloat(m.price) || 0;
+            if (price === '0-50') return p <= 50;
+            if (price === '51-200') return p > 50 && p <= 200;
+            if (price === '201-500') return p > 200 && p <= 500;
+            if (price === '501+') return p > 500;
+            return true;
+        });
+    }
+
+    // Sort
+    const sortBy = document.getElementById('sortBy').value;
+    filtered.sort((a, b) => {
+        if (sortBy === 'name') return (a.name || '').localeCompare(b.name || '');
+        if (sortBy === 'name-desc') return (b.name || '').localeCompare(a.name || '');
+        if (sortBy === 'price') return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+        if (sortBy === 'price-desc') return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+        if (sortBy === 'stock') return (parseInt(a.quantity) || 0) - (parseInt(b.quantity) || 0);
+        if (sortBy === 'stock-desc') return (parseInt(b.quantity) || 0) - (parseInt(a.quantity) || 0);
+        return 0;
+    });
+
+    displayMedicines(filtered);
+    updateResultCount(filtered.length);
+}
+
+function clearFilters() {
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterStock').value = '';
+    document.getElementById('filterPrice').value = '';
+    document.getElementById('sortBy').value = 'name';
+    displayMedicines(allMedicines);
+    updateResultCount(allMedicines.length);
+}
+
+// Helper functions
+function getStockClass(quantity) {
+    const qty = parseInt(quantity) || 0;
+    if (qty > 100) return 'stock-high';
+    if (qty >= 20) return 'stock-medium';
+    if (qty > 0) return 'stock-low';
+    return 'stock-low';
+}
+
+function getStockLabel(quantity) {
+    const qty = parseInt(quantity) || 0;
+    if (qty === 0) return 'Out of Stock';
+    if (qty < 20) return `Low: ${qty}`;
+    return `Stock: ${qty}`;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function updateResultCount(count) {
+    const element = document.getElementById('resultCount');
+    element.textContent = `${count} medicine${count !== 1 ? 's' : ''} found`;
+    // Change color to black if 0 medicines
+    if (count === 0) {
+        element.style.color = '#000000';
+    } else {
+        element.style.color = '#ffffff';
+    }
+}
+
+// Add Medicine
+window.showAddMedicineModal = function showAddMedicineModal() {
+    document.getElementById('addMedicineForm').reset();
+    const modal = new bootstrap.Modal(document.getElementById('addMedicineModal'));
+    document.querySelector('#addMedicineModal .modal-title').innerHTML = '<i class="fas fa-plus-circle me-2"></i>Add New Medicine';
+
+    // Reset save button
+    document.querySelector('#addMedicineModal .btn-gradient').onclick = saveMedicine;
+    modal.show();
+}
+
+async function saveMedicine() {
+    const form = document.getElementById('addMedicineForm');
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const formData = new FormData(form);
+    const medicineData = {};
+    formData.forEach((value, key) => {
+        medicineData[key] = value;
+    });
+
+    // Validate positive values
+    if (parseFloat(medicineData.price) < 0) {
+        showNotification('Price must be a positive value', 'error');
+        return;
+    }
+
+    if (parseInt(medicineData.quantity) < 0) {
+        showNotification('Quantity must be a positive value', 'error');
+        return;
+    }
+
+    try {
+        const response = await api.createMedicine(medicineData);
+        if (response.success) {
+            showNotification('Medicine added successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addMedicineModal')).hide();
+            form.reset();
+            await loadMedicines();
+        } else {
+            // Show validation errors if available
+            if (response.errors) {
+                const errorMessages = Object.values(response.errors).flat().join(', ');
+                showNotification('Validation Error: ' + errorMessages, 'error');
+            } else {
+                showNotification(response.message || 'Failed to add medicine', 'error');
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error: ' + (error.message || 'Failed to add medicine'), 'error');
+    }
+}
+
+// Edit Medicine
+window.editMedicine = function editMedicine(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (!medicine) {
+        showNotification('Medicine not found', 'error');
+        return;
+    }
+
+    // Populate form with medicine data
+    const form = document.getElementById('addMedicineForm');
+    Object.keys(medicine).forEach(key => {
+        const input = form.elements[key];
+        if (input) {
+            input.value = medicine[key] || '';
+        }
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('addMedicineModal'));
+    document.querySelector('#addMedicineModal .modal-title').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Medicine';
+    modal.show();
+
+    // Change save function to update
+    const saveBtn = document.querySelector('#addMedicineModal .btn-gradient');
+    saveBtn.onclick = function() {
+        updateMedicine(id);
+    };
+}
+
+async function updateMedicine(id) {
+    const form = document.getElementById('addMedicineForm');
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const formData = new FormData(form);
+    const medicineData = {};
+    formData.forEach((value, key) => {
+        medicineData[key] = value;
+    });
+
+    // Validate positive values
+    if (parseFloat(medicineData.price) < 0) {
+        showNotification('Price must be a positive value', 'error');
+        return;
+    }
+
+    if (parseInt(medicineData.quantity) < 0) {
+        showNotification('Quantity must be a positive value', 'error');
+        return;
+    }
+
+    try {
+        const response = await api.updateMedicine(id, medicineData);
+        if (response.success) {
+            showNotification('Medicine updated successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addMedicineModal')).hide();
+            form.reset();
+            await loadMedicines();
+        } else {
+            // Show validation errors if available
+            if (response.errors) {
+                const errorMessages = Object.values(response.errors).flat().join(', ');
+                showNotification('Validation Error: ' + errorMessages, 'error');
+            } else {
+                showNotification(response.message || 'Failed to update medicine', 'error');
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error: ' + (error.message || 'Failed to update medicine'), 'error');
+    }
+}
+
+// Show Medicine Details Modal
+window.showMedicineDetails = function showMedicineDetails(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (!medicine) {
+        showNotification('Medicine not found', 'error');
+        return;
+    }
+
+    // Populate modal with medicine details
+    document.getElementById('detailMedicineName').textContent = medicine.name;
+    document.getElementById('detailName').textContent = medicine.name;
+    document.getElementById('detailCategory').textContent = medicine.category || 'N/A';
+    document.getElementById('detailDescription').textContent = medicine.description || 'No description available';
+    document.getElementById('detailPrice').textContent = 'Rs. ' + parseFloat(medicine.price || 0).toFixed(2);
+    document.getElementById('detailQuantity').textContent = medicine.quantity || 0;
+    document.getElementById('detailManufacturer').textContent = medicine.manufacturer || 'N/A';
+    document.getElementById('detailBatch').textContent = medicine.batch_number || 'N/A';
+    document.getElementById('detailExpiry').textContent = formatDate(medicine.expiry_date);
+    document.getElementById('detailId').textContent = '#' + medicine.id;
+
+    // Set stock badge
+    const stockClass = getStockClass(medicine.quantity);
+    const stockLabel = getStockLabel(medicine.quantity);
+    const stockBadge = document.getElementById('detailStockBadge');
+    stockBadge.className = 'stock-badge ' + stockClass;
+    stockBadge.textContent = stockLabel;
+
+    // Set up edit and delete buttons
+    document.getElementById('detailEditBtn').onclick = function() {
+        bootstrap.Modal.getInstance(document.getElementById('medicineDetailsModal')).hide();
+        editMedicine(id);
+    };
+
+    document.getElementById('detailDeleteBtn').onclick = function() {
+        bootstrap.Modal.getInstance(document.getElementById('medicineDetailsModal')).hide();
+        deleteMedicine(id);
+    };
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('medicineDetailsModal'));
+    modal.show();
+}
+
+// Delete Medicine
+window.deleteMedicine = async function deleteMedicine(id) {
+    const medicine = allMedicines.find(m => m.id == id);
+    if (!medicine) {
+        showNotification('Medicine not found', 'error');
+        return;
+    }
+
+    // Show custom delete confirmation modal
+    document.getElementById('deleteConfirmName').textContent = medicine.name;
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    deleteModal.show();
+
+    // Set up confirm button
+    document.getElementById('confirmDeleteBtn').onclick = async function() {
+        deleteModal.hide();
+
+        try {
+            const response = await api.deleteMedicine(id);
+            if (response.success) {
+                showNotification('Medicine deleted successfully!', 'success');
+                await loadMedicines();
+            } else {
+                showNotification(response.message || 'Failed to delete medicine', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Error: ' + (error.message || 'Failed to delete medicine'), 'error');
+        }
+    };
+}
+
+// Excel Import
+window.showImportModal = function showImportModal() {
+    document.getElementById('excelFile').value = '';
+    document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('importProgress').style.display = 'none';
+    document.getElementById('importResults').style.display = 'none';
+    document.getElementById('startImportBtn').disabled = true;
+    excelData = null;
+
+    const modal = new bootstrap.Modal(document.getElementById('importModal'));
+    modal.show();
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+            excelData = jsonData;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('rowCount').textContent = jsonData.length;
+            document.getElementById('filePreview').style.display = 'block';
+            document.getElementById('startImportBtn').disabled = false;
+
+        } catch (error) {
+            showToast('Error reading Excel file: ' + error.message, 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// Global import control variable
+let importCancelled = false;
+
+async function startImport() {
+    if (!excelData || excelData.length === 0) {
+        showToast('No data to import', 'error');
+        return;
+    }
+
+    // Reset cancel flag
+    importCancelled = false;
+
+    document.getElementById('startImportBtn').disabled = true;
+    document.getElementById('closeImportBtn').disabled = true;
+    document.getElementById('importProgress').style.display = 'block';
+    document.getElementById('importResults').style.display = 'none';
+
+    let successCount = 0;
+    let failCount = 0;
+    const total = excelData.length;
+
+    // Show cancel button
+    document.getElementById('cancelImportBtn').style.display = 'inline-block';
+    document.getElementById('startImportBtn').style.display = 'none';
+
+    const failedItems = [];
+
+    for (let i = 0; i < excelData.length; i++) {
+        // Check if cancelled
+        if (importCancelled) {
+            document.getElementById('progressStatus').textContent = 'Import cancelled by user';
+            break;
+        }
+
+        const row = excelData[i];
+
+        // Map Excel columns to database fields
+        const medicineData = {
+            name: row.Name || row.name || row.Medicine_Name || row.medicine_name || '',
+            category: row.Category || row.category || 'Other',
+            description: row.Description || row.description || '',
+            price: parseFloat(row.Price || row.price || 0),
+            quantity: parseInt(row.Quantity || row.quantity || row.Stock || row.stock || 0),
+            expiry_date: row.Expiry_Date || row.expiry_date || row.ExpiryDate || null,
+            manufacturer: row.Manufacturer || row.manufacturer || '',
+            batch_number: row.Batch_Number || row.batch_number || row.BatchNumber || ''
+        };
+
+        // Skip rows with empty name (required field)
+        if (!medicineData.name || medicineData.name.trim() === '') {
+            console.warn(`Row ${i + 1}: Skipping - no medicine name found`);
+            failCount++;
+            continue;
+        }
+
+        // Update progress
+        const progress = Math.round(((i + 1) / total) * 100);
+        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('progressText').textContent = progress + '%';
+        document.getElementById('progressLabel').textContent = `${i + 1} / ${total}`;
+        document.getElementById('progressStatus').textContent = `Importing: ${medicineData.name || 'Row ' + (i + 1)}`;
+
+        try {
+            await api.createMedicine(medicineData);
+            successCount++;
+        } catch (error) {
+            // Extract detailed validation errors from Laravel response
+            let errorDetails = error.message;
+            if (error.errors) {
+                errorDetails = Object.entries(error.errors)
+                    .map(([field, msgs]) => `${field}: ${msgs.join(', ')}`)
+                    .join('; ');
+            }
+
+            failedItems.push({
+                row: i + 1,
+                name: medicineData.name,
+                error: errorDetails,
+                data: medicineData
+            });
+
+            console.error(`Row ${i + 1} (${medicineData.name}) failed:`, errorDetails);
+            failCount++;
+        }
+
+        // Small delay to show progress
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    // Show results
+    document.getElementById('successCount').textContent = successCount;
+    document.getElementById('failCount').textContent = failCount;
+    document.getElementById('importResults').style.display = 'block';
+    document.getElementById('closeImportBtn').disabled = false;
+    document.getElementById('cancelImportBtn').style.display = 'none';
+    document.getElementById('startImportBtn').style.display = 'inline-block';
+
+    // Show failed items list if any failures
+    if (failCount > 0 && failedItems.length > 0) {
+        const failedList = document.getElementById('failedList');
+        failedList.innerHTML = failedItems.map(item => `
+            <li class="mb-2 pb-2 border-bottom">
+                <div><strong>Row ${item.row}: ${item.name}</strong></div>
+                <div class="text-danger small">${item.error}</div>
+                <div class="text-muted small">${JSON.stringify(item.data)}</div>
+            </li>
+        `).join('');
+        document.getElementById('failedItemsList').style.display = 'block';
+    }
+
+    const statusMsg = importCancelled
+        ? `Import cancelled! ${successCount} succeeded, ${failCount} failed/skipped`
+        : `Import complete! ${successCount} succeeded, ${failCount} failed`;
+
+    showToast(statusMsg, importCancelled ? 'warning' : (successCount > 0 ? 'success' : 'warning'));
+
+    if (!importCancelled) {
+        loadMedicines();
+    }
+}
+
+// Cancel import function
+window.cancelImport = function cancelImport() {
+    if (confirm('Are you sure you want to cancel the import? Already imported medicines will remain.')) {
+        importCancelled = true;
+        document.getElementById('cancelImportBtn').disabled = true;
+        showToast('Cancelling import...', 'warning');
+    }
+}
+
+// Download Excel Template
+window.downloadTemplate = function downloadTemplate() {
+    // Create template data with sample row
+    const templateData = [
+        {
+            'Name': 'Sample Medicine Name',
+            'Category': 'Antibiotics',
+            'Description': 'Sample description of the medicine',
+            'Price': '150.00',
+            'Quantity': '100',
+            'Expiry_Date': '2025-12-31',
+            'Manufacturer': 'Sample Pharma Ltd',
+            'Batch_Number': 'BATCH001'
+        },
+        {
+            'Name': '',
+            'Category': '',
+            'Description': '',
+            'Price': '',
+            'Quantity': '',
+            'Expiry_Date': '',
+            'Manufacturer': '',
+            'Batch_Number': ''
+        }
+    ];
+
+    // Create worksheet
+    const ws = XLSX.utils.json_to_sheet(templateData);
+
+    // Set column widths
+    ws['!cols'] = [
+        { wch: 30 }, // Name
+        { wch: 15 }, // Category
+        { wch: 40 }, // Description
+        { wch: 10 }, // Price
+        { wch: 10 }, // Quantity
+        { wch: 15 }, // Expiry_Date
+        { wch: 25 }, // Manufacturer
+        { wch: 15 }  // Batch_Number
+    ];
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Medicines');
+
+    // Add instructions sheet
+    const instructionsData = [
+        { 'Field': 'Name', 'Description': 'Medicine name (Required)', 'Example': 'Paracetamol 500mg' },
+        { 'Field': 'Category', 'Description': 'Medicine category', 'Example': 'Pain Relief, Antibiotics, Vitamins, etc.' },
+        { 'Field': 'Description', 'Description': 'Detailed description', 'Example': 'Used for fever and pain relief' },
+        { 'Field': 'Price', 'Description': 'Price in Rupees (Required, positive number)', 'Example': '150.00' },
+        { 'Field': 'Quantity', 'Description': 'Stock quantity (Required, positive number)', 'Example': '100' },
+        { 'Field': 'Expiry_Date', 'Description': 'Expiry date (YYYY-MM-DD format)', 'Example': '2025-12-31' },
+        { 'Field': 'Manufacturer', 'Description': 'Manufacturer name', 'Example': 'ABC Pharmaceuticals' },
+        { 'Field': 'Batch_Number', 'Description': 'Batch or lot number', 'Example': 'BATCH001' }
+    ];
+
+    const wsInstructions = XLSX.utils.json_to_sheet(instructionsData);
+    wsInstructions['!cols'] = [
+        { wch: 20 },
+        { wch: 50 },
+        { wch: 30 }
+    ];
+    XLSX.utils.book_append_sheet(wb, wsInstructions, 'Instructions');
+
+    // Download file
+    const fileName = 'medicine_import_template_' + new Date().toISOString().split('T')[0] + '.xlsx';
+    XLSX.writeFile(wb, fileName);
+
+    showToast('Template downloaded successfully!', 'success');
+}
+
+// Toast Notifications
+function showToast(message, type = 'info') {
+    const container = document.querySelector('.toast-container');
+    const toastId = 'toast-' + Date.now();
+
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+
+    const colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
+
+    const toastHTML = `
+        <div id="${toastId}" class="toast custom-toast toast-${type}" role="alert">
+            <div class="toast-body d-flex align-items-center p-3">
+                <i class="fas ${icons[type]} fa-2x me-3" style="color: ${colors[type]}"></i>
+                <div class="flex-grow-1">${message}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', toastHTML);
+
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, { delay: 4000 });
+    toast.show();
+
+    toastElement.addEventListener('hidden.bs.toast', function() {
+        this.remove();
+    });
+}
+
+// Confirmation Modal
+function showConfirmModal(message, onConfirm) {
+    document.getElementById('confirmMessage').textContent = message;
+
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modal.show();
+
+    document.getElementById('confirmActionBtn').onclick = function() {
+        onConfirm();
+        modal.hide();
+    };
+}
+
+// Delete All Medicines with Confirmation
+window.confirmDeleteAllMedicines = function confirmDeleteAllMedicines() {
+    showConfirmModal('⚠️ WARNING: Are you absolutely sure you want to delete ALL medicines? This action CANNOT be undone!', () => {
+        deleteAllMedicines();
+    });
+}
+
+async function deleteAllMedicines() {
+    try {
+        await api.deleteAllMedicines();
+        showToast('All medicines deleted successfully!', 'success');
+        loadMedicines();
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Failed to delete medicines: ' + error.message, 'error');
+    }
+}
+</script>
+
+
+
+</body>
+</html>

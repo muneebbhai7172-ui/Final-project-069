@@ -1,0 +1,244 @@
+/* Enhanced Form Styles */
+.form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    transition: all var(--transition-normal) ease;
+    background: var(--bg-primary);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.input-group-text {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 12px 0 0 12px;
+    font-weight: 500;
+}
+
+/* Enhanced Form Controls - Higher Specificity to Override Bootstrap */
+.login-box .form-control,
+.form-control.enhanced-input {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    padding: 0.75rem 1rem !important;
+    transition: all var(--transition-normal) var(--ease-in-out) !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+}
+
+.login-box .form-control:focus,
+.form-control.enhanced-input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    outline: none !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.login-box .form-control::placeholder,
+.form-control.enhanced-input::placeholder {
+    color: var(--text-light) !important;
+    opacity: 0.8 !important;
+}
+
+/* Dark Mode Form Control Fixes - Higher Specificity */
+[data-theme="dark"] .login-box .form-control,
+[data-theme="dark"] .form-control.enhanced-input {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .login-box .form-control:focus,
+[data-theme="dark"] .form-control.enhanced-input:focus {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(90, 143, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .login-box .form-control::placeholder,
+[data-theme="dark"] .form-control.enhanced-input::placeholder {
+    color: var(--text-light) !important;
+    opacity: 0.9 !important;
+}
+
+/* Form Control Validation States Override */
+.login-box .form-control.is-invalid,
+.form-control.enhanced-input.is-invalid {
+    border-color: var(--danger-color) !important;
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+.login-box .form-control.is-valid,
+.form-control.enhanced-input.is-valid {
+    border-color: var(--success-color) !important;
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .login-box .form-control.is-invalid,
+[data-theme="dark"] .form-control.enhanced-input.is-invalid {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .login-box .form-control.is-valid,
+[data-theme="dark"] .form-control.enhanced-input.is-valid {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Enhanced Input Group Styling - Higher Specificity */
+.login-box .input-group-advanced {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    background: var(--bg-primary) !important;
+    transition: all var(--transition-normal) var(--ease-in-out) !important;
+}
+
+.login-box .input-group-advanced:focus-within {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.login-box .input-group-advanced .input-group-text {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-muted) !important;
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+}
+
+.login-box .input-group-advanced .form-control {
+    border: none !important;
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    padding: 0.75rem 0.5rem !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+}
+
+.login-box .input-group-advanced .form-control:focus {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--text-primary) !important;
+    outline: none !important;
+}
+
+/* Dark Mode Input Group Fixes - Higher Specificity */
+[data-theme="dark"] .login-box .input-group-advanced {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .login-box .input-group-advanced:focus-within {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(90, 143, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .login-box .input-group-advanced .input-group-text {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .login-box .input-group-advanced .form-control {
+    color: var(--text-primary) !important;
+    background: transparent !important;
+}
+
+[data-theme="dark"] .login-box .input-group-advanced .form-control::placeholder {
+    color: var(--text-light) !important;
+    opacity: 0.9 !important;
+}
+
+/* Enhanced Button Styling for Input Groups - Higher Specificity */
+.login-box .input-group-advanced .btn,
+.login-box .btn-outline-secondary {
+    border: none !important;
+    background: transparent !important;
+    color: var(--text-muted) !important;
+    padding: 0.75rem !important;
+    transition: all var(--transition-normal) var(--ease-in-out) !important;
+    border-radius: 0 8px 8px 0 !important;
+    min-width: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1rem !important;
+}
+
+.login-box .input-group-advanced .btn:hover,
+.login-box .btn-outline-secondary:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+    color: var(--primary-color) !important;
+    border: none !important;
+}
+
+[data-theme="dark"] .login-box .input-group-advanced .btn,
+[data-theme="dark"] .login-box .btn-outline-secondary {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .login-box .input-group-advanced .btn:hover,
+[data-theme="dark"] .login-box .btn-outline-secondary:hover {
+    background: rgba(90, 143, 255, 0.2) !important;
+    color: var(--primary-color) !important;
+}
+
+/* Enhanced Form Select - Higher Specificity */
+.login-box .form-select {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    padding: 0.75rem 1rem !important;
+    transition: all var(--transition-normal) var(--ease-in-out) !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+}
+
+.login-box .form-select:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    outline: none !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .login-box .form-select {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .login-box .form-select:focus {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(90, 143, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .login-box .form-select option {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}

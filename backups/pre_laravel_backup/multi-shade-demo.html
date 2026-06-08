@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Shade Theme Demo</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/components/_modern-sidebar.css?v=7.0">
+    <!-- Theme CSS - Must load AFTER sidebar CSS -->
+    <link rel="stylesheet" href="css/theme-variables.css">
+    
+    <script src="js/admin-common.js"></script>
+    
+    <style>
+        .demo-section {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .color-demo {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .page-background {
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .sidebar-background {
+            background-color: var(--sidebar-color);
+            color: var(--sidebar-text-color);
+        }
+        .card-background {
+            background-color: var(--card-background-color);
+            color: var(--text-color);
+            border: 1px solid var(--secondary-color);
+        }
+        .theme-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .theme-btn {
+            display: block;
+            width: 150px;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .main-content {
+            margin-left: 300px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Theme Control Panel -->
+    <div class="theme-buttons">
+        <h6>Test Themes</h6>
+        <button class="theme-btn" style="background: #667eea;" onclick="applyTheme('default')">Default</button>
+        <button class="theme-btn" style="background: #3b82f6;" onclick="applyTheme('ocean-blue')">Ocean Blue</button>
+        <button class="theme-btn" style="background: #10b981;" onclick="applyTheme('forest-green')">Forest Green</button>
+        <button class="theme-btn" style="background: #8b5cf6;" onclick="applyTheme('royal-purple')">Royal Purple</button>
+        <button class="theme-btn" style="background: #1f2937;" onclick="applyTheme('midnight-dark')">Midnight Dark</button>
+    </div>
+
+    <!-- Sidebar (will be loaded by sidebar-loader.js) -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container-fluid">
+            
+            <h1>Multi-Shade Color System Demo</h1>
+            <p>This demo shows how different UI elements use different shades of the same color theme.</p>
+
+            <!-- Color Shade Demonstration -->
+            <div class="demo-section">
+                <h3>Color Shade Hierarchy</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="color-demo page-background">
+                            <i class="fas fa-desktop mb-2"></i><br>
+                            Page Background<br>
+                            <small>(Lightest Shade)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="color-demo sidebar-background">
+                            <i class="fas fa-bars mb-2"></i><br>
+                            Sidebar Background<br>
+                            <small>(Medium Shade)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="color-demo card-background">
+                            <i class="fas fa-square mb-2"></i><br>
+                            Card Background<br>
+                            <small>(White/Lightest)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Examples -->
+            <div class="demo-section">
+                <h3>UI Components</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Sample Card</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>This card uses the card background color (white/lightest shade)</p>
+                                <div class="mb-3">
+                                    <label class="form-label">Input Field</label>
+                                    <input type="text" class="form-control" placeholder="Form input example">
+                                </div>
+                                <button class="btn btn-primary">Primary Button</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Table Example</h5>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Header 1</th>
+                                            <th>Header 2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Cell 1</td>
+                                            <td>Cell 2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cell 3</td>
+                                            <td>Cell 4</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Explanation -->
+            <div class="demo-section card-background" style="padding: 20px; border-radius: 8px; border: 1px solid var(--secondary-color);">
+                <h4><i class="fas fa-palette me-2"></i>How the Color System Works</h4>
+                <ul>
+                    <li><strong>Page Background:</strong> Lightest tinted shade - provides subtle color context</li>
+                    <li><strong>Sidebar Background:</strong> Medium shade - darker than page, lighter than primary</li>
+                    <li><strong>Card/Form Backgrounds:</strong> White or very light - maximum readability</li>
+                    <li><strong>Table Headers:</strong> Use sidebar color for grouping</li>
+                    <li><strong>Borders:</strong> Use secondary color for subtle separation</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sidebar-loader.js?v=7.0"></script>
+    <script>
+        function applyTheme(themeName) {
+            localStorage.setItem('adminTheme', themeName);
+            if (typeof window.applyGlobalTheme === 'function') {
+                window.applyGlobalTheme(themeName);
+            }
+        }
+        
+        // Apply saved theme on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('adminTheme') || 'default';
+            applyTheme(savedTheme);
+        });
+    </script>
+</body>
+</html>

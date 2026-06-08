@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>My Profile - Muneeb Drug House</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/medical-theme.css">
+
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #00b4d8;
+            --primary-dark: #023e8a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: translate(50%, -50%);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .profile-tab {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .profile-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .profile-tab i {
+            margin-right: 8px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-title i {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.3);
+        }
+
+        /* 2FA Section */
+        .two-factor-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .two-factor-card.enabled {
+            border-color: var(--success);
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        }
+
+        .two-factor-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.enabled {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-badge.disabled {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.4s;
+            border-radius: 32px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(28px);
+        }
+
+        /* QR Code Container */
+        .qr-container {
+            text-align: center;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .qr-container img {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .secret-key {
+            font-family: 'Courier New', monospace;
+            background: #1e293b;
+            color: #10b981;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            word-break: break-all;
+            max-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .secret-key code {
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .secret-key .copy-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .secret-key .copy-btn:hover {
+            background: #059669;
+        }
+
+        .secret-key .copy-btn.copied {
+            background: #6366f1;
+        }
+
+        /* Order History */
+        .order-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .order-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .order-status.pending { background: #fef3c7; color: #d97706; }
+        .order-status.processing { background: #dbeafe; color: #2563eb; }
+        .order-status.completed { background: #d1fae5; color: #059669; }
+        .order-status.cancelled { background: #fee2e2; color: #dc2626; }
+
+        .order-items {
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+
+        .order-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .view-details-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Navbar */
+        .customer-navbar {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 6px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success { background: #d1fae5; color: #059669; display: block; }
+        .alert.error { background: #fee2e2; color: #dc2626; display: block; }
+
+        @media (max-width: 768px) {
+            .profile-header { padding: 25px; }
+            .profile-name { font-size: 1.5rem; }
+            .profile-tabs { flex-direction: column; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Customer Navbar -->
+<nav class="customer-navbar">
+    <a href="../frontend/index.html" class="nav-brand">
+        <i class="fas fa-plus-circle"></i> Muneeb Drug House
+    </a>
+    <div class="nav-links">
+        <a href="../frontend/index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="../shop/medicines.html" class="nav-link"><i class="fas fa-pills"></i> Shop</a>
+        <a href="orders.html" class="nav-link"><i class="fas fa-box"></i> My Orders</a>
+        <a href="profile.html" class="nav-link active"><i class="fas fa-user"></i> Profile</a>
+        <a href="#" class="nav-link logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</nav>
+
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-name" id="userName">Loading...</div>
+        <div class="profile-email" id="userEmail">Loading...</div>
+    </div>
+
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+        <div class="profile-tab active" data-tab="profile">
+            <i class="fas fa-user-edit"></i> Profile
+        </div>
+        <div class="profile-tab" data-tab="security">
+            <i class="fas fa-shield-alt"></i> Security
+        </div>
+        <div class="profile-tab" data-tab="orders">
+            <i class="fas fa-box"></i> Order History
+        </div>
+    </div>
+
+    <!-- Alert Box -->
+    <div class="alert" id="alertBox"></div>
+
+    <!-- Profile Tab -->
+    <div class="tab-content active" id="tab-profile">
+        <div class="profile-card">
+            <div class="card-title">
+                <i class="fas fa-user-edit"></i>
+                <span>Personal Information</span>
+            </div>
+            <form id="profileForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-input" id="firstName" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-input" id="lastName" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" id="email" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" id="phone">
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Security Tab -->
+    <div class="tab-content" id="tab-security">
+        <div class="profile-card">
+            <div class="card-title">
+                <i class="fas fa-lock"></i>
+                <span>Change Password</span>
+            </div>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" class="form-input" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" class="form-input" id="newPassword" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-input" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-key"></i> Update Password
+                </button>
+            </form>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-title">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Two-Factor Authentication (2FA)</span>
+            </div>
+            <div class="two-factor-card" id="twoFactorCard">
+                <div class="two-factor-status">
+                    <div>
+                        <h5 style="margin: 0; font-weight: 700;">Google Authenticator</h5>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">
+                            Add an extra layer of security to your account
+                        </p>
+                    </div>
+                    <span class="status-badge disabled" id="twoFactorStatus">Disabled</span>
+                </div>
+                <div id="twoFactorSetup" style="display: none;">
+                    <div class="qr-container">
+                        <p style="margin-bottom: 15px;">Scan this QR code with Google Authenticator:</p>
+                        <img id="qrCode" src="" alt="QR Code">
+                        <p style="margin: 15px 0 10px;">Or enter this secret key manually:</p>
+                        <div class="secret-key">
+                            <code id="secretKey">LOADING...</code>
+                            <button class="copy-btn" onclick="copySecretKey(this)">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label class="form-label">Enter 6-digit verification code:</label>
+                        <input type="text" class="form-input" id="verifyCode" maxlength="6" placeholder="000000" style="text-align: center; letter-spacing: 8px; font-size: 1.5rem;">
+                    </div>
+                    <button class="btn-primary" onclick="verifyAndEnable2FA()">
+                        <i class="fas fa-check"></i> Verify & Enable
+                    </button>
+                </div>
+                <div id="twoFactorEnabled" style="display: none;">
+                    <p style="color: #059669; margin-bottom: 15px;">
+                        <i class="fas fa-check-circle"></i> Two-factor authentication is enabled
+                    </p>
+                    <button class="btn-primary" style="background: #ef4444;" onclick="disable2FA()">
+                        <i class="fas fa-times"></i> Disable 2FA
+                    </button>
+                </div>
+                <button class="btn-primary" id="enable2FABtn" onclick="setup2FA()">
+                    <i class="fas fa-shield-alt"></i> Enable 2FA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div class="tab-content" id="tab-orders">
+        <div class="profile-card">
+            <div class="card-title">
+                <i class="fas fa-history"></i>
+                <span>Order History</span>
+            </div>
+            <div id="ordersList">
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h4>Loading orders...</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal-overlay" id="orderModal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h4 style="margin: 0; font-weight: 700;">Order Details</h4>
+            <button onclick="closeOrderModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div id="orderDetails"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Check if user is logged in
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if (!user) {
+    window.location.href = '../auth/login.html';
+}
+
+// Load user data
+document.getElementById('userName').textContent = `${user.first_name || ''} ${user.last_name || user.username}`;
+document.getElementById('userEmail').textContent = user.email;
+document.getElementById('firstName').value = user.first_name || '';
+document.getElementById('lastName').value = user.last_name || '';
+document.getElementById('email').value = user.email;
+document.getElementById('phone').value = user.phone || '';
+
+// Tab switching
+document.querySelectorAll('.profile-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        this.classList.add('active');
+        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+
+        if (this.dataset.tab === 'orders') {
+            loadOrders();
+        }
+        if (this.dataset.tab === 'security') {
+            check2FAStatus();
+        }
+    });
+});
+
+// Show alert
+function showAlert(message, type) {
+    const alert = document.getElementById('alertBox');
+    alert.textContent = message;
+    alert.className = 'alert ' + type;
+    setTimeout(() => alert.className = 'alert', 4000);
+}
+
+// Profile form
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    try {
+        const response = await fetch('/api/auth/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                phone: document.getElementById('phone').value
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showAlert('Profile updated successfully!', 'success');
+            // Update local storage
+            user.first_name = document.getElementById('firstName').value;
+            user.last_name = document.getElementById('lastName').value;
+            localStorage.setItem('user', JSON.stringify(user));
+        } else {
+            showAlert(data.message || 'Failed to update profile', 'error');
+        }
+    } catch (error) {
+        showAlert('Connection error', 'error');
+    }
+});
+
+// Password form
+document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (newPassword !== confirmPassword) {
+        showAlert('Passwords do not match', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/auth/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                current_password: document.getElementById('currentPassword').value,
+                new_password: newPassword
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showAlert('Password changed successfully!', 'success');
+            document.getElementById('passwordForm').reset();
+        } else {
+            showAlert(data.message || 'Failed to change password', 'error');
+        }
+    } catch (error) {
+        showAlert('Connection error', 'error');
+    }
+});
+
+// 2FA Functions
+async function check2FAStatus() {
+    try {
+        const response = await fetch('/api/auth/2fa-status');
+        const data = await response.json();
+
+        if (data.enabled) {
+            document.getElementById('twoFactorCard').classList.add('enabled');
+            document.getElementById('twoFactorStatus').textContent = 'Enabled';
+            document.getElementById('twoFactorStatus').className = 'status-badge enabled';
+            document.getElementById('enable2FABtn').style.display = 'none';
+            document.getElementById('twoFactorEnabled').style.display = 'block';
+            document.getElementById('twoFactorSetup').style.display = 'none';
+        } else {
+            document.getElementById('twoFactorCard').classList.remove('enabled');
+            document.getElementById('twoFactorStatus').textContent = 'Disabled';
+            document.getElementById('twoFactorStatus').className = 'status-badge disabled';
+            document.getElementById('enable2FABtn').style.display = 'block';
+            document.getElementById('twoFactorEnabled').style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Failed to check 2FA status:', error);
+    }
+}
+
+function copySecretKey(btn) {
+    const secretKey = document.getElementById('secretKey').textContent;
+    navigator.clipboard.writeText(secretKey).then(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = secretKey;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+
+async function setup2FA() {
+    try {
+        const response = await fetch('/api/auth/2fa-setup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            document.getElementById('qrCode').src = data.qr_code;
+            document.getElementById('secretKey').textContent = data.secret;
+            document.getElementById('twoFactorSetup').style.display = 'block';
+            document.getElementById('enable2FABtn').style.display = 'none';
+        } else {
+            showAlert(data.message || 'Failed to setup 2FA', 'error');
+        }
+    } catch (error) {
+        showAlert('Connection error', 'error');
+    }
+}
+
+async function verifyAndEnable2FA() {
+    const code = document.getElementById('verifyCode').value;
+    if (code.length !== 6) {
+        showAlert('Please enter a 6-digit code', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/auth/2fa-verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showAlert('2FA enabled successfully!', 'success');
+            check2FAStatus();
+        } else {
+            showAlert(data.message || 'Invalid verification code', 'error');
+        }
+    } catch (error) {
+        showAlert('Connection error', 'error');
+    }
+}
+
+async function disable2FA() {
+    if (!confirm('Are you sure you want to disable two-factor authentication?')) return;
+
+    try {
+        const response = await fetch('/api/auth/2fa-disable', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showAlert('2FA disabled successfully!', 'success');
+            check2FAStatus();
+        } else {
+            showAlert(data.message || 'Failed to disable 2FA', 'error');
+        }
+    } catch (error) {
+        showAlert('Connection error', 'error');
+    }
+}
+
+// Load Orders
+async function loadOrders() {
+    try {
+        const response = await fetch(`/api/orders/customer/${user.email}`);
+        const data = await response.json();
+
+        const ordersList = document.getElementById('ordersList');
+
+        if (!data.success || !data.orders || data.orders.length === 0) {
+            ordersList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h4>No orders yet</h4>
+                    <p>Your order history will appear here</p>
+                    <a href="../shop/medicines.html" class="btn-primary" style="display: inline-block; margin-top: 15px; text-decoration: none;">
+                        Start Shopping
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        ordersList.innerHTML = data.orders.map(order => `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <span class="order-id">${order.order_number || order.order_id}</span>
+                        <span style="color: #64748b; font-size: 0.9rem; margin-left: 10px;">
+                            ${new Date(order.created_at).toLocaleDateString()}
+                        </span>
+                    </div>
+                    <span class="order-status ${order.status.toLowerCase()}">${order.status}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="order-items">
+                        ${order.items_count || order.items?.length || 0} items
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="order-total">Rs. ${parseFloat(order.total_amount).toLocaleString()}</span>
+                        <button class="view-details-btn" onclick="viewOrderDetails('${order.id}')">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Failed to load orders:', error);
+        document.getElementById('ordersList').innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h4>Failed to load orders</h4>
+                <p>Please try again later</p>
+            </div>
+        `;
+    }
+}
+
+async function viewOrderDetails(orderId) {
+    try {
+        const response = await fetch(`/api/orders/${orderId}`);
+        const data = await response.json();
+
+        if (data.success && data.order) {
+            const order = data.order;
+            document.getElementById('orderDetails').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Order ID:</strong> ${order.order_number || order.order_id}</p>
+                    <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                    <p><strong>Status:</strong> <span class="order-status ${order.status.toLowerCase()}">${order.status}</span></p>
+                    <p><strong>Delivery Address:</strong> ${order.address}</p>
+                </div>
+                <h5 style="font-weight: 700; margin-bottom: 15px;">Items:</h5>
+                ${order.items?.map(item => `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
+                        <div>
+                            <strong>${item.medicine_name || item.medicine?.name}</strong>
+                            <span style="color: #64748b;"> x${item.quantity}</span>
+                        </div>
+                        <span>Rs. ${parseFloat(item.subtotal || item.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                `).join('') || '<p>No items</p>'}
+                <div style="border-top: 2px solid #e2e8f0; margin-top: 15px; padding-top: 15px; text-align: right;">
+                    <strong style="font-size: 1.2rem;">Total: Rs. ${parseFloat(order.total_amount).toLocaleString()}</strong>
+                </div>
+            `;
+            document.getElementById('orderModal').classList.add('active');
+        }
+    } catch (error) {
+        showAlert('Failed to load order details', 'error');
+    }
+}
+
+function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('active');
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    window.location.href = '../auth/login.html';
+}
+
+// Initial load
+check2FAStatus();
+</script>
+
+</body>
+</html>

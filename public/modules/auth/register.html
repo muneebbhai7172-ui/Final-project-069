@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>Create Account - Muneeb Drug House | Your Trusted Pharmacy</title>
+    <meta name="theme-color" content="#0077b6">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #00b4d8;
+            --primary-dark: #023e8a;
+            --secondary: #48cae4;
+            --accent: #90e0ef;
+            --success: #2a9d8f;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --dark: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* Visual Section */
+        .visual-section {
+            width: 45%;
+            min-width: 45%;
+            background: linear-gradient(135deg, #023e8a 0%, #0077b6 30%, #00b4d8 70%, #48cae4 100%);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            overflow: hidden;
+        }
+
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .bg-mesh {
+            background-image:
+                radial-gradient(at 20% 30%, rgba(144, 224, 239, 0.4) 0px, transparent 50%),
+                radial-gradient(at 80% 70%, rgba(72, 202, 228, 0.3) 0px, transparent 50%);
+            animation: meshFloat 15s ease-in-out infinite;
+        }
+
+        @keyframes meshFloat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: floatIcon 8s ease-in-out infinite;
+        }
+
+        .floating-icon i { font-size: 1.5rem; color: white; }
+
+        .floating-icon:nth-child(1) { top: 8%; left: 10%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 25%; right: 10%; animation-delay: 2s; }
+        .floating-icon:nth-child(3) { bottom: 35%; left: 8%; animation-delay: 4s; }
+        .floating-icon:nth-child(4) { bottom: 10%; right: 15%; animation-delay: 6s; }
+        .floating-icon:nth-child(5) { top: 50%; left: 20%; animation-delay: 1s; }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: orbPulse 10s ease-in-out infinite;
+        }
+
+        .glow-orb-1 { width: 250px; height: 250px; background: rgba(144, 224, 239, 0.4); top: -80px; right: -80px; }
+        .glow-orb-2 { width: 200px; height: 200px; background: rgba(0, 180, 216, 0.3); bottom: -60px; left: -60px; animation-delay: 5s; }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Floating Medical Images */
+        .floating-images {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-med-img {
+            position: absolute;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: floatMedImg 10s ease-in-out infinite;
+            opacity: 0.9;
+        }
+
+        .floating-med-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        .floating-med-img-1 {
+            width: 110px;
+            height: 110px;
+            top: 3%;
+            right: 5%;
+            animation-delay: 0s;
+        }
+
+        .floating-med-img-2 {
+            width: 95px;
+            height: 95px;
+            bottom: 8%;
+            left: 3%;
+            animation-delay: 2.5s;
+        }
+
+        .floating-med-img-3 {
+            width: 80px;
+            height: 80px;
+            top: 55%;
+            right: 2%;
+            animation-delay: 5s;
+        }
+
+        @keyframes floatMedImg {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            25% {
+                transform: translateY(-12px) rotate(2deg) scale(1.03);
+            }
+            50% {
+                transform: translateY(-6px) rotate(0deg) scale(1.05);
+            }
+            75% {
+                transform: translateY(-15px) rotate(-2deg) scale(1.03);
+            }
+        }
+
+        .img-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130%;
+            height: 130%;
+            background: radial-gradient(circle, rgba(144, 224, 239, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: imgGlow 4s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes imgGlow {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 420px;
+        }
+
+        .brand-logo {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .brand-logo i { font-size: 3rem; color: white; }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .brand-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+        /* Steps Indicator */
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.5;
+            transition: all 0.4s ease;
+        }
+
+        .step.active { opacity: 1; }
+        .step.completed { opacity: 0.8; }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .step.active .step-circle {
+            background: white;
+            color: var(--primary);
+        }
+
+        .step.completed .step-circle {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        /* Benefits */
+        .benefits-list {
+            text-align: left;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .benefit-item i {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .benefit-item span {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Form Section */
+        .form-section {
+            margin-left: 45%;
+            width: 55%;
+            min-height: 100vh;
+            padding: 50px 80px;
+            background: var(--white);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-form {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-500);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: var(--gray-100);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+            background: rgba(0, 119, 182, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .form-header { margin-bottom: 35px; }
+
+        .form-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .form-header h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-header p {
+            font-size: 1rem;
+            color: var(--gray-500);
+        }
+
+        .alert-box {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-box.error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+        .alert-box.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .register-form { max-width: 550px; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group { margin-bottom: 22px; }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-label i { color: var(--primary); font-size: 0.9rem; }
+
+        .form-label .required { color: #dc2626; }
+
+        .input-wrapper { position: relative; }
+
+        .form-input, .form-select {
+            width: 100%;
+            height: 52px;
+            padding: 0 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--dark);
+            background: var(--gray-100);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
+        }
+
+        .form-input::placeholder { color: var(--gray-500); }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover { color: var(--primary); }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-fill.weak { width: 33%; background: #ef4444; }
+        .strength-fill.medium { width: 66%; background: #f59e0b; }
+        .strength-fill.strong { width: 100%; background: #22c55e; }
+
+        .strength-text {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        /* Role Selector */
+        .role-selector {
+            display: flex;
+            gap: 15px;
+        }
+
+        .role-option {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .role-option input {
+            display: none;
+        }
+
+        .role-card {
+            padding: 20px 15px;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--gray-100);
+        }
+
+        .role-card i {
+            font-size: 2rem;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .role-card .role-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .role-card .role-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            display: block;
+        }
+
+        .role-option:hover .role-card {
+            border-color: var(--primary-light);
+            background: rgba(0, 119, 182, 0.05);
+        }
+
+        .role-option.active .role-card {
+            border-color: var(--primary);
+            background: rgba(0, 119, 182, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.2);
+        }
+
+        .role-option.active .role-card i {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* License Key Field */
+        .license-key-group {
+            animation: fadeSlideDown 0.4s ease;
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 200px;
+            }
+        }
+
+        .license-key-group .form-input {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+        }
+
+        .form-hint {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .form-hint i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        /* Terms Checkbox */
+        .terms-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .terms-check input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .terms-check label {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        .terms-check label a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-check label a:hover {
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 119, 182, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .submit-btn:hover::before { left: 100%; }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 119, 182, 0.4);
+        }
+
+        .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            gap: 15px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .divider span { color: var(--gray-500); font-size: 0.9rem; }
+
+        /* Social Buttons */
+        .social-btns {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            flex: 1;
+            height: 50px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary);
+            background: rgba(0, 119, 182, 0.05);
+            color: var(--primary);
+        }
+
+        .social-btn i { font-size: 1.2rem; }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--gray-500);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .visual-section { width: 40%; min-width: 40%; padding: 40px; }
+            .form-section { margin-left: 40%; width: 60%; padding: 40px 50px; }
+        }
+
+        @media (max-width: 992px) {
+            .visual-section { display: none; }
+            .form-section { margin-left: 0; width: 100%; padding: 30px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 576px) {
+            .form-section { padding: 25px 20px; }
+            .form-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Visual Section -->
+<section class="visual-section">
+    <div class="bg-layer bg-mesh"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <div class="floating-elements">
+        <div class="floating-icon"><i class="fas fa-heartbeat"></i></div>
+        <div class="floating-icon"><i class="fas fa-pills"></i></div>
+        <div class="floating-icon"><i class="fas fa-stethoscope"></i></div>
+        <div class="floating-icon"><i class="fas fa-capsules"></i></div>
+        <div class="floating-icon"><i class="fas fa-user-md"></i></div>
+    </div>
+
+    <!-- Floating Medical Images -->
+    <div class="floating-images">
+        <div class="floating-med-img floating-med-img-1">
+            <div class="img-glow"></div>
+            <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=250&h=250&fit=crop" alt="Medicine">
+        </div>
+        <div class="floating-med-img floating-med-img-2">
+            <div class="img-glow"></div>
+            <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=250&h=250&fit=crop" alt="Pills">
+        </div>
+        <div class="floating-med-img floating-med-img-3">
+            <div class="img-glow"></div>
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=250&h=250&fit=crop" alt="Healthcare">
+        </div>
+    </div>
+
+    <div class="brand-content" data-aos="fade-right">
+        <div class="brand-logo">
+            <i class="fas fa-plus-circle"></i>
+        </div>
+        <h1 class="brand-title">Join Muneeb Drug House</h1>
+        <p class="brand-subtitle">
+            Create your account and enjoy exclusive benefits, faster checkout,
+            and personalized healthcare services.
+        </p>
+
+        <div class="steps-indicator">
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <span class="step-label">Account</span>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <span class="step-label">Verify</span>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle"><i class="fas fa-check"></i></div>
+                <span class="step-label">Done</span>
+            </div>
+        </div>
+
+        <div class="benefits-list" data-aos="fade-up" data-aos-delay="200">
+            <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Track your orders in real-time</span>
+            </div>
+            <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Save prescriptions & reorder easily</span>
+            </div>
+            <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Exclusive discounts & offers</span>
+            </div>
+            <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>24/7 pharmacist consultation</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Form Section -->
+<section class="form-section">
+    <div class="register-form" data-aos="fade-left">
+        <a href="../frontend/index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+
+        <div class="form-header">
+            <h1>Create <span>Account</span></h1>
+            <p>Fill in your details to get started</p>
+        </div>
+
+        <div class="alert-box" id="alertBox">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="alertMessage"></span>
+        </div>
+
+        <form id="registerForm" novalidate>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>
+                        First Name <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" id="firstName" name="first_name"
+                           placeholder="John" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>
+                        Last Name <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" id="lastName" name="last_name"
+                           placeholder="Doe" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-envelope"></i>
+                    Email Address <span class="required">*</span>
+                </label>
+                <input type="email" class="form-input" id="email" name="email"
+                       placeholder="john@example.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-phone"></i>
+                    Phone Number <span class="required">*</span>
+                </label>
+                <input type="tel" class="form-input" id="phone" name="phone"
+                       placeholder="03XX-XXXXXXX" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-input" id="password" name="password"
+                               placeholder="Create password" required autocomplete="new-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', 'passIcon1')">
+                            <i class="fas fa-eye" id="passIcon1"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Enter password</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Confirm Password <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-input" id="confirmPassword" name="password_confirmation"
+                               placeholder="Confirm password" required autocomplete="new-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', 'passIcon2')">
+                            <i class="fas fa-eye" id="passIcon2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Delivery Address
+                </label>
+                <input type="text" class="form-input" id="address" name="address"
+                       placeholder="Enter your full address (optional)">
+            </div>
+
+            <!-- Role Selection -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user-tag"></i>
+                    Account Type <span class="required">*</span>
+                </label>
+                <div class="role-selector">
+                    <label class="role-option active" data-role="customer">
+                        <input type="radio" name="role" value="customer" checked>
+                        <div class="role-card">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="role-title">Customer</span>
+                            <span class="role-desc">Shop & order medicines</span>
+                        </div>
+                    </label>
+                    <label class="role-option" data-role="admin">
+                        <input type="radio" name="role" value="admin">
+                        <div class="role-card">
+                            <i class="fas fa-user-shield"></i>
+                            <span class="role-title">Admin</span>
+                            <span class="role-desc">Requires license key</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- License Key Field (Hidden by default, shown when admin selected) -->
+            <div class="form-group license-key-group" id="licenseKeyGroup" style="display: none;">
+                <label class="form-label">
+                    <i class="fas fa-key"></i>
+                    License Key <span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" id="licenseKey" name="license_key"
+                       placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
+                       style="text-transform: uppercase; letter-spacing: 1px;">
+                <small class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Enter the license key provided for admin access
+                </small>
+            </div>
+
+            <div class="terms-check">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                    I also consent to receive promotional communications.
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">Create Account</span>
+                <i class="fas fa-arrow-right"></i>
+                <div class="spinner"></div>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>or sign up with</span>
+        </div>
+
+        <div class="social-btns">
+            <a href="#" class="social-btn">
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+        </div>
+
+        <p class="login-link">
+            Already have an account?
+            <a href="login.html">Sign In</a>
+        </p>
+    </div>
+</section>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- Laravel API Client -->
+<script src="../../js/api-client.js"></script>
+
+<script>
+AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true });
+
+// Role Selection Handler
+document.querySelectorAll('.role-option').forEach(option => {
+    option.addEventListener('click', function() {
+        // Remove active class from all options
+        document.querySelectorAll('.role-option').forEach(opt => opt.classList.remove('active'));
+        // Add active class to clicked option
+        this.classList.add('active');
+        // Check the radio button
+        this.querySelector('input[type="radio"]').checked = true;
+
+        // Show/hide license key field based on role
+        const role = this.dataset.role;
+        const licenseKeyGroup = document.getElementById('licenseKeyGroup');
+
+        if (role === 'admin') {
+            licenseKeyGroup.style.display = 'block';
+            document.getElementById('licenseKey').required = true;
+        } else {
+            licenseKeyGroup.style.display = 'none';
+            document.getElementById('licenseKey').required = false;
+            document.getElementById('licenseKey').value = '';
+        }
+    });
+});
+
+function togglePassword(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+// Password Strength Checker
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    fill.className = 'strength-fill';
+
+    if (password.length === 0) {
+        text.textContent = 'Enter password';
+    } else if (strength <= 1) {
+        fill.classList.add('weak');
+        text.textContent = 'Weak password';
+    } else if (strength <= 2) {
+        fill.classList.add('medium');
+        text.textContent = 'Medium strength';
+    } else {
+        fill.classList.add('strong');
+        text.textContent = 'Strong password';
+    }
+});
+
+function showAlert(message, type = 'error') {
+    const alertBox = document.getElementById('alertBox');
+    const alertMessage = document.getElementById('alertMessage');
+
+    alertBox.className = 'alert-box ' + type;
+    alertMessage.textContent = message;
+    alertBox.style.display = 'flex';
+
+    setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+}
+
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnIcon = submitBtn.querySelector('.fa-arrow-right');
+    const spinner = submitBtn.querySelector('.spinner');
+
+    // Get selected role
+    const selectedRole = document.querySelector('input[name="role"]:checked').value;
+    const licenseKey = document.getElementById('licenseKey').value.trim();
+
+    const formData = {
+        first_name: document.getElementById('firstName').value.trim(),
+        last_name: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        password: document.getElementById('password').value,
+        password_confirmation: document.getElementById('confirmPassword').value,
+        address: document.getElementById('address').value.trim(),
+        role: selectedRole
+    };
+
+    // Add license key if admin role selected
+    if (selectedRole === 'admin') {
+        if (!licenseKey) {
+            showAlert('License key is required for admin registration', 'error');
+            return;
+        }
+        formData.license_key = licenseKey;
+    }
+
+    // Validation
+    if (!formData.first_name || !formData.last_name || !formData.email || !formData.phone || !formData.password) {
+        showAlert('Please fill in all required fields', 'error');
+        return;
+    }
+
+    if (!formData.email.includes('@')) {
+        showAlert('Please enter a valid email address', 'error');
+        return;
+    }
+
+    if (formData.password.length < 8) {
+        showAlert('Password must be at least 8 characters', 'error');
+        return;
+    }
+
+    if (formData.password !== formData.password_confirmation) {
+        showAlert('Passwords do not match', 'error');
+        return;
+    }
+
+    if (!document.getElementById('terms').checked) {
+        showAlert('Please accept the terms and conditions', 'error');
+        return;
+    }
+
+    // Show loading
+    submitBtn.disabled = true;
+    btnText.textContent = 'Creating account...';
+    btnIcon.style.display = 'none';
+    spinner.style.display = 'block';
+
+    try {
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Account created successfully! Redirecting...', 'success');
+
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step3').classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        } else {
+            showAlert(data.message || 'Registration failed', 'error');
+        }
+    } catch (error) {
+        console.error('Registration error:', error);
+        showAlert('Connection error. Please try again.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Create Account';
+        btnIcon.style.display = 'inline';
+        spinner.style.display = 'none';
+    }
+});
+</script>
+
+</body>
+</html>

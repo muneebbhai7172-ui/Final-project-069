@@ -1,0 +1,50 @@
+/* CSS Variables - Dark Theme */
+[data-theme="dark"] {
+    /* Dark Gradient Colors */
+    --primary-gradient: linear-gradient(135deg, #4a7de8 0%, #2c5aa0 100%);
+    --secondary-gradient: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    --success-gradient: linear-gradient(135deg, #2d7a5a 0%, #1e5a42 100%);
+    --warning-gradient: linear-gradient(135deg, #b87d3e 0%, #8a5d2e 100%);
+    --danger-gradient: linear-gradient(135deg, #c54961 0%, #a03850 100%);
+    --info-gradient: linear-gradient(135deg, #3a6ea5 0%, #2a5280 100%);
+    --light-gradient: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+    --card-gradient: linear-gradient(135deg, #2d2d2d 0%, #252525 100%);
+    --sidebar-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    
+    /* Dark Color Palette */
+    --primary-color: #5a8fff;
+    --primary-light: #7ba5ff;
+    --primary-dark: #3a6fd8;
+    --secondary-color: #e8965f;
+    --accent-color: #d084ab;
+    --success-color: #4fb888;
+    --warning-color: #e0a556;
+    --danger-color: #e06b81;
+    --info-color: #5495df;
+    
+    /* Dark Text Colors */
+    --text-primary: #e4e4e7;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --text-light: #52525b;
+    
+    /* Dark Background Colors */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --bg-light: #242424;
+    --bg-muted: #333333;
+    
+    /* Dark Border & Shadow */
+    --border-color: #404040;
+    --border-light: #353535;
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+    
+    /* Animation Timing */
+    --transition-fast: 0.15s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}

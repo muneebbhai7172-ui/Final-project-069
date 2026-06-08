@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Waqar Drug House</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- SheetJS for Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Universal Admin Sidebar Loader -->
+    <script src="../js/admin-sidebar-loader.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/components/_modern-sidebar.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .reports-container {
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 10px 0;
+        }
+
+        /* Report Type Cards */
+        .report-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-top: 4px solid transparent;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card.active {
+            border-top-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .report-card.sales { border-top-color: #10b981; }
+        .report-card.stock { border-top-color: #f59e0b; }
+        .report-card.expiry { border-top-color: #ef4444; }
+        .report-card.customer { border-top-color: #8b5cf6; }
+
+        .report-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .report-card.sales .report-icon { background: linear-gradient(135deg, #10b981, #059669); }
+        .report-card.stock .report-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .report-card.expiry .report-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .report-card.customer .report-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .report-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 8px 0;
+        }
+
+        .report-description {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .filter-input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-generate {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-export {
+            padding: 12px 24px;
+            background: white;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .btn-export.pdf { color: #ef4444; }
+        .btn-export.pdf:hover { border-color: #ef4444; }
+
+        .btn-export.excel { color: #10b981; }
+        .btn-export.excel:hover { border-color: #10b981; }
+
+        /* Results Section */
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .results-summary {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .summary-icon.green { background: #10b981; }
+        .summary-icon.blue { background: #3b82f6; }
+        .summary-icon.orange { background: #f59e0b; }
+
+        .summary-details h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .summary-details p {
+            font-size: 12px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .results-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            height: 400px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .no-data i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .reports-container {
+                padding: 15px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .btn-generate, .btn-export {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="reports-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Reports & Analytics</h1>
+            <p>Generate comprehensive reports with charts and export to PDF or Excel</p>
+        </div>
+
+        <!-- Report Type Selection -->
+        <div class="report-types">
+            <div class="report-card sales active" onclick="selectReportType('sales')">
+                <div class="report-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3 class="report-title">Sales Report</h3>
+                <p class="report-description">Daily, weekly, and monthly sales analytics</p>
+            </div>
+
+            <div class="report-card stock" onclick="selectReportType('stock')">
+                <div class="report-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3 class="report-title">Stock Report</h3>
+                <p class="report-description">Current inventory and stock levels</p>
+            </div>
+
+            <div class="report-card expiry" onclick="selectReportType('expiry')">
+                <div class="report-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="report-title">Expiry Report</h3>
+                <p class="report-description">Medicines nearing expiration date</p>
+            </div>
+
+            <div class="report-card customer" onclick="selectReportType('customer')">
+                <div class="report-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="report-title">Customer Report</h3>
+                <p class="report-description">Customer purchase history and analytics</p>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <h3 class="filter-title" id="filterTitle">Sales Report Filters</h3>
+            </div>
+
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Date From</label>
+                    <input type="date" class="filter-input" id="dateFrom" value="2025-10-01">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Date To</label>
+                    <input type="date" class="filter-input" id="dateTo" value="2025-10-30">
+                </div>
+
+                <div class="filter-group" id="categoryFilter">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-input" id="category">
+                        <option value="">All Categories</option>
+                        <option value="Pain Relief">Pain Relief</option>
+                        <option value="Antibiotics">Antibiotics</option>
+                        <option value="Vitamins">Vitamins</option>
+                        <option value="Antacids">Antacids</option>
+                    </select>
+                </div>
+
+                <div class="filter-group" id="periodFilter">
+                    <label class="filter-label">Period</label>
+                    <select class="filter-input" id="period">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-generate" onclick="generateReport()">
+                    <i class="fas fa-chart-bar"></i>
+                    Generate Report
+                </button>
+                <button class="btn-export pdf" onclick="exportToPDF()">
+                    <i class="fas fa-file-pdf"></i>
+                    Export PDF
+                </button>
+                <button class="btn-export excel" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel"></i>
+                    Export Excel
+                </button>
+                <button class="btn-export" onclick="printReport()">
+                    <i class="fas fa-print"></i>
+                    Print
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- Print Only Header -->
+            <div class="print-header" style="display: none;">
+                <div class="print-logo">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <h1 class="print-company-name">Waqar Drug House</h1>
+                <h2 class="print-report-title" id="printReportTitle">Sales Report</h2>
+                <p class="print-report-date" id="printReportDate"></p>
+            </div>
+            
+            <!-- Printable Content Container -->
+            <div id="printableContent">
+                <div class="results-header">
+                    <h3 class="results-title" id="resultsTitle">Sales Report Results</h3>
+                    <div class="results-summary" id="resultsSummary">
+                        <div class="summary-item">
+                            <div class="summary-icon green">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="totalRevenue">Rs. 45,250</h4>
+                                <p>Total Revenue</p>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon blue">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="totalOrders">156</h4>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon orange">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="averageOrder">Rs. 290</h4>
+                                <p>Average Order</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="chart-container">
+                    <canvas id="reportChart"></canvas>
+                </div>
+
+                <!-- Data Table -->
+                <div style="overflow-x: auto; margin-top: 30px;">
+                    <table class="results-table" id="resultsTable">
+                        <thead id="resultsTableHead">
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Print Footer -->
+            <div class="print-footer" style="display: none;">
+                <p>Generated on <span id="printGeneratedDate"></span> | Waqar Drug House Management System</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Scripts -->
+<script>
+    let currentReportType = 'sales';
+    let reportData = [];
+    let reportChart = null;
+
+    // Select Report Type
+    function selectReportType(type) {
+        currentReportType = type;
+        
+        // Update active card
+        document.querySelectorAll('.report-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.querySelector(`.report-card.${type}`).classList.add('active');
+        
+        // Update filter title
+        const titles = {
+            sales: 'Sales Report Filters',
+            stock: 'Stock Report Filters',
+            expiry: 'Expiry Report Filters',
+            customer: 'Customer Report Filters'
+        };
+        document.getElementById('filterTitle').textContent = titles[type];
+        
+        // Show/hide filters based on type
+        document.getElementById('categoryFilter').style.display = type === 'sales' || type === 'stock' ? 'flex' : 'none';
+        document.getElementById('periodFilter').style.display = type === 'sales' ? 'flex' : 'none';
+    }
+
+    // Generate Report
+    function generateReport() {
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        
+        if (!dateFrom || !dateTo) {
+            showToast('Please select date range', 'warning');
+            return;
+        }
+
+        // Show loading
+        document.getElementById('resultsSection').classList.add('show');
+        
+        // Build query parameters
+        const params = new URLSearchParams({
+            type: currentReportType,
+            from: dateFrom,
+            to: dateTo
+        });
+
+        if (currentReportType === 'sales') {
+            params.append('group', document.getElementById('period').value);
+        }
+        
+        // Fetch report data
+        fetch(`../api/reports.php?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Report data received:', data);
+            
+            if (data.success) {
+                reportData = data.data;
+                displayReport(data.data);
+                showToast('Report generated successfully!', 'success');
+            } else {
+                console.error('Report error:', data.message);
+                showToast('Error: ' + (data.message || 'Failed to generate report'), 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            showToast('Failed to fetch report data: ' + error.message, 'error');
+        });
+    }
+
+    // Toast notification
+    function showToast(message, type = 'info') {
+        const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+        const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+        const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        toast.style.cssText = `background: ${bgColor}; color: white; margin-bottom: 10px; border-radius: 8px;`;
+        toast.innerHTML = `
+            <div class="toast-body d-flex align-items-center">
+                <i class="fas fa-${icon} me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
+        document.body.appendChild(container);
+        return container;
+    }
+
+    // Generate Sample Data
+    function generateSampleData(type) {
+        if (type === 'sales') {
+            return {
+                summary: {
+                    totalRevenue: 45250,
+                    totalOrders: 156,
+                    averageOrder: 290
+                },
+                chartData: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    values: [10500, 12800, 9600, 12350]
+                },
+                tableData: [
+                    { date: '2025-10-01', orders: 42, revenue: 12150, avgOrder: 289 },
+                    { date: '2025-10-08', orders: 38, revenue: 11400, avgOrder: 300 },
+                    { date: '2025-10-15', orders: 35, revenue: 10200, avgOrder: 291 },
+                    { date: '2025-10-22', orders: 41, revenue: 11500, avgOrder: 280 }
+                ]
+            };
+        } else if (type === 'stock') {
+            return {
+                summary: {
+                    totalItems: 250,
+                    lowStock: 12,
+                    outOfStock: 3
+                },
+                tableData: [
+                    { name: 'Paracetamol 500mg', category: 'Pain Relief', quantity: 45, status: 'In Stock' },
+                    { name: 'Ibuprofen 400mg', category: 'Pain Relief', quantity: 8, status: 'Low Stock' },
+                    { name: 'Amoxicillin 250mg', category: 'Antibiotics', quantity: 0, status: 'Out of Stock' },
+                    { name: 'Vitamin C 1000mg', category: 'Vitamins', quantity: 120, status: 'In Stock' }
+                ]
+            };
+        } else if (type === 'expiry') {
+            return {
+                summary: {
+                    expiring30: 8,
+                    expiring60: 15,
+                    expiring90: 23
+                },
+                tableData: [
+                    { name: 'Aspirin 100mg', batch: 'BATCH001', expiryDate: '2025-11-15', daysLeft: 16 },
+                    { name: 'Cough Syrup', batch: 'BATCH045', expiryDate: '2025-11-28', daysLeft: 29 },
+                    { name: 'Eye Drops', batch: 'BATCH078', expiryDate: '2025-12-10', daysLeft: 41 }
+                ]
+            };
+        } else if (type === 'customer') {
+            return {
+                summary: {
+                    totalCustomers: 892,
+                    newCustomers: 45,
+                    repeatCustomers: 234
+                },
+                tableData: [
+                    { name: 'John Doe', orders: 12, totalSpent: 3450, lastVisit: '2025-10-28' },
+                    { name: 'Jane Smith', orders: 8, totalSpent: 2100, lastVisit: '2025-10-27' },
+                    { name: 'Bob Johnson', orders: 15, totalSpent: 4200, lastVisit: '2025-10-29' }
+                ]
+            };
+        }
+    }
+
+    // Display Report
+    function displayReport(data) {
+        console.log('Displaying report:', currentReportType, data);
+        
+        if (!data) {
+            console.error('No data to display');
+            showToast('No data received from server', 'error');
+            return;
+        }
+        
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsSummary = document.getElementById('resultsSummary');
+        
+        // Update title
+        const titles = {
+            sales: 'Sales Report Results',
+            stock: 'Stock Inventory Report',
+            expiry: 'Medicine Expiry Report',
+            customer: 'Customer Report Results'
+        };
+        resultsTitle.textContent = titles[currentReportType];
+        
+        // Update summary based on report type
+        if (currentReportType === 'stock') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-pills"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.total_medicines || 0}</div>
+                        <div class="summary-label">Total Medicines</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.low_stock || 0}</div>
+                        <div class="summary-label">Low Stock</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.out_of_stock || 0}</div>
+                        <div class="summary-label">Out of Stock</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(data.summary?.total_value || 0).toFixed(2)}</div>
+                        <div class="summary-label">Total Stock Value</div>
+                    </div>
+                </div>
+            `;
+        } else if (currentReportType === 'expiry') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.expired || 0}</div>
+                        <div class="summary-label">Expired</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.expiring_30_days || 0}</div>
+                        <div class="summary-label">Expiring in 30 Days</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-calendar-week"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.expiring_60_days || 0}</div>
+                        <div class="summary-label">Expiring in 60 Days</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(data.summary?.total_potential_loss || 0).toFixed(2)}</div>
+                        <div class="summary-label">Potential Loss</div>
+                    </div>
+                </div>
+            `;
+        } else if (currentReportType === 'sales') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(data.summary?.total_sales || 0).toFixed(2)}</div>
+                        <div class="summary-label">Total Revenue</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.total_orders || 0}</div>
+                        <div class="summary-label">Total Orders</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <div class="summary-value">Rs. ${parseFloat(data.summary?.avg_order_value || 0).toFixed(2)}</div>
+                        <div class="summary-label">Average Order</div>
+                    </div>
+                </div>
+            `;
+        } else if (currentReportType === 'customer') {
+            resultsSummary.innerHTML = `
+                <div class="summary-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.total_customers || 0}</div>
+                        <div class="summary-label">Total Customers</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-user-plus"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.new_customers || 0}</div>
+                        <div class="summary-label">New Customers</div>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-repeat"></i>
+                    <div>
+                        <div class="summary-value">${data.summary?.repeat_customers || 0}</div>
+                        <div class="summary-label">Repeat Customers</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Display chart if available
+        if (data.chart && data.chart.labels && data.chart.values) {
+            console.log('Chart data available, displaying...');
+            displayChart(data.chart);
+        } else {
+            console.warn('No chart data available');
+        }
+        
+        // Display table with all details
+        displayTable(data.details || data.tableData);
+    }
+
+    // Display Chart
+    function displayChart(data) {
+        console.log('Displaying chart with data:', data);
+        
+        // Validate data
+        if (!data || !data.labels || !data.values || data.labels.length === 0) {
+            console.warn('Invalid chart data:', data);
+            return;
+        }
+        
+        const canvas = document.getElementById('reportChart');
+        if (!canvas) {
+            console.error('Canvas element not found');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Destroy existing chart
+        if (reportChart) {
+            reportChart.destroy();
+        }
+        
+        // Determine chart label based on report type
+        let datasetLabel = 'Revenue';
+        if (currentReportType === 'stock' || currentReportType === 'inventory') {
+            datasetLabel = 'Quantity';
+        } else if (currentReportType === 'expiry') {
+            datasetLabel = 'Count';
+        } else if (currentReportType === 'customer') {
+            datasetLabel = 'Customers';
+        }
+        
+        // Create new chart
+        reportChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: datasetLabel,
+                    data: data.values,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (currentReportType === 'sales') {
+                                    label += 'Rs. ' + context.parsed.y.toFixed(2);
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                if (currentReportType === 'sales') {
+                                    return 'Rs. ' + value.toLocaleString();
+                                }
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('Chart created successfully');
+    }
+
+    // Display Table
+    function displayTable(data) {
+        const tableHead = document.getElementById('resultsTableHead');
+        const tableBody = document.getElementById('resultsTableBody');
+        
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="100%" class="no-data"><i class="fas fa-inbox"></i><br>No data available</td></tr>';
+            return;
+        }
+        
+        // Create headers
+        const headers = Object.keys(data[0]);
+        const headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header.charAt(0).toUpperCase() + header.slice(1).replace(/([A-Z])/g, ' $1');
+            headerRow.appendChild(th);
+        });
+        tableHead.appendChild(headerRow);
+        
+        // Create rows
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            headers.forEach(header => {
+                const td = document.createElement('td');
+                td.textContent = row[header];
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+    }
+
+    // Export to PDF
+    function exportToPDF() {
+        if (reportData.length === 0) {
+            alert('Please generate a report first');
+            return;
+        }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Add title
+        doc.setFontSize(20);
+        doc.text(currentReportType.toUpperCase() + ' REPORT', 14, 20);
+        
+        // Add date
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 14, 28);
+        
+        // Add table
+        if (reportData.tableData) {
+            const headers = Object.keys(reportData.tableData[0]);
+            const rows = reportData.tableData.map(row => headers.map(header => row[header]));
+            
+            doc.autoTable({
+                head: [headers.map(h => h.charAt(0).toUpperCase() + h.slice(1).replace(/([A-Z])/g, ' $1'))],
+                body: rows,
+                startY: 35,
+                theme: 'grid',
+                styles: { fontSize: 9 },
+                headStyles: { fillColor: [59, 130, 246] }
+            });
+        }
+        
+        // Save PDF
+        doc.save(currentReportType + '_report_' + new Date().toISOString().split('T')[0] + '.pdf');
+    }
+
+    // Export to Excel
+    function exportToExcel() {
+        if (reportData.length === 0) {
+            alert('Please generate a report first');
+            return;
+        }
+        
+        const ws = XLSX.utils.json_to_sheet(reportData.tableData || []);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, currentReportType.toUpperCase());
+        XLSX.writeFile(wb, currentReportType + '_report_' + new Date().toISOString().split('T')[0] + '.xlsx');
+    }
+
+    // Print Report
+    function printReport() {
+        if (reportData.length === 0 && !reportChart) {
+            alert('Please generate a report first');
+            return;
+        }
+        
+        // Update print header
+        const titles = {
+            sales: 'Sales Report',
+            stock: 'Stock Inventory Report',
+            expiry: 'Medicine Expiry Report',
+            customer: 'Customer Report'
+        };
+        
+        document.getElementById('printReportTitle').textContent = titles[currentReportType];
+        
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        document.getElementById('printReportDate').textContent = `Period: ${dateFrom} to ${dateTo}`;
+        
+        const now = new Date();
+        document.getElementById('printGeneratedDate').textContent = now.toLocaleString();
+        
+        // Trigger print
+        window.print();
+    }
+
+    // Initialize with authentication check and sample data
+    window.addEventListener('load', () => {
+        // Check authentication first
+        if (!sessionStorage.getItem('user_role')) {
+            window.location.href = '../login.html';
+            return;
+        }
+        
+        // Set default date range (last 30 days to today)
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        
+        document.getElementById('dateFrom').value = formatDate(thirtyDaysAgo);
+        document.getElementById('dateTo').value = formatDate(today);
+        
+        // Generate initial report with default dates
+        generateReport();
+    });
+</script>
+
+<!-- Sidebar JS -->
+<script src="../js/modern-sidebar.js"></script>
+
+<script>
+// Logout functions
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+}
+
+function performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Test</title>
+</head>
+<body>
+    <h1>Test JavaScript Functions</h1>
+    <button onclick="testFunctions()">Test Functions</button>
+    <div id="results"></div>
+
+    <script>
+        function testFunctions() {
+            const results = document.getElementById('results');
+            let html = '<h3>Function Tests:</h3>';
+
+            // Test if functions exist
+            const functionsToTest = [
+                'loadOrders',
+                'switchView',
+                'api'
+            ];
+
+            functionsToTest.forEach(func => {
+                const exists = typeof window[func] !== 'undefined';
+                html += `<p>${func}: ${exists ? '✓ Defined' : '✗ Undefined'} (type: ${typeof window[func]})</p>`;
+            });
+
+            // Test if we can access the orders page directly
+            html += '<h3>Direct API Test:</h3>';
+
+            fetch('http://localhost:8000/api/orders')
+                .then(response => response.json())
+                .then(data => {
+                    html += `<p>API Direct Access: ✓ Working (${data.total} orders)</p>`;
+                    results.innerHTML = html;
+                })
+                .catch(error => {
+                    html += `<p>API Direct Access: ✗ Error - ${error.message}</p>`;
+                    results.innerHTML = html;
+                });
+
+            results.innerHTML = html;
+        }
+
+        // Load the actual orders page script dynamically to test
+        function loadOrdersScript() {
+            fetch('/modules/orders/index.html')
+                .then(response => response.text())
+                .then(html => {
+                    // Extract script content
+                    const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+                    if (scriptMatch) {
+                        scriptMatch.forEach((script, index) => {
+                            if (script.includes('switchView') || script.includes('loadOrders')) {
+                                console.log(`Script ${index}:`, script.substring(0, 200) + '...');
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading script:', error);
+                });
+        }
+
+        window.onload = loadOrdersScript;
+    </script>
+</body>
+</html>

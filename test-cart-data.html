@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Data Inspector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .cart-item {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background: white;
+        }
+        .valid {
+            border-left: 4px solid #28a745;
+        }
+        .invalid {
+            border-left: 4px solid #dc3545;
+            background: #fff5f5;
+        }
+        .id-display {
+            font-family: monospace;
+            font-size: 14px;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .badge-valid {
+            background: #28a745;
+        }
+        .badge-invalid {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-shopping-cart text-primary"></i>
+                    Cart Data Inspector
+                </h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Cart Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="cart-items"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Total Items:</strong> <span id="total-items">0</span></p>
+                        <p><strong>Valid Items:</strong> <span id="valid-items" class="text-success">0</span></p>
+                        <p><strong>Invalid Items:</strong> <span id="invalid-items" class="text-danger">0</span></p>
+                        <hr>
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Valid medicine IDs should be between 1 and 100,000.
+                            IDs greater than 100,000 are likely timestamps (Date.now()).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-danger btn-block w-100 mb-2" onclick="clearInvalidItems()">
+                            <i class="fas fa-trash me-2"></i>Clear Invalid Items
+                        </button>
+                        <button class="btn btn-outline-danger btn-block w-100 mb-2" onclick="clearAllItems()">
+                            <i class="fas fa-trash-alt me-2"></i>Clear All Items
+                        </button>
+                        <button class="btn btn-primary btn-block w-100" onclick="location.reload()">
+                            <i class="fas fa-sync me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadCartData() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const container = document.getElementById('cart-items');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Your cart is empty
+                    </div>
+                `;
+                updateSummary(0, 0, 0);
+                return;
+            }
+
+            let validCount = 0;
+            let invalidCount = 0;
+
+            let html = '';
+            cart.forEach((item, index) => {
+                const isValid = item.id && item.id > 0 && item.id <= 100000;
+                if (isValid) {
+                    validCount++;
+                } else {
+                    invalidCount++;
+                }
+
+                const badgeClass = isValid ? 'badge-valid' : 'badge-invalid';
+                const itemClass = isValid ? 'valid' : 'invalid';
+                const statusText = isValid ? 'Valid' : 'Invalid (likely timestamp)';
+
+                html += `
+                    <div class="cart-item ${itemClass}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">
+                                    <span class="badge ${badgeClass}">${statusText}</span>
+                                    ${item.name || 'Unknown'}
+                                </h6>
+                                <p class="mb-1">
+                                    <strong>ID:</strong>
+                                    <span class="id-display">${item.id || 'N/A'}</span>
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Price:</strong> Rs. ${item.price || 0}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Quantity:</strong> ${item.quantity || 0}
+                                </p>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">Item #${index + 1}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateSummary(cart.length, validCount, invalidCount);
+        }
+
+        function updateSummary(total, valid, invalid) {
+            document.getElementById('total-items').textContent = total;
+            document.getElementById('valid-items').textContent = valid;
+            document.getElementById('invalid-items').textContent = invalid;
+        }
+
+        function clearInvalidItems() {
+            if (!confirm('Remove all invalid items from cart?')) {
+                return;
+            }
+
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const validCart = cart.filter(item => {
+                return item.id && item.id > 0 && item.id <= 100000;
+            });
+
+            localStorage.setItem('cart', JSON.stringify(validCart));
+
+            alert(`Removed ${cart.length - validCart.length} invalid item(s)`);
+            loadCartData();
+        }
+
+        function clearAllItems() {
+            if (!confirm('Clear ALL items from cart? This cannot be undone.')) {
+                return;
+            }
+
+            localStorage.setItem('cart', JSON.stringify([]));
+            alert('Cart cleared successfully');
+            loadCartData();
+        }
+
+        // Load cart data on page load
+        loadCartData();
+    </script>
+</body>
+</html>

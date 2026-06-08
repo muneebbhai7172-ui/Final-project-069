@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock API Test</title>
+</head>
+<body>
+    <h1>Stock API Test</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+
+    <script>
+        function testAPI() {
+            const url = 'http://127.0.0.1:8000/api/medicines/stock';
+            console.log('Testing URL:', url);
+
+            fetch(url)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data received:', data);
+                    document.getElementById('result').innerHTML = `
+                        <h2>Success!</h2>
+                        <p>Total medicines: ${data.total}</p>
+                        <p>Data length: ${data.data.length}</p>
+                        <pre>${JSON.stringify(data.data[0], null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = `
+                        <h2 style="color: red;">Error!</h2>
+                        <p>${error.message}</p>
+                    `;
+                });
+        }
+
+        // Auto-test on load
+        window.onload = () => {
+            setTimeout(testAPI, 1000);
+        };
+    </script>
+</body>
+</html>

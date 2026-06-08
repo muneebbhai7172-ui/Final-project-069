@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Loading Diagnostics</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        h1 {
+            color: #4ec9b0;
+        }
+        .test {
+            background: #252526;
+            border-left: 3px solid #007acc;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test h3 {
+            margin-top: 0;
+            color: #569cd6;
+        }
+        .success {
+            color: #4ec9b0;
+        }
+        .error {
+            color: #f48771;
+        }
+        .info {
+            color: #dcdcaa;
+        }
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        .loading {
+            color: #ffa500;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Stock Page Loading Diagnostics</h1>
+    <p>This page will help diagnose why the stock page isn't loading data.</p>
+
+    <div id="tests"></div>
+
+    <script>
+        const testsDiv = document.getElementById('tests');
+
+        function addTest(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = 'test';
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <div class="${type}">${content}</div>
+            `;
+            testsDiv.appendChild(div);
+        }
+
+        function addLoadingTest(title) {
+            const div = document.createElement('div');
+            div.className = 'test';
+            div.id = title.replace(/\s+/g, '-');
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <div class="loading">⏳ Running test...</div>
+            `;
+            testsDiv.appendChild(div);
+            return div;
+        }
+
+        function updateTest(div, content, type = 'info') {
+            const contentDiv = div.querySelector('div');
+            contentDiv.className = type;
+            contentDiv.innerHTML = content;
+        }
+
+        // Test 1: Check if stock.js is loaded
+        const test1 = addLoadingTest('Test 1: Check stock.js loaded');
+        setTimeout(() => {
+            if (typeof Stock !== 'undefined') {
+                updateTest(test1, `✅ Stock object found<br>Version: ${Stock.version || 'unknown'}<br>Type: ${typeof Stock}`, 'success');
+            } else {
+                updateTest(test1, '❌ Stock object NOT found - stock.js not loaded or has errors', 'error');
+            }
+        }, 100);
+
+        // Test 2: Check server detection
+        const test2 = addLoadingTest('Test 2: Server URL Detection');
+        setTimeout(() => {
+            if (typeof Stock !== 'undefined' && Stock.getBaseURL) {
+                const baseURL = Stock.getBaseURL();
+                const currentURL = window.location.origin;
+                updateTest(test2, `
+                    Current page: ${currentURL}<br>
+                    Detected base URL: ${baseURL}<br>
+                    ${baseURL === currentURL ? '✅ URLs match' : '⚠️ URLs differ'}
+                `, baseURL === currentURL ? 'success' : 'error');
+            } else {
+                updateTest(test2, '❌ Cannot test - Stock.getBaseURL not available', 'error');
+            }
+        }, 200);
+
+        // Test 3: Test API connection
+        const test3 = addLoadingTest('Test 3: API Connection Test');
+        setTimeout(async () => {
+            try {
+                const baseURL = window.location.origin;
+                const apiUrl = `${baseURL}/api/medicines/stock`;
+
+                console.log('Testing API:', apiUrl);
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    updateTest(test3, `
+                        ❌ API request failed<br>
+                        URL: ${apiUrl}<br>
+                        Status: ${response.status} ${response.statusText}
+                    `, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.medicines) {
+                    updateTest(test3, `
+                        ✅ API working perfectly!<br>
+                        URL: ${apiUrl}<br>
+                        Medicines count: ${data.medicines.length}<br>
+                        Total in DB: ${data.total}
+                    `, 'success');
+                } else {
+                    updateTest(test3, `
+                        ⚠️ API responded but data format unexpected<br>
+                        <pre>${JSON.stringify(data, null, 2).substring(0, 500)}...</pre>
+                    `, 'error');
+                }
+            } catch (error) {
+                updateTest(test3, `
+                    ❌ API connection failed<br>
+                    Error: ${error.message}<br>
+                    <pre>${error.stack}</pre>
+                `, 'error');
+            }
+        }, 300);
+
+        // Test 4: Check DOM elements
+        const test4 = addLoadingTest('Test 4: Check DOM Elements Exist');
+        setTimeout(() => {
+            const elements = {
+                'stock-table-body': document.getElementById('stock-table-body'),
+                'total-in-stock': document.getElementById('total-in-stock'),
+                'low-stock-count': document.getElementById('low-stock-count'),
+                'out-of-stock-count': document.getElementById('out-of-stock-count'),
+                'expiring-soon-count': document.getElementById('expiring-soon-count')
+            };
+
+            let html = '';
+            let allFound = true;
+
+            for (const [id, element] of Object.entries(elements)) {
+                if (element) {
+                    html += `✅ #${id} found<br>`;
+                } else {
+                    html += `❌ #${id} NOT FOUND<br>`;
+                    allFound = false;
+                }
+            }
+
+            updateTest(test4, html, allFound ? 'success' : 'error');
+        }, 400);
+
+        // Test 5: Check if Stock.init() runs
+        const test5 = addLoadingTest('Test 5: Stock Initialization');
+        setTimeout(() => {
+            if (typeof Stock !== 'undefined' && Stock.init) {
+                updateTest(test5, `
+                    ✅ Stock.init() method exists<br>
+                    <strong>Now check browser Console (F12) for initialization logs:</strong><br>
+                    - Should see "Stock Management System v2.0.0" banner<br>
+                    - Should see "DOM Ready - Starting initialization"<br>
+                    - Should see "Fetching from: http://127.0.0.1:8000/api/medicines/stock"<br>
+                    - Should see "Response status: 200"<br>
+                    - Should see "Response OK: true"
+                `, 'info');
+            } else {
+                updateTest(test5, '❌ Stock.init() not available', 'error');
+            }
+        }, 500);
+
+        // Test 6: Browser info
+        const test6 = addLoadingTest('Test 6: Browser Info');
+        setTimeout(() => {
+            updateTest(test6, `
+                Browser: ${navigator.userAgent}<br>
+                JavaScript enabled: ✅ Yes<br>
+                Fetch API available: ${typeof fetch !== 'undefined' ? '✅ Yes' : '❌ No'}<br>
+                Console available: ${typeof console !== 'undefined' ? '✅ Yes' : '❌ No'}
+            `, 'info');
+        }, 600);
+
+        // Final instructions
+        setTimeout(() => {
+            addTest('📋 Next Steps', `
+                <strong>1. Copy ALL console output:</strong><br>
+                   - Press F12 to open DevTools<br>
+                   - Go to "Console" tab<br>
+                   - Right-click and "Save as..." or copy all messages<br>
+                   <br>
+                <strong>2. Check Network tab:</strong><br>
+                   - Go to "Network" tab in F12<br>
+                   - Reload the stock page: <a href="/modules/stock/index.html" target="_blank">modules/stock/index.html</a><br>
+                   - Look for request to "/api/medicines/stock"<br>
+                   - Check if it returns 200 status with data<br>
+                   <br>
+                <strong>3. Clear cache and retry:</strong><br>
+                   - Press Ctrl+Shift+R (hard refresh)<br>
+                   - Or clear browser cache completely<br>
+                   <br>
+                <strong>4. If tests above show errors, report them back for quick fix!</strong>
+            `, 'info');
+        }, 700);
+
+        // Load stock.js to test it
+        const script = document.createElement('script');
+        script.src = '/js/stock.js';
+        script.onerror = () => {
+            addTest('❌ CRITICAL ERROR', 'Failed to load /js/stock.js - file may not exist or has syntax errors!', 'error');
+        };
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

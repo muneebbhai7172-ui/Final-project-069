@@ -1,0 +1,525 @@
+/* Global Theme Variables */
+:root {
+    /* Default Theme - Original Website Style */
+    --primary-color: #667eea;
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #8b5cf6 100%);
+    --secondary-color: #e2e8f0;
+    --accent-color: #764ba2;
+    --background-color: #f8fafc;
+    --sidebar-color: #f1f5f9;
+    --card-background-color: #ffffff;
+    --sidebar-text-color: #1f2937;
+    --text-color: #1f2937;
+    --text-light-color: #4b5563;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #3b82f6;
+}
+
+/* Apply theme variables to common elements */
+body,
+html,
+.main-content,
+.page-wrapper,
+.content-wrapper {
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+/* Ensure all page containers use theme background */
+.container,
+.container-fluid,
+.row,
+.admin-content,
+main,
+section,
+.content,
+.wrapper,
+.page-content,
+.dashboard-content {
+    background-color: var(--background-color) !important;
+}
+
+/* Force theme on all page elements */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Primary buttons and elements */
+.btn-primary,
+.bg-primary {
+    background: var(--primary-gradient) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Modern Sidebar - Enhanced */
+.modern-sidebar,
+.admin-sidebar,
+.sidebar,
+#sidebar,
+.main-sidebar,
+.sidebar-container,
+aside.modern-sidebar {
+    background: var(--sidebar-color) !important;
+    background-color: var(--sidebar-color) !important;
+    color: var(--sidebar-text-color) !important;
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+    border: none !important;
+}
+
+/* Additional sidebar containers */
+.sidebar-wrapper,
+.sidebar-content,
+.nav-sidebar,
+.sidebar-nav,
+.nav-list,
+.sidebar-footer {
+    background: var(--sidebar-color) !important;
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Sidebar brand and user sections */
+.sidebar-brand,
+.sidebar-user,
+.nav-section-title {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Navigation icons */
+.nav-icon,
+.sidebar-brand-icon,
+.nav-icon i,
+.sidebar-brand-icon i {
+    color: var(--text-light-color) !important;
+}
+
+/* Force sidebar background on specific container elements only */
+.modern-sidebar .sidebar-nav,
+.modern-sidebar .nav-list,
+.admin-sidebar .sidebar-nav,
+.admin-sidebar .nav-list {
+    background-color: inherit !important;
+}
+
+/* Ensure sidebar container always uses theme background */
+.modern-sidebar,
+.admin-sidebar,
+aside.modern-sidebar,
+aside.admin-sidebar {
+    background-color: var(--sidebar-color) !important;
+}
+
+/* Sidebar specific text elements - Force visible text */
+.modern-sidebar .sidebar-brand-text,
+.modern-sidebar .user-info,
+.admin-sidebar .sidebar-brand-text,
+.admin-sidebar .user-info,
+.modern-sidebar .sidebar-brand-text h4,
+.modern-sidebar .sidebar-brand-text p,
+.modern-sidebar .user-info .user-name,
+.modern-sidebar .user-info .user-role,
+.admin-sidebar .sidebar-brand-text h4,
+.admin-sidebar .sidebar-brand-text p {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* All sidebar text elements */
+.modern-sidebar .nav-text,
+.modern-sidebar span,
+.modern-sidebar p,
+.modern-sidebar h4,
+.modern-sidebar h5,
+.modern-sidebar h6,
+.admin-sidebar .nav-text,
+.admin-sidebar span,
+.admin-sidebar p,
+.admin-sidebar h4,
+.admin-sidebar h5,
+.admin-sidebar h6 {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Ensure navigation sections maintain sidebar background */
+.modern-sidebar .nav-section-title,
+.admin-sidebar .nav-section-title,
+.modern-sidebar .sidebar-nav,
+.admin-sidebar .sidebar-nav,
+.modern-sidebar .sidebar-footer,
+.admin-sidebar .sidebar-footer {
+    background-color: var(--sidebar-color) !important;
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Navigation section titles - extra visibility */
+.modern-sidebar .nav-section-title,
+.admin-sidebar .nav-section-title {
+    color: var(--sidebar-text-color) !important;
+    font-weight: 600 !important;
+    opacity: 0.8 !important;
+}
+
+/* Force ALL sidebar text to be visible - override any conflicting styles */
+.modern-sidebar *,
+.admin-sidebar * {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Specific override for navigation links */
+.modern-sidebar .nav-link,
+.modern-sidebar .nav-link *,
+.admin-sidebar .nav-link,
+.admin-sidebar .nav-link * {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Icons should use lighter color for contrast */
+.modern-sidebar .nav-icon,
+.modern-sidebar .nav-icon i,
+.admin-sidebar .nav-icon,
+.admin-sidebar .nav-icon i {
+    color: var(--text-light-color) !important;
+}
+
+/* Override ALL fixed colors in modern sidebar CSS */
+.modern-sidebar .sidebar-brand h4,
+.modern-sidebar .sidebar-brand p,
+.modern-sidebar .user-name,
+.modern-sidebar .user-role,
+.modern-sidebar .nav-text,
+.modern-sidebar .sidebar-brand-text h4,
+.modern-sidebar .sidebar-brand-text p,
+.modern-sidebar .user-info p {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Override nav link colors specifically */
+.modern-sidebar .nav-link,
+.modern-sidebar .nav-link span,
+.modern-sidebar .nav-link .nav-text {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Override hover states while keeping theme colors */
+.modern-sidebar .nav-link:hover {
+    color: var(--sidebar-text-color) !important;
+}
+
+/* Active link should use primary color */
+.modern-sidebar .nav-link.active,
+.modern-sidebar .nav-link.active span,
+.modern-sidebar .nav-link.active .nav-text {
+    color: #ffffff !important;
+}
+
+/* FINAL OVERRIDE - Maximum specificity to ensure sidebar background AND text change with themes */
+html body .modern-sidebar {
+    background: var(--sidebar-color) !important;
+    background-color: var(--sidebar-color) !important;
+    color: var(--sidebar-text-color) !important;
+}
+
+html body .modern-sidebar *:not(.nav-icon):not(.nav-icon i) {
+    color: var(--sidebar-text-color) !important;
+}
+
+html body .modern-sidebar .nav-link.active,
+html body .modern-sidebar .nav-link.active * {
+    color: #ffffff !important;
+}
+
+/* Force sidebar background override for all possible selectors */
+.modern-sidebar[style*="background"],
+aside.modern-sidebar[style*="background"] {
+    background: var(--sidebar-color) !important;
+    background-color: var(--sidebar-color) !important;
+}
+
+/* Override the modern sidebar CSS variables with our theme values */
+.modern-sidebar {
+    --sidebar-bg: var(--sidebar-color) !important;
+    --sidebar-text: var(--sidebar-text-color) !important;
+    --sidebar-text-muted: var(--sidebar-text-color) !important;
+}
+
+/* Force override any gradient backgrounds */
+.modern-sidebar,
+aside.modern-sidebar {
+    background-image: none !important;
+}
+
+/* Ensure all sidebar navigation sections use theme background */
+.modern-sidebar .sidebar-nav,
+.modern-sidebar .nav-list,
+.modern-sidebar .sidebar-footer,
+.modern-sidebar > * {
+    background-color: transparent !important;
+}
+
+/* ULTIMATE OVERRIDE - Highest CSS specificity for sidebar background */
+html body div.modern-sidebar,
+html body aside.modern-sidebar {
+    background: var(--sidebar-color) !important;
+    background-color: var(--sidebar-color) !important;
+    background-image: none !important;
+}
+
+/* Force override any CSS custom properties in the sidebar */
+html body .modern-sidebar {
+    --sidebar-bg: var(--sidebar-color) !important;
+}
+
+/* Sidebar footer and logout button */
+.modern-sidebar .sidebar-footer .nav-link,
+.admin-sidebar .sidebar-footer .nav-link,
+.modern-sidebar #logoutButton,
+.admin-sidebar #logoutButton {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+    border-radius: 10px !important;
+    margin: 10px !important;
+}
+
+.modern-sidebar .nav-link,
+.admin-sidebar .nav-link,
+.sidebar-nav .nav-link,
+.modern-sidebar a,
+.admin-sidebar a,
+.sidebar .nav-link,
+#sidebar .nav-link,
+.main-sidebar .nav-link,
+.sidebar a,
+.main-sidebar a {
+    color: var(--sidebar-text-color) !important;
+    background-color: transparent !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+}
+
+/* Sidebar navigation text - force visible */
+.modern-sidebar .nav-link .nav-text,
+.modern-sidebar .nav-link span,
+.admin-sidebar .nav-link span,
+.modern-sidebar .nav-text,
+.admin-sidebar .nav-text,
+.modern-sidebar .nav-link,
+.admin-sidebar .nav-link {
+    color: var(--sidebar-text-color) !important;
+}
+
+.modern-sidebar .nav-link:hover,
+.admin-sidebar .nav-link:hover,
+.sidebar-nav .nav-link:hover,
+.sidebar .nav-link:hover,
+#sidebar .nav-link:hover,
+.main-sidebar .nav-link:hover {
+    background: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+}
+
+.modern-sidebar .nav-link.active,
+.admin-sidebar .nav-link.active,
+.sidebar-nav .nav-link.active,
+.sidebar .nav-link.active,
+#sidebar .nav-link.active,
+.main-sidebar .nav-link.active {
+    background: var(--primary-gradient) !important;
+    color: #ffffff !important;
+}
+
+.modern-sidebar .sidebar-brand,
+.admin-sidebar .sidebar-brand {
+    color: var(--sidebar-text-color) !important;
+}
+
+.modern-sidebar .nav-text,
+.admin-sidebar .nav-text,
+.modern-sidebar span,
+.admin-sidebar span {
+    color: inherit !important;
+}
+
+/* Cards and containers */
+.card,
+.settings-card,
+.page-header,
+.modal-content,
+.dropdown-menu,
+.list-group-item {
+    background-color: var(--card-background-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+/* Navigation */
+.nav-pills .nav-link.active {
+    background: var(--primary-gradient) !important;
+}
+
+.nav-pills .nav-link:hover {
+    background: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Form elements */
+.form-control,
+.form-select,
+.input-group-text {
+    background-color: var(--card-background-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.form-label {
+    color: var(--text-color) !important;
+}
+
+/* Tables */
+.table {
+    background-color: var(--card-background-color) !important;
+    color: var(--text-color) !important;
+}
+
+.table th {
+    background-color: var(--sidebar-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.table td {
+    border-color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+}
+
+.table-light {
+    background: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Badges */
+.badge.bg-primary {
+    background: var(--primary-color) !important;
+}
+
+.badge.bg-success {
+    background: var(--success-color) !important;
+}
+
+.badge.bg-warning {
+    background: var(--warning-color) !important;
+}
+
+.badge.bg-danger {
+    background: var(--danger-color) !important;
+}
+
+/* Alerts */
+.alert-info {
+    background: var(--secondary-color) !important;
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.alert-success {
+    background: #d1fae5 !important;
+    color: var(--success-color) !important;
+    border-color: var(--success-color) !important;
+}
+
+.alert-warning {
+    background: #fef3c7 !important;
+    color: var(--warning-color) !important;
+    border-color: var(--warning-color) !important;
+}
+
+.alert-danger {
+    background: #fee2e2 !important;
+    color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+}
+
+/* Charts and reports */
+.chart-container {
+    background: var(--sidebar-color) !important;
+}
+
+/* Dark theme specific overrides */
+[data-theme="midnight-dark"] {
+    --primary-color: #1f2937;
+    --primary-gradient: linear-gradient(135deg, #1f2937, #111827);
+    --secondary-color: #374151;
+    --accent-color: #60a5fa;
+    --background-color: #1f2937;
+    --sidebar-color: #111827;
+    --sidebar-text-color: #f9fafb;
+    --text-color: #f9fafb;
+    --text-light-color: #d1d5db;
+}
+
+[data-theme="midnight-dark"] .form-control {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #f9fafb !important;
+}
+
+[data-theme="midnight-dark"] .table {
+    --bs-table-bg: #374151 !important;
+}
+
+[data-theme="midnight-dark"] .table-light {
+    background: #4b5563 !important;
+}
+
+/* Animation for smooth theme transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Icon colors */
+.fa, .fas, .far, .fab {
+    color: inherit !important;
+}
+
+/* Settings icon colors */
+.settings-icon {
+    color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
