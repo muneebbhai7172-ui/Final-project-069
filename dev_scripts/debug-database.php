@@ -1,6 +1,6 @@
 <?php
 // Simple test to check medicines table
-require_once 'config/db.php';
+require_once '../config/db.php';
 
 echo "<h1>Database Test</h1>";
 
