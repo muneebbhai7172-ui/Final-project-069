@@ -30,3 +30,10 @@ Homestead.yaml
 Thumbs.db
 tests/
 test/
+dev_scripts/  
+public/*test*  
+public/*debug*  
+*test*.html  
+*test*.php  
+*debug*.html  
+*debug*.php 
